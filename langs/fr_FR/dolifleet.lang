@@ -1,0 +1,192 @@
+Module104087Name = Véhicules
+Module104087Desc = Module de gestion de flotte de véhicules
+
+ATMAbout = Ce module a été développé par <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>Vous pouvez retrouver la documentation sur notre <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>Pour toute question technique ou retour, contactez-nous sur <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Pour toute question commerciale, contactez-nous sur <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> ou au +33 9 77 19 50 70<br><br>Retrouvez nos autres modules sur <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
+
+doliFleet=Véhicules
+AbricotNeedUpdate=Le module abricot doit être mis à jour
+
+c_dolifleet_contract_type=DoliFleet - Types de contrat véhicule
+c_dolifleet_vehicule_type=DoliFleet - Types de véhicule
+c_dolifleet_vehicule_mark=DoliFleet - Marques de véhicule
+c_dolifleet_vehicule_activity_type=DoliFleet - Type d'activité véhicule
+
+# DROITS
+vehicule_read=Voir les véhicules
+vehicule_write=Créez/modifier les véhicules
+vehicule_delete=Supprimer les véhicules
+rental_read=Voir les loyers
+rental_write=Créer/modifier les loyers
+rental_validate=Valider les loyers
+rental_delete=Supprimer les loyers
+matrix_read=Voir les matrices de loyers
+matrix_write=Créer une matrice de loyers
+matrix_delete=Supprimer une matrice de loyers
+rentalproposal_read=Voir les propositions de loyers
+rentalproposal_write=Créer/modifier les propositions de loyers
+rentalproposal_validate=Valider/accepter les propositions de loyers
+rentalproposal_delete=Supprimer les propositions de loyers
+
+# SETUP
+ParamLabel=Nom du paramètre
+ParamDesc=Une description si besoin
+ParamHelp=Le contenu de l'aide
+doliFleetSetup = Configuration du module doliFleet
+doliFleetAbout = A propos du module doliFleet
+DOLIFLEET_MOTRICE_TYPES=Type de véhicule tracteur
+rentalMatrix=Matrice de loyers
+DOLIFLEET_DEFAULT_RENTAL_AMOUNT=Loyer par défaut (si aucun n'est trouvé dans la matrice client ou générale)
+DOLIFLEET_DELAY_SEARCH_OPERATIONS=Délai en mois pour rechercher les opérations précédentes dans la planification des opérations véhicules
+ShareDolifleet_vehicule=Activer le partage des véhicules
+DOLIFLEET_VEHICULESharing=Partage des véhicules
+DOLIFLEET_VEHICULESharingDescription=Sélection des entités qui partagerons leur base véhicules avec cette entité.
+Multicompany=Options du module multi sociétés
+ActivateVehiculeSharing=Activer le partage des véhicules entre entités (pensez à configurer le partage ci-dessous)
+MulticompanyConfiguration=Configuration des partages entre entités
+ShareWith=Reprend les données dans
+multicompanySharing=Partage entre entités
+RentalproposalPDFModules=Modèles PDF Proposition de loyer
+
+# MENU
+TopMenudoliFleet=Vehicule
+MenudoliFleetVehicule=Vehicule
+LeftMenudoliFleetVehiculeCreate=Créer un véhicule
+LeftMenudoliFleetVehiculeList=Liste de véhicule
+MenudolifleetRentalProposal=Proposition de loyer
+LeftMenudoliFleetRentalProposalCreate=Nouvelle proposition
+LeftMenudoliFleetRentalProposalList=Liste propositions
+
+# STATUS
+doliFleetVehiculeStatusDraft=Inactif
+doliFleetVehiculeStatusActivated=Actif
+doliFleetVehiculeStatusValidate=Actif
+
+doliFleetOperationStatusDraft=Brouillon
+doliFleetOperationStatusToPlan=à planifier
+doliFleetOperationStatusPlanned=Planifié
+doliFleetOperationStatusDone=Réalisé
+
+doliFleetVehiculeStatusShortDraft=Inactif
+doliFleetVehiculeStatusShortActivated=Actif
+doliFleetVehiculeStatusShortValidate=Actif
+
+doliFleetOperationStatusShortDraft=Brouillon
+doliFleetOperationStatusShortToPlan=à planifier
+doliFleetOperationStatusShortPlanned=Planifié
+doliFleetOperationStatusShortDone=Réalisé
+
+doliFleetProposalStatusDraft=Brouillon (à valider)
+doliFleetProposalStatusShortDraft=Brouillon
+doliFleetProposalStatusInProgress=Validation en cours (à accepter)
+doliFleetProposalStatusShortInProgress=Validation en cours
+doliFleetProposalStatusValidated=Validée
+doliFleetProposalStatusCloture=Cloturée
+
+# LIST
+doliFleetVehiculeList=Liste de véhicules
+NodoliFleet=(vide)
+
+# CARD
+NewdoliFleetVehicule=Création véhicule
+doliFleetVehiculeCard=Fiche véhicule
+doliFleetVehicule=Véhicule
+NewdoliFleet=Nouveau véhicule
+immatriculation_date=date de première mise en circulation
+immatriculation_date_short=Mise en circulation
+vehiculeDelayExploit=Durée maximum d'exploitation
+LinkToThirparty=Lien vers le tiers
+km_date=Date de relevé kilométrique
+date_customer_exploit=Date de mise en exploitation
+date_customer_exploit_help=Mise en exploitation peut différer de la mise en circulation
+date_end_contract=Date fin de contrat
+contractType=Type de contrat
+vehiculeType=Type de véhicule
+vehiculeMark=Marque du véhicule
+ShowdoliFleetVehicule=Voir le véhicule
+ActivityType=Type d'activité
+NodoliFleetActivity=Pas d'activité
+ActivityAdded=Activité ajoutée
+VehiculeActivities=Activités véhicule
+LinkedVehicules=Véhicules liés
+VehiculeUnlinked=Le véhicule a été délié
+VehiculeRentals=Loyers
+VehiculeRental=Loyer
+rentDeleted=Loyer supprimé
+VehiculeOperations=Opérations
+VehiculeOperation=Opération
+VehiculeOperationDelay=Délais depuis dernière opé.
+VehiculeOperationLastDateDone=Date dernière opé.
+VehiculeOperationLastKmDone=Km dernière opé.
+dolifleetRentalProposal=Proposition de loyers
+doliFleetRentalProposalCard=Fiche proposition de loyers
+ShowdolifleetRentalProposal=Voir la proposition de loyers
+NewdolifleetRentalProposal=Nouvelle proposition de loyers
+dolifleetRentalProposalList=Liste de propositions de loyers
+NoMatrixDefined=Aucune matrice définie pour le tiers
+CanImportMatrix=Vous pouvez importer la matrice générale pour ce tiers
+ImportConf=Importer
+AmountIsFromThirdpartyMatrix=Prix repris depuis la matrice client
+AmountIsFromGlobalMatrix=Prix repris de la matrice globale
+AmountIsFromGlobalConf=Prix par défaut
+OnlyUserWhoValidatedCanReopen=Seul l'utilisateur qui a validé la proposition peut la rouvrir
+UserMustBeDifferentFromValider=Seul un autre utilisateur ayant le droit approprié peut accepter la proposition
+CanNotDeleteClosedProposal=Impossible de supprimer une proposition cloturée
+
+doliFleetModify=Modifier
+doliFleetClone=Cloner
+doliFleetClose=Cloturer
+doliFleetValid=Valider
+doliFleetActivate=Activer
+doliFleetUnactivate=Désactiver
+doliFleetAccept=Accepter
+doliFleetRefuse=Refuser
+doliFleetReopen=Rouvrir
+doliFleetCancel=Abandonner
+doliFleetDelete=Supprimer
+
+# formConfirm
+ConfirmActivatedoliFleetVehiculeTitle=Confirmation d'activation
+ConfirmActivatedoliFleetVehiculeBody=Souhaitez-vous vraiment activer cette fiche véhicule %s ?
+ConfirmReopendoliFleetVehiculeTitle=Confirmation de désactivation
+ConfirmReopendoliFleetVehiculeBody=Souhaitez-vous vraiment désactiver cette fiche véhicule %s ?
+ConfirmDeletedoliFleetVehiculeTitle=Confirmation de suppression
+ConfirmDeletedoliFleetVehiculeBody=Souhaitez-vous vraiment supprimer cette fiche véhicule %s ?
+ConfirmClonedoliFleetVehiculeTitle=Confirmation de clonage
+ConfirmClonedoliFleetVehiculeBody=Souhaitez-vous vraiment clone cette fiche véhicule %s ?
+ConfirmDelActivitydoliFleetVehiculeBody=Voulez-vous vraiment supprimer cette activité ?
+ConfirmUnlinkVehiculedoliFleetVehiculeTitle=Confirmation de suppression du lien
+ConfirmUnlinkVehiculedoliFleetVehiculeBody=Voulez-vous vraiment supprimer le lien avec le véhicule ?
+ConfirmDelRentaldoliFleetVehiculeBody=Voulez-vous vraiment supprimer ce loyer ?
+ConfirmDelOperationdoliFleetVehiculeBody=Voulez-vous vraiment supprimer cette opération ?
+ConfirmDeldoliFleetLineBody=Voulez-vous vraiment supprimer cette ligne ?
+ConfirmValidateRentalProposalTitle=Confirmation de validation
+ConfirmValidateRentalProposalBody=Voulez-vous vraiment valider cette proposition ?
+ConfirmAcceptRentalProposalTitle=Confirmation d'acceptation
+ConfirmAcceptRentalProposalBody=Voulez-vous vraiment accepter cette proposition ?
+ConfirmDeleteRentalBody=Voulez-vous vraiment supprimer cette proposition de loyers ?
+ConfirmCloseRentalProposalTitle=Confirmation de cloture
+ConfirmCloseRentalProposalBody=Voulez-vous vraiment cloturer cette proposition ? <br /> <br /> Ceci créera les loyers clients pour chaque véhicule listé dans cette proposition.
+
+# Erreur
+ErrNoVinNumber=Aucun VIN renseigné
+ErrVinAlreadyUsed=Le VIN est déjà utilisé pour le véhicule %s
+ErrInvalidFkVehicule=Véhicule invalide
+ErrNoActivityType=Pas de type d'activité renseigné
+ErrAlreadyInActivity=Le véhicule est déjà en activité pour les date spécifiées
+ErrNoVehiculeToLink=Pas de véhicule à lier
+ErrVehiculeAlreadyLinkedDates=Le véhicule %s est déjà lié au véhicule %s du %s au %s
+ErrVehiculeUnlink=Impossible de délier le véhicule
+ErrEmptyAmountForRental=Le montant du loyer ne peut être vide
+ErrPeriodReservedForRental=Un ou plusieur loyers sont déjà définis sur la période du %s au %s
+ErrOperationNoProdId=Opération : pas de produit sélectionné
+ErrOperationInvalidProduct=Produit erroné
+ErrOperationNoCritera=Vous devez renseigner un des critères km ou délai
+ErrOperationMaxKM=Le critère km est inférieur à %s (plus grand km saisi dans les opérations du véhicule)
+ErrInvalidType=Type de véhicule invalide
+ErrInvalidMark=Marque de véhicule invalide
+ErrNoDelayForLine=Pas de durée saisi
+ErrInvalidAmount=Montant saisie invalide
+ErrDuplicateMatrix=Il existe déjà une ligne de matrice pour ce type, cette marque, et cette durée
+ErrVehiculeThirPartiesAreDifferent=Les tiers des véhicules à lier sont différents
+ErrEmptyVehiculeImmatDate=Date de mise en circulation invalide
+ErrInvalidSocid=Tiers invalide
