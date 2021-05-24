@@ -572,35 +572,33 @@ class doliFleetVehicule extends SeedObject
 
 	public function getLinkedVehicules($date_start = '', $date_end = '')
 	{
-		$sql = 'SELECT rowid';
-		$sql .= ' FROM '.MAIN_DB_PREFIX.'dolifleet_vehicule_link';
-		$sql .= " WHERE ";
-		$sql .= " (fk_source = ".$this->id." OR fk_target = ".$this->id.")";
-		if (!empty($date_end))
-			$sql.= " AND date_start < '".$this->db->idate($date_end)."'";
-		if (!empty($date_start))
-			$sql.= " AND date_end > '".$this->db->idate($date_start)."'";
-		$sql .= " ORDER BY date_start ASC";
+		$this->linkedVehicules = array();
+		if (!empty($this->id)) {
+			$sql = 'SELECT rowid';
+			$sql .= ' FROM ' . MAIN_DB_PREFIX . 'dolifleet_vehicule_link';
+			$sql .= " WHERE ";
+			$sql .= " (fk_source = " . $this->id . " OR fk_target = " . $this->id . ")";
+			if (!empty($date_end))
+				$sql .= " AND date_start < '" . $this->db->idate($date_end) . "'";
+			if (!empty($date_start))
+				$sql .= " AND date_end > '" . $this->db->idate($date_start) . "'";
+			$sql .= " ORDER BY date_start ASC";
 
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			dol_include_once('/dolifleet/class/vehiculeLink.class.php');
+			$resql = $this->db->query($sql);
+			if ($resql) {
+				dol_include_once('/dolifleet/class/vehiculeLink.class.php');
 
-			$this->linkedVehicules = array();
+				while ($obj = $this->db->fetch_object($resql)) {
+					$Vlink = new doliFleetVehiculeLink($this->db);
+					$ret = $Vlink->fetch($obj->rowid);
 
-			while ($obj = $this->db->fetch_object($resql))
-			{
-				$Vlink = new doliFleetVehiculeLink($this->db);
-				$ret = $Vlink->fetch($obj->rowid);
+					if ($Vlink->fk_source != $this->id) $Vlink->fk_other_vehicule = $Vlink->fk_source;
+					else if ($Vlink->fk_target != $this->id) $Vlink->fk_other_vehicule = $Vlink->fk_target;
 
-				if ($Vlink->fk_source != $this->id) $Vlink->fk_other_vehicule = $Vlink->fk_source;
-				else if ($Vlink->fk_target != $this->id) $Vlink->fk_other_vehicule = $Vlink->fk_target;
-
-				if ($ret > 0) $this->linkedVehicules[$Vlink->date_start] = $Vlink;
+					if ($ret > 0) $this->linkedVehicules[$Vlink->date_start] = $Vlink;
+				}
 			}
 		}
-
 	}
 
 	// ajoute un lien entre véhicule de date à date
