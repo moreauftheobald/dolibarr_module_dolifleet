@@ -135,6 +135,7 @@ $sql.=$hookmanager->resPrint;
 //print $sql;
 
 $formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_dolifleet', 'GET');
+print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 $form = new Form($db);
 
 $nbLine = GETPOST('limit');
