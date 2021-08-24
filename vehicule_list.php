@@ -101,7 +101,7 @@ print $formconfirm;
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
-print_r($extralabels);
+print_r($extrafields->attributes[$object->table_element]['list']);
 //exit;
 if (!empty($object->isextrafieldmanaged))
 {
