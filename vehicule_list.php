@@ -101,8 +101,7 @@ print $formconfirm;
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
-print_r($extrafields->attributes[$object->table_element]['list']);
-//exit;
+
 if (!empty($object->isextrafieldmanaged))
 {
 	$keys = array_keys($extralabels);
@@ -158,7 +157,9 @@ if (!empty(array_keys($extralabels)))
 {
 	foreach ($extralabels as $k => $v)
 	{
-		if (in_array(abs(dol_eval($extrafields->attributes[$object->table_element]['list'][$k])),array(1,2,4)) && !empty(abs($extrafields->attributes[$object->table_element]['list'][$k]))) {
+		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k]);
+		print_r($permit);
+		if (in_array(abs($permit),array(1,2,4)) && !empty(abs($extrafields->attributes[$object->table_element]['list'][$k]))) {
 			$TTitle[$k] = $v;
 		}
 	}
