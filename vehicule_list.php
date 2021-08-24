@@ -103,6 +103,8 @@ $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
 if (!empty($object->isextrafieldmanaged))
 {
+	$extrafields = new ExtraFields($db);
+	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
     $keys = array_keys($extralabels);
 	if(!empty($keys)) {
 		$fieldList .= ', et.' . implode(', et.', $keys);
