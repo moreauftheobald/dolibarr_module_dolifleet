@@ -102,7 +102,7 @@ print $formconfirm;
 $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
 print $user->rights->dolifleet->extended_read;
-exit;
+//exit;
 if (!empty($object->isextrafieldmanaged))
 {
 	$keys = array_keys($extralabels);
