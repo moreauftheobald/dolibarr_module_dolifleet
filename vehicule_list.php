@@ -158,8 +158,7 @@ if (!empty(array_keys($extralabels)))
 	foreach ($extralabels as $k => $v)
 	{
 		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k],1);
-		print_r($permit);
-		if (in_array(abs($permit),array(1,2,4)) && !empty(abs($extrafields->attributes[$object->table_element]['list'][$k]))) {
+			if (in_array(abs($permit),array(1,2,4)) && !empty(abs($permit))) {
 			$TTitle[$k] = $v;
 		}
 	}
@@ -230,7 +229,8 @@ if (!empty($extralabels))
 {
 	foreach ($extralabels as $k => $v)
 	{
-		if (in_array(abs($extrafields->attributes[$object->table_element]['list'][$k]),array(1,2,4)) && !empty(abs($extrafields->attributes[$object->table_element]['list'][$k]))) {
+		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k],1);
+		if (in_array(abs($permit),array(1,2,4)) && !empty(abs($permit))) {
 			$listViewConfig['eval'][$k] = '_evalEF("' . $k . '", "@val@")';
 		}
 	}
