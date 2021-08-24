@@ -101,7 +101,7 @@ print $formconfirm;
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
-print $user->rights->dolifleet->extended_read;
+print_r($extralabels);
 //exit;
 if (!empty($object->isextrafieldmanaged))
 {
