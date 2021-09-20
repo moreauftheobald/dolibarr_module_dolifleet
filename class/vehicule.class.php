@@ -976,7 +976,7 @@ class doliFleetVehicule extends SeedObject
 		$nb = count($fields);
 		$result .= $this->{$fields[0]};
 		for ($i = 1; $i <=$nb; $i++){
-		//	$result .= ' - ' . $this->{$fields[$i]};
+			$result .= ' - ' . $this->{$fields[$i]};
 		}
 		$result .= $linkend;
 		return $result;
