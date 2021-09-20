@@ -973,7 +973,7 @@ class doliFleetVehicule extends SeedObject
 		if ($withpicto && $withpicto != 2) $result.=' ';
 		//$result.=$link;
 		$fields = explode(',',$fieldtodisplay);
-		//$nb = count($fields);
+		$nb = count($fields);
 		//$result .= $this->{$fields[0]};
 		//for ($i = 1; $i <=$nb; $i++){
 		//	$result .= ' - ' . $this->{$fields[$i]};
