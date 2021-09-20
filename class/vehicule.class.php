@@ -972,7 +972,7 @@ class doliFleetVehicule extends SeedObject
 		if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
 		if ($withpicto && $withpicto != 2) $result.=' ';
 		$result.=$link;
-		$fields = explode(',',$fieldtodisplay);
+		//$fields = explode(',',$fieldtodisplay);
 		$nb = count($fields);
 		$result .= $this->{$fields[0]};
 		for ($i = 1; $i <=$nb; $i++){
