@@ -933,7 +933,7 @@ class doliFleetVehicule extends SeedObject
         if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
         if ($withpicto && $withpicto != 2) $result.=' ';
 
-        $result.=$link.$this->vin.$linkend;
+        $result.=$link.$this->immatriculation . '-' . $this->vin.$linkend;
 
         return $result;
     }
