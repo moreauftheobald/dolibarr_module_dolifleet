@@ -1110,7 +1110,7 @@ class doliFleetVehicule extends SeedObject
 		$nblate = $this->countordertoplan('late');
 		$nonplanned=array();
 		if (!empty($this->array_options['options_op_np'])) {
-			$nonplanned = explode(":", $vh->array_options['options_op_np']);
+			$nonplanned = explode(":", $this->array_options['options_op_np']);
 		}
 
 		if($nblate>0){
