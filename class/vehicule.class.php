@@ -1062,6 +1062,8 @@ class doliFleetVehicule extends SeedObject
 			}
 		}elseif($key == 'operations'){
 			$res = $this->printbuttons_or();
+		}elseif($key == 'linkedvh'){
+			$res = $this->getorlinkedHV();
 		}else{
 			$res = $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keysuffix, $keyprefix, $morecss);
 		}
@@ -1150,4 +1152,19 @@ class doliFleetVehicule extends SeedObject
 		return $ret;
 	}
 
+	public function getorlinkedHV() {
+		$out = 'Pas de véhicule lié';
+		$sql  = 'SELECT IF(fk_target = '. $this->id . ',fk_source,fk_target) as linked FROM ' . MAIN_DB_PREFIX . 'dolifleet_vehicule_link ';
+		$sql .= 'WHERE (fk_source = '. $this->id . ' OR fk_target = '. $this->id . ') ORDER BY date_start DESC';
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$obj = $this->db->fetch_object($resql);
+			$vh = new doliFleetVehicule($this->db);
+			$ret = $vh->fetch($obj->linked);
+			if ($ret > 0) {
+				$out = $vh->getNomUrl(1);
+			}
+		}
+		return $out;
+	}
 }
