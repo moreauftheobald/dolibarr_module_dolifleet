@@ -1060,9 +1060,12 @@ class doliFleetVehicule extends SeedObject
 				$res .= $this->showOutputField($this->fields['date_end_contract'], 'date_end_contract', $this->date_end_contract, $moreparam, $keysuffix, $keyprefix, $morecss);
 				$res .= ')';
 			}
-			return $res;
+		}elseif($key == 'operations'){
+			$res = $this->printbuttons_or();
+		}else{
+			$res = $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keysuffix, $keyprefix, $morecss);
 		}
-		return $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keysuffix, $keyprefix, $morecss);
+		return $res;
 	}
 
     function addActionComEvent($label, $note = '', $type_code = 'AC_OTH_AUTO', $percentage = -1, $time = 0){
@@ -1098,4 +1101,53 @@ class doliFleetVehicule extends SeedObject
         }
 
     }
+
+	public function printbuttons_or(){
+		global $langs;
+		$langs->load('clitheobald@clitheobald');
+
+		$nb=$this->countordertoplan('all');
+		$nblate = $this->countordertoplan('late');
+		$nonplanned=array();
+		if (!empty($this->array_options['options_op_np'])) {
+			$nonplanned = explode(":", $vh->array_options['options_op_np']);
+		}
+
+		if($nblate>0){
+			$class = 'class="badge  badge-danger classfortooltip"';
+		}else{
+			$class = 'class="badge  badge-success classfortooltip"';
+		}
+
+		$out = '<a href="javascript:elementtoplan()" '. $class . '">' . $langs->trans('OperationOrderToCreate') . ': ' .$nb . '</a>';
+		$out.= ' ';
+		$out.= '<a href="javascript:nonplanned()" class="badge  badge-success classfortooltip">' . $langs->trans('operationnonplanifiees') . ': ' .count($nonplanned) . '</a>';
+
+		return $out;
+	}
+
+	public function countordertoplan($mode='all'){
+		$sql = "SELECT COUNT(ev.id) AS nbop";
+		$sql .= " FROM llx_actioncomm AS ev";
+		$sql .= " INNER JOIN llx_actioncomm_extrafields AS ef ON ev.id = ef.fk_object";
+		$sql .= " WHERE ef.fk_vehicule=" . $this->id;
+		$sql .= " AND ev.code='AC_OR'";
+		$sql .= " AND ev.percent<100";
+
+		if ($mode == 'late') {
+			$sql .= " AND ev.datep <= '" . $this->db->idate(dol_now()) . "'";
+		}
+
+		$resql = $this->db->query($sql);
+		$num = $this->db->num_rows($resql);
+		$ret = 0;
+		if ($resql) {
+			if ($num > 0) {
+				$obj = $this->db->fetch_object($resql);
+				$ret = $obj->nbop;
+			}
+		}
+		return $ret;
+	}
+
 }
