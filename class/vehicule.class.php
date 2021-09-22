@@ -1052,11 +1052,14 @@ class doliFleetVehicule extends SeedObject
 	 * @return string
 	 */
 	public function showOutputFieldQuick($key, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = ''){
-		if($key == 'fk_contract_type_full'){
-			$res = $this->showOutputField($this->fields['fk_contract_type'],'fk_contract_type',$this->fk_contract_type, $moreparam, $keysuffix, $keyprefix, $morecss );
-			$res .= ' (fin le: ';
-			$res .= $this->showOutputField($this->fields['date_end_contract'],'date_end_contract',$this->date_end_contract, $moreparam, $keysuffix, $keyprefix, $morecss );
-			$res .= ')';
+		if($key == 'fk_contract_type_full') {
+			$res = '';
+			if (!empty($this->fk_contract_type)) {
+				$res = $this->showOutputField($this->fields['fk_contract_type'], 'fk_contract_type', $this->fk_contract_type, $moreparam, $keysuffix, $keyprefix, $morecss);
+				$res .= ' (fin le: ';
+				$res .= $this->showOutputField($this->fields['date_end_contract'], 'date_end_contract', $this->date_end_contract, $moreparam, $keysuffix, $keyprefix, $morecss);
+				$res .= ')';
+			}
 			return $res;
 		}
 		return $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keysuffix, $keyprefix, $morecss);
