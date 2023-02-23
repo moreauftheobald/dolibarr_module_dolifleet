@@ -29,12 +29,11 @@ $langs->load('dolifleet@dolifleet');
 
 $fk_soc = GETPOST('fk_soc', 'int');
 $search_by=GETPOST('search_by', 'alpha');
-if (!empty($search_by)) {
-	$sall=GETPOST('sall');
-	if (!empty($sall)) {
-		$_GET[$search_by]=$sall;
-	}
+$sall=GETPOST('sall');
+if (!empty($sall)) {
+	$_GET['Listview_dolifleet_search_sall'] = $sall;
 }
+
 
 $massaction = GETPOST('massaction', 'alpha');
 $action = GETPOST('action', 'alpha');
@@ -205,6 +204,7 @@ $listViewConfig = array(
 		,'fk_soc' => array('search_type' => 'override', 'override'=> $form->select_company($fk_soc, 'fk_soc'))
 		,'date_customer_exploit' => array('search_type' => 'calendars', 'allow_is_null' => false)
 		,'km' => array('search_type' => true, 'table' => 't', 'field' => 'km')
+		,'sall' => array('search_type' => true, 'table' => 't', 'field' => array('vin','immatriculation'))
 		,'km_date' => array('search_type' => 'calendars', 'allow_is_null' => false)
 		,'fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'))
 		,'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false)

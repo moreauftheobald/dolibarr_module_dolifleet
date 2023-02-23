@@ -322,7 +322,6 @@ class dolifleetVehiculeOperation extends SeedObject
 
 	public function calcNextOpe()
 	{
-
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 		if (!empty($this->km)) {
 			$this->km_next = (int)$this->km_done + (int)$this->km;
@@ -339,8 +338,5 @@ class dolifleetVehiculeOperation extends SeedObject
 		} else {
 			$this->on_time=0;
 		}
-
-
 	}
-
 }
