@@ -22,7 +22,6 @@ class cron_dolifleet
 
 		set_time_limit(0);
 
-		dol_include_once('/clitheobald/lib/clitheobald.lib.php');
 		dol_include_once('/dolifleet/class/vehicule.class.php');
 
 		$this->langs = new Translate('', $conf);
@@ -168,51 +167,9 @@ class cron_dolifleet
 		$date = dol_print_date($now, "%d/%m/%Y %H:%M:%S");
 		$this->output .= '<p>' . $date . ' Début de la tâche planifiée de ' . $this->langs->trans('2lTrucksCRONCreateEventOperationOrder') . '</p>';
 
-		$error = 0;
-		//On récupère tous les events OR à créer dans le passé et on les met à la date du jour
-		$sql = "DELETE FROM " . MAIN_DB_PREFIX . "actioncomm WHERE code='AC_OR' AND datep < NOW() AND (elementtype <> 'operationorder' OR elementtype IS NULL)";
-		$this->db->query($sql);
 
-		//On supprime aussi dans actioncomm_ressource les élement qui n'ont plus à y êtr
-		$sql = "DELETE FROM " . MAIN_DB_PREFIX . "actioncomm_resources WHERE fk_actioncomm NOT IN (SELECT id FROM llx_actioncomm)";
-		$this->db->query($sql);
 
-		dol_include_once('operationorder/class/operationorder.class.php');
-		dol_include_once('dolifleet/class/vehiculeOperation.class.php');
-		dol_include_once('dolifleet/class/vehicule.class.php');
-		$TOperations = array_merge(getAllVehiclesNeedingOperationByDate(), getAllVehiclesNeedingOperationByKmMoyen());
-		//pour chaque opération
-		$successCounter = 0;
-		foreach ($TOperations as $operation) {
-			$vehicle = new doliFleetVehicule($this->db);
-			$fk_vehicule = $vehicle->fetch($operation['operation']->fk_vehicule);
-			if ($fk_vehicule > 0) {
-				if (empty($operation['operation']->product)) $operation['operation']->fetch_product();
-				if (!empty($operation['operation']->product->id)) {
-					$this->db->begin();
-					$res = addActionCommEventORToCreate($vehicle, $operation['operation'], $operation['date']);
 
-					if (is_array($res)) {
-						$this->output .= $this->langs->trans('ErrorsDuringEventCreation', $vehicle->vin, $operation['operation']->product->label) . '<br/>';
-						foreach ($res as $error) {
-							$this->output .= $error . '<br/>';
-						}
-						$this->output .= '<br/>';
-						$this->db->rollback();
-						$error++;
-					} else {
-						$successCounter++;
-						$this->db->commit();
-					}
-				} else {
-					$error++;
-					$this->output .= $this->langs->trans('CantFetchProduct') . '<br/>';
-				}
-			} else {
-				$error++;
-				$this->output .= $this->langs->trans('CantFetchVehicule') . '<br/>';
-			}
-		}
 		if (!empty($successCounter)) $this->output .= $this->langs->trans('EventCreatedSucessfully', $successCounter);
 
 		$now = dol_now();
