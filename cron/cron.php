@@ -248,7 +248,7 @@ class cron_dolifleet
 					$sql .= " ON ordp.rowid=ord.fk_operation_order";
 					$sql .= " WHERE ordp.fk_vehicule=".(int)$operation->fk_vehicule." AND ord.fk_product=".(int)$operation->fk_product;
 					$sql .= " AND ordp.status IN (".implode(',',$stToTest).")";
-					$sql .= " AND ordp.planned_date > NOW()";
+					$sql .= " AND ordp.planned_date >= '".$this->db->idate($operation->date_done)."'";
 					$sql .= " ORDER BY planned_date";
 					$sql .= " LIMIT 1";
 

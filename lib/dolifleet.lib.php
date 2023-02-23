@@ -519,7 +519,7 @@ function printVehiculeOpérations($object)
 				print '<td align="center"><input class="quatrevingtpercent" type="number" name="km_done" id="km" step="1" value="' . $operation->km_done . '"></td>';
 				print '<td align="center">'. $operation->date_next.'</td>';
 				print '<td align="center">'. $operation->km_next.'</td>';
-				print '<td align="center">'. $operation->on_time.'</td>';
+				print '<td align="center">'. (!empty($operation->on_time)?dolGetBadge($langs->trans('VehiculeOperationOnTime'),'','danger'):'').'</td>';
 				print '<td align="center">';
 				if (!empty($operation->or_next)){
 					$operationorder = new OperationOrder($object->db);
@@ -550,7 +550,7 @@ function printVehiculeOpérations($object)
 				}
 				print '</td>';
 				print '<td align="center">'. $operation->km_next.'</td>';
-				print '<td align="center">'. $operation->on_time.'</td>';
+				print '<td align="center">'.  (!empty($operation->on_time)?dolGetBadge($langs->trans('VehiculeOperationOnTime'),'','danger'):'').'</td>';
 				print '<td align="center">';
 				if (!empty($operation->or_next)){
 					$operationorder = new OperationOrder($object->db);

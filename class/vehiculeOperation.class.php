@@ -333,7 +333,7 @@ class dolifleetVehiculeOperation extends SeedObject
 			$this->date_next = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
 		}
 
-		if ($this->date_next<dol_now()) {
+		if ($this->date_next<=dol_now() && empty($this->or_next)) {
 			$this->on_time=1;
 		} else {
 			$this->on_time=0;
