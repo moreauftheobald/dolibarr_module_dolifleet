@@ -16,14 +16,14 @@
  */
 
 /**
- * 	\defgroup   dolifleet     Module doliFleet
+ *    \defgroup   dolifleet     Module doliFleet
  *  \brief      Example of a module descriptor.
- *				Such a file must be copied into htdocs/dolifleet/core/modules directory.
+ *                Such a file must be copied into htdocs/dolifleet/core/modules directory.
  *  \file       htdocs/dolifleet/core/modules/moddoliFleet.class.php
  *  \ingroup    dolifleet
  *  \brief      Description and activation file for module doliFleet
  */
-include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -34,13 +34,13 @@ class moddoliFleet extends DolibarrModules
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
-	 *   @param      DoliDB		$db      Database handler
+	 * @param DoliDB $db Database handler
 	 */
 	public function __construct($db)
 	{
-        global $langs,$conf;
+		global $langs, $conf;
 
-        $this->db = $db;
+		$this->db = $db;
 
 		$this->editor_name = 'ATM-Consulting';
 		$this->editor_url = 'https://www.atm-consulting.fr';
@@ -61,13 +61,13 @@ class moddoliFleet extends DolibarrModules
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = '1.0.3';
 		// Key used in llx_const table to save module status enabled/disabled (where DOLIFLEET is value of property name of module in uppercase)
-		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
 		$this->special = 0;
 		// Name of image file used for this module.
 		// If file is in theme/yourtheme/img directory under name object_pictovalue.png, use this->picto='pictovalue'
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
-		$this->picto='dolifleet@dolifleet';
+		$this->picto = 'dolifleet@dolifleet';
 
 		// Defined all module parts (triggers, login, substitutions, menus, css, etc...)
 		// for default path (eg: /dolifleet/core/xxxxx) (0=disable, 1=enable)
@@ -83,7 +83,7 @@ class moddoliFleet extends DolibarrModules
 		//							'barcode' => 0,                                  	// Set this to 1 if module has its own barcode directory (core/modules/barcode)
 		//							'models' => 0,                                   	// Set this to 1 if module has its own models directory (core/modules/xxx)
 		//							'css' => array('/dolifleet/css/dolifleet.css.php'),	// Set this to relative path of css file if module has its own css file
-	 	//							'js' => array('/dolifleet/js/dolifleet.js'),          // Set this to relative path of js file if module must load a js on all pages
+		//							'js' => array('/dolifleet/js/dolifleet.js'),          // Set this to relative path of js file if module must load a js on all pages
 		//							'hooks' => array('hookcontext1','hookcontext2')  	// Set here all hooks context managed by module
 		//							'dir' => array('output' => 'othermodulename'),      // To force the default directories names
 		//							'workflow' => array('WORKFLOW_MODULE1_YOURACTIONTYPE_MODULE2'=>array('enabled'=>'! empty($conf->module1->enabled) && ! empty($conf->module2->enabled)', 'picto'=>'yourpicto@dolifleet')) // Set here all workflow context managed by module
@@ -106,12 +106,12 @@ class moddoliFleet extends DolibarrModules
 		$this->config_page_url = array("dolifleet_setup.php@dolifleet");
 
 		// Dependencies
-		$this->hidden = false;			// A condition to hide module
-		$this->depends = array();		// List of modules id that must be enabled if this module is enabled
-		$this->requiredby = array();	// List of modules id to disable if this one is disabled
-		$this->conflictwith = array();	// List of modules id this module is in conflict with
-		$this->phpmin = array(5,0);					// Minimum version of PHP required by module
-		$this->need_dolibarr_version = array(11,0);	// Minimum version of Dolibarr required by module
+		$this->hidden = false;            // A condition to hide module
+		$this->depends = array();        // List of modules id that must be enabled if this module is enabled
+		$this->requiredby = array();    // List of modules id to disable if this one is disabled
+		$this->conflictwith = array();    // List of modules id this module is in conflict with
+		$this->phpmin = array(5, 0);                    // Minimum version of PHP required by module
+		$this->need_dolibarr_version = array(11, 0);    // Minimum version of Dolibarr required by module
 		$this->langfiles = array("dolifleet@dolifleet");
 
 		// Constants
@@ -121,10 +121,57 @@ class moddoliFleet extends DolibarrModules
 		// );
 		$this->const = array();
 
+		// Cronjobs (List of cron jobs entries to add when module is enabled)
+		// unit_frequency must be 60 for minute, 3600 for hour, 86400 for day, 604800 for week
+		$dateCronJob = new DateTime();
+		$dateCronJob->setTime(1, 0, 0);
+		$dateCronKM = $dateCronJob->format('Y-m-d H:i');
+		$dateCronJob->setTime(3, 0, 0);
+		$dateCronOpe = $dateCronJob->format('Y-m-d H:i');
+		$this->cronjobs = array(
+			0 => array(
+				'label' => $langs->trans('2lTrucksCRONGetKmVehicles'),
+				'jobtype' => 'method',
+				'class' => '/dolifleet/cron/cron.php',
+				'objectname' => 'cron_dolifleet',
+				'method' => 'getKmVehicles',
+				'parameters' => '',
+				'comment' => '',
+				'frequency' => 1,
+				'unitfrequency' => 86400,
+				'test' => '$conf->dolifleet->enabled',
+				'priority' => 50,
+				'entity' => 1,
+				'datestart' => $dateCronKM,
+				'status' => 1,
+			),
+			1 => array(
+				'label' => $langs->trans('2lTrucksCRONCreateEventOperationOrder'),
+				'jobtype' => 'method',
+				'class' => '/dolifleet/cron/cron.php',
+				'objectname' => 'cron_dolifleet',
+				'method' => 'createEventOperationOrder',
+				'parameters' => '',
+				'comment' => '',
+				'frequency' => 1,
+				'unitfrequency' => 86400,
+				'test' => '$conf->dolifleet->enabled',
+				'priority' => 50,
+				'entity' => 1,
+				'datestart' => $dateCronOpe,
+				'status' => 1,
+			),
+		);
+		// Example: $this->cronjobs=array(
+		//    0=>array('label'=>'My label', 'jobtype'=>'method', 'class'=>'/dir/class/file.class.php', 'objectname'=>'MyClass', 'method'=>'myMethod', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>2, 'unitfrequency'=>3600, 'status'=>0, 'test'=>'$conf->mymodule->enabled', 'priority'=>50),
+		//    1=>array('label'=>'My label', 'jobtype'=>'command', 'command'=>'', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>1, 'unitfrequency'=>3600*24, 'status'=>0, 'test'=>'$conf->mymodule->enabled', 'priority'=>50)
+		// );
+
+
 		// Array to add new pages in new tabs
 		// Example: $this->tabs = array('objecttype:+tabname1:Title1:dolifleet@dolifleet:$user->rights->dolifleet->read:/dolifleet/mynewtab1.php?id=__ID__',  	// To add a new tab identified by code tabname1
-        //                              'objecttype:+tabname2:Title2:dolifleet@dolifleet:$user->rights->othermodule->read:/dolifleet/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2
-        //                              'objecttype:-tabname:NU:conditiontoremove');                                                     						// To remove an existing tab identified by code tabname
+		//                              'objecttype:+tabname2:Title2:dolifleet@dolifleet:$user->rights->othermodule->read:/dolifleet/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2
+		//                              'objecttype:-tabname:NU:conditiontoremove');                                                     						// To remove an existing tab identified by code tabname
 		// where objecttype can be
 		// 'categories_x'	  to add a tab in category view (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
 		// 'contact'          to add a tab in contact view
@@ -145,65 +192,64 @@ class moddoliFleet extends DolibarrModules
 		// 'stock'            to add a tab in stock view
 		// 'thirdparty'       to add a tab in third party view
 		// 'user'             to add a tab in user view
-        $this->tabs = array();
+		$this->tabs = array();
 
-        // Dictionaries
-	    if (! isset($conf->dolifleet->enabled))
-        {
-        	$conf->dolifleet=new stdClass();
-        	$conf->dolifleet->enabled=0;
-        }
-		$this->dictionaries=array(
-			'langs'=>'dolifleet@dolifleet',
-			'tabname'=>array(
-				MAIN_DB_PREFIX."c_dolifleet_contract_type",
-				MAIN_DB_PREFIX."c_dolifleet_vehicule_type",
-				MAIN_DB_PREFIX."c_dolifleet_vehicule_mark",
-				MAIN_DB_PREFIX."c_dolifleet_vehicule_activity_type"
+		// Dictionaries
+		if (!isset($conf->dolifleet->enabled)) {
+			$conf->dolifleet = new stdClass();
+			$conf->dolifleet->enabled = 0;
+		}
+		$this->dictionaries = array(
+			'langs' => 'dolifleet@dolifleet',
+			'tabname' => array(
+				MAIN_DB_PREFIX . "c_dolifleet_contract_type",
+				MAIN_DB_PREFIX . "c_dolifleet_vehicule_type",
+				MAIN_DB_PREFIX . "c_dolifleet_vehicule_mark",
+				MAIN_DB_PREFIX . "c_dolifleet_vehicule_activity_type"
 			),
-			'tablib'=>array(
+			'tablib' => array(
 				"c_dolifleet_contract_type",
 				"c_dolifleet_vehicule_type",
 				"c_dolifleet_vehicule_mark",
 				"c_dolifleet_vehicule_activity_type"
 			),
-			'tabsql'=>array(
-				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'c_dolifleet_contract_type as f',
-				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'c_dolifleet_vehicule_type as f',
-				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'c_dolifleet_vehicule_mark as f',
-				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'c_dolifleet_vehicule_activity_type as f'
+			'tabsql' => array(
+				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_contract_type as f',
+				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_type as f',
+				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_mark as f',
+				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_activity_type as f'
 			),
-			'tabsqlsort'=>array(
+			'tabsqlsort' => array(
 				"label ASC",
 				"label ASC",
 				"label ASC",
 				"label ASC"
 			),
-			'tabfield'=>array(
+			'tabfield' => array(
 				"code,label",
 				"code,label",
 				"code,label",
 				"code,label"
 			),
-			'tabfieldvalue'=>array(
+			'tabfieldvalue' => array(
 				"code,label",
 				"code,label",
 				"code,label",
 				"code,label"
-			),																				// List of fields (list of fields to edit a record)
-			'tabfieldinsert'=>array(
+			),                                                                                // List of fields (list of fields to edit a record)
+			'tabfieldinsert' => array(
 				"code,label",
 				"code,label",
 				"code,label",
 				"code,label"
-			),																			// List of fields (list of fields for insert)
-			'tabrowid'=>array(
+			),                                                                            // List of fields (list of fields for insert)
+			'tabrowid' => array(
 				"rowid",
 				"rowid",
 				"rowid",
 				"rowid"
-			),																									// Name of columns with primary key (try to always name it 'rowid')
-			'tabcond'=>array(
+			),                                                                                                    // Name of columns with primary key (try to always name it 'rowid')
+			'tabcond' => array(
 				$conf->dolifleet->enabled,
 				$conf->dolifleet->enabled,
 				$conf->dolifleet->enabled,
@@ -211,31 +257,31 @@ class moddoliFleet extends DolibarrModules
 			)
 
 		);
-        /* Example:
-        if (! isset($conf->dolifleet->enabled)) $conf->dolifleet->enabled=0;	// This is to avoid warnings
-        $this->dictionaries=array(
-            'langs'=>'dolifleet@dolifleet',
-            'tabname'=>array(MAIN_DB_PREFIX."table1",MAIN_DB_PREFIX."table2",MAIN_DB_PREFIX."table3"),		// List of tables we want to see into dictonnary editor
-            'tablib'=>array("Table1","Table2","Table3"),													// Label of tables
-            'tabsql'=>array('SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table1 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table2 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table3 as f'),	// Request to select fields
-            'tabsqlsort'=>array("label ASC","label ASC","label ASC"),																					// Sort order
-            'tabfield'=>array("code,label","code,label","code,label"),																					// List of fields (result of select to show dictionary)
-            'tabfieldvalue'=>array("code,label","code,label","code,label"),																				// List of fields (list of fields to edit a record)
-            'tabfieldinsert'=>array("code,label","code,label","code,label"),																			// List of fields (list of fields for insert)
-            'tabrowid'=>array("rowid","rowid","rowid"),																									// Name of columns with primary key (try to always name it 'rowid')
-            'tabcond'=>array($conf->dolifleet->enabled,$conf->dolifleet->enabled,$conf->dolifleet->enabled)												// Condition to show each dictionary
-        );
-        */
+		/* Example:
+		if (! isset($conf->dolifleet->enabled)) $conf->dolifleet->enabled=0;	// This is to avoid warnings
+		$this->dictionaries=array(
+			'langs'=>'dolifleet@dolifleet',
+			'tabname'=>array(MAIN_DB_PREFIX."table1",MAIN_DB_PREFIX."table2",MAIN_DB_PREFIX."table3"),		// List of tables we want to see into dictonnary editor
+			'tablib'=>array("Table1","Table2","Table3"),													// Label of tables
+			'tabsql'=>array('SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table1 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table2 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table3 as f'),	// Request to select fields
+			'tabsqlsort'=>array("label ASC","label ASC","label ASC"),																					// Sort order
+			'tabfield'=>array("code,label","code,label","code,label"),																					// List of fields (result of select to show dictionary)
+			'tabfieldvalue'=>array("code,label","code,label","code,label"),																				// List of fields (list of fields to edit a record)
+			'tabfieldinsert'=>array("code,label","code,label","code,label"),																			// List of fields (list of fields for insert)
+			'tabrowid'=>array("rowid","rowid","rowid"),																									// Name of columns with primary key (try to always name it 'rowid')
+			'tabcond'=>array($conf->dolifleet->enabled,$conf->dolifleet->enabled,$conf->dolifleet->enabled)												// Condition to show each dictionary
+		);
+		*/
 
-        // Boxes
+		// Boxes
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.
-        $this->boxes = array();			// List of boxes
+		$this->boxes = array();            // List of boxes
 		// Example:
 		//$this->boxes=array(array(0=>array('file'=>'myboxa.php','note'=>'','enabledbydefaulton'=>'Home'),1=>array('file'=>'myboxb.php','note'=>''),2=>array('file'=>'myboxc.php','note'=>'')););
 
 		// Permissions
-		$this->rights = array();		// Permission array used by this module
-		$r=0;
+		$this->rights = array();        // Permission array used by this module
+		$r = 0;
 
 		// Add here list of permission defined by an id, a label, a boolean and two constant strings.
 		// Example:
@@ -247,110 +293,110 @@ class moddoliFleet extends DolibarrModules
 		// $r++;
 
 		// droits vehicules
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'vehicule_read';	// Permission label
-		$this->rights[$r][3] = 1; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = '';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'vehicule_read';    // Permission label
+		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'vehicule_write';	// Permission label
-		$this->rights[$r][3] = 1; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'write';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = '';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'vehicule_write';    // Permission label
+		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'vehicule_delete';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'delete';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = '';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'vehicule_delete';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'delete';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
 		// droits loyers
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'rental_read';	// Permission label
-		$this->rights[$r][3] = 1; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rental';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'rental_read';    // Permission label
+		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'rental';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'rental_write';		// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rental';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'write';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'rental_write';        // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'rental';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'rental_delete';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rental';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'delete';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'rental_delete';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'rental';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
 		// droits proposition de loyers
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'rentalproposal_read';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'rentalproposal_read';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'rentalproposal_write';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'write';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'rentalproposal_write';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'rentalproposal_validate';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'validate';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'rentalproposal_validate';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'validate';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'rentalproposal_delete';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'delete';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'rentalproposal_delete';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
 		// droits matrices de loyers
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'matrix_read';	// Permission label
-		$this->rights[$r][3] = 1; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'matrix';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'matrix_read';    // Permission label
+		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'matrix';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'matrix_write';		// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'matrix';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'write';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'matrix_write';        // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'matrix';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'matrix_delete';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'matrix';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'delete';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'matrix_delete';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'matrix';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-		$this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
-		$this->rights[$r][1] = 'read_extended';	// Permission label
-		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'extended_read';		    // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = '';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
+		$this->rights[$r][1] = 'read_extended';    // Permission label
+		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'extended_read';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
 		// Main menu entries
-		$this->menu = array();			// List of menus to add
-		$r=0;
+		$this->menu = array();            // List of menus to add
+		$r = 0;
 
 		// Add here entries to declare new menus
 		//
@@ -385,128 +431,128 @@ class moddoliFleet extends DolibarrModules
 		// $r++;
 
 
-		$this->menu[$r]=array(
-			'fk_menu'=>0,			                // Put 0 if this is a top menu
-			'type'=>'top',			                // This is a Top menu entry
-			'titre'=>$langs->trans('TopMenudoliFleet'),
-			'mainmenu'=>'dolifleet',
-			'leftmenu'=>'',
-			'url'=>'/dolifleet/vehicule_list.php',
-			'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>100+$r,
-			'enabled'=>'$conf->dolifleet->enabled',	// Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms'=>'$user->rights->dolifleet->read',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>0
+		$this->menu[$r] = array(
+			'fk_menu' => 0,                            // Put 0 if this is a top menu
+			'type' => 'top',                            // This is a Top menu entry
+			'titre' => $langs->trans('TopMenudoliFleet'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => '',
+			'url' => '/dolifleet/vehicule_list.php',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => '$conf->dolifleet->enabled',    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
 		);
 		$r++;
 
-		$this->menu[$r]=array(
-			'fk_menu'=>'fk_mainmenu=dolifleet',			                // Put 0 if this is a top menu
-			'type'=>'left',			                // This is a Top menu entry
-			'titre'=>$langs->trans('MenudoliFleetVehicule'),
-			'mainmenu'=>'dolifleet',
-			'leftmenu'=>'dolifleet_left',
-			'url'=>'/dolifleet/vehicule_list.php',
-			'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>100+$r,
-			'enabled'=>'$conf->dolifleet->enabled',	// Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms'=>'$user->rights->dolifleet->read',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>0
+		$this->menu[$r] = array(
+			'fk_menu' => 'fk_mainmenu=dolifleet',                            // Put 0 if this is a top menu
+			'type' => 'left',                            // This is a Top menu entry
+			'titre' => $langs->trans('MenudoliFleetVehicule'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => 'dolifleet_left',
+			'url' => '/dolifleet/vehicule_list.php',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => '$conf->dolifleet->enabled',    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
 		);
 		$r++;
 
-		$this->menu[$r]=array(
-			'fk_menu'=>'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_left',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>$langs->trans('LeftMenudoliFleetVehiculeCreate'),
-			'mainmenu'=>'dolifleet',
-			'leftmenu'=>'dolifleet_left_create',
-			'url'=>'/dolifleet/vehicule_card.php?action=create',
-			'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>100+$r,
-			'enabled'=> '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms'=> '$user->rights->dolifleet->write',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>0
-		);				                // 0=Menu for internal users, 1=external users, 2=both
+		$this->menu[$r] = array(
+			'fk_menu' => 'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_left',            // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'type' => 'left',                            // This is a Left menu entry
+			'titre' => $langs->trans('LeftMenudoliFleetVehiculeCreate'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => 'dolifleet_left_create',
+			'url' => '/dolifleet/vehicule_card.php?action=create',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->rights->dolifleet->write',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
+		);                                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 
 
-		$this->menu[$r]=array(
-			'fk_menu'=>'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_left',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>$langs->trans('LeftMenudoliFleetVehiculeList'),
-			'mainmenu'=>'dolifleet',
-			'leftmenu'=>'dolifleet_left_list',
-			'url'=>'/dolifleet/vehicule_list.php',
-			'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>100+$r,
-			'enabled'=> '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms'=> '$user->rights->dolifleet->read',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>0
-		);				                // 0=Menu for internal users, 1=external users, 2=both
+		$this->menu[$r] = array(
+			'fk_menu' => 'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_left',            // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'type' => 'left',                            // This is a Left menu entry
+			'titre' => $langs->trans('LeftMenudoliFleetVehiculeList'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => 'dolifleet_left_list',
+			'url' => '/dolifleet/vehicule_list.php',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
+		);                                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 
-		$this->menu[$r]=array(
-			'fk_menu'=>'fk_mainmenu=dolifleet',			                // Put 0 if this is a top menu
-			'type'=>'left',			                // This is a Top menu entry
-			'titre'=>$langs->trans('MenudolifleetRentalProposal'),
-			'mainmenu'=>'dolifleet',
-			'leftmenu'=>'dolifleet_rental_left',
-			'url'=>'/dolifleet/rental_proposal_list.php',
-			'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>100+$r,
-			'enabled'=>'$conf->dolifleet->enabled',	// Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms'=>'$user->rights->dolifleet->rentalproposal->read',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>0
+		$this->menu[$r] = array(
+			'fk_menu' => 'fk_mainmenu=dolifleet',                            // Put 0 if this is a top menu
+			'type' => 'left',                            // This is a Top menu entry
+			'titre' => $langs->trans('MenudolifleetRentalProposal'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => 'dolifleet_rental_left',
+			'url' => '/dolifleet/rental_proposal_list.php',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => '$conf->dolifleet->enabled',    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'perms' => '$user->rights->dolifleet->rentalproposal->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
 		);
 		$r++;
 
-		$this->menu[$r]=array(
-			'fk_menu'=>'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_rental_left',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>$langs->trans('LeftMenudoliFleetRentalProposalCreate'),
-			'mainmenu'=>'dolifleet',
-			'leftmenu'=>'dolifleet_left_create',
-			'url'=>'/dolifleet/rental_proposal_card.php?action=create',
-			'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>100+$r,
-			'enabled'=> '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms'=> '$user->rights->dolifleet->rentalproposal->write',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>0
-		);				                // 0=Menu for internal users, 1=external users, 2=both
+		$this->menu[$r] = array(
+			'fk_menu' => 'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_rental_left',            // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'type' => 'left',                            // This is a Left menu entry
+			'titre' => $langs->trans('LeftMenudoliFleetRentalProposalCreate'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => 'dolifleet_left_create',
+			'url' => '/dolifleet/rental_proposal_card.php?action=create',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->rights->dolifleet->rentalproposal->write',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
+		);                                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 
 
-		$this->menu[$r]=array(
-			'fk_menu'=>'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_rental_left',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
-			'type'=>'left',			                // This is a Left menu entry
-			'titre'=>$langs->trans('LeftMenudoliFleetRentalProposalList'),
-			'mainmenu'=>'dolifleet',
-			'leftmenu'=>'dolifleet_left_list',
-			'url'=>'/dolifleet/rental_proposal_list.php',
-			'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-			'position'=>100+$r,
-			'enabled'=> '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms'=> '$user->rights->dolifleet->rentalproposal->read',			                // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
-			'target'=>'',
-			'user'=>0
-		);				                // 0=Menu for internal users, 1=external users, 2=both
+		$this->menu[$r] = array(
+			'fk_menu' => 'fk_mainmenu=dolifleet,fk_leftmenu=dolifleet_rental_left',            // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
+			'type' => 'left',                            // This is a Left menu entry
+			'titre' => $langs->trans('LeftMenudoliFleetRentalProposalList'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => 'dolifleet_left_list',
+			'url' => '/dolifleet/rental_proposal_list.php',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->rights->dolifleet->rentalproposal->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
+		);                                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 
 
 		// Exports
-		$r=1;
+		$r = 1;
 
 		// Example:
 		// $this->export_code[$r]=$this->rights_class.'_'.$r;
 		// $this->export_label[$r]='CustomersInvoicesAndInvoiceLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
-        // $this->export_enabled[$r]='1';                               // Condition to show export in list (ie: '$user->id==3'). Set to 1 to always show when module is enabled.
+		// $this->export_enabled[$r]='1';                               // Condition to show export in list (ie: '$user->id==3'). Set to 1 to always show when module is enabled.
 		// $this->export_permission[$r]=array(array("facture","facture","export"));
 		// $this->export_fields_array[$r]=array('s.rowid'=>"IdCompany",'s.nom'=>'CompanyName','s.address'=>'Address','s.zip'=>'Zip','s.town'=>'Town','s.fk_pays'=>'Country','s.phone'=>'Phone','s.siren'=>'ProfId1','s.siret'=>'ProfId2','s.ape'=>'ProfId3','s.idprof4'=>'ProfId4','s.code_compta'=>'CustomerAccountancyCode','s.code_compta_fournisseur'=>'SupplierAccountancyCode','f.rowid'=>"InvoiceId",'f.facnumber'=>"InvoiceRef",'f.datec'=>"InvoiceDateCreation",'f.datef'=>"DateInvoice",'f.total'=>"TotalHT",'f.total_ttc'=>"TotalTTC",'f.tva'=>"TotalVAT",'f.paye'=>"InvoicePaid",'f.fk_statut'=>'InvoiceStatus','f.note'=>"InvoiceNote",'fd.rowid'=>'LineId','fd.description'=>"LineDescription",'fd.price'=>"LineUnitPrice",'fd.tva_tx'=>"LineVATRate",'fd.qty'=>"LineQty",'fd.total_ht'=>"LineTotalHT",'fd.total_tva'=>"LineTotalTVA",'fd.total_ttc'=>"LineTotalTTC",'fd.date_start'=>"DateStart",'fd.date_end'=>"DateEnd",'fd.fk_product'=>'ProductId','p.ref'=>'ProductRef');
 		// $this->export_entities_array[$r]=array('s.rowid'=>"company",'s.nom'=>'company','s.address'=>'company','s.zip'=>'company','s.town'=>'company','s.fk_pays'=>'company','s.phone'=>'company','s.siren'=>'company','s.siret'=>'company','s.ape'=>'company','s.idprof4'=>'company','s.code_compta'=>'company','s.code_compta_fournisseur'=>'company','f.rowid'=>"invoice",'f.facnumber'=>"invoice",'f.datec'=>"invoice",'f.datef'=>"invoice",'f.total'=>"invoice",'f.total_ttc'=>"invoice",'f.tva'=>"invoice",'f.paye'=>"invoice",'f.fk_statut'=>'invoice','f.note'=>"invoice",'fd.rowid'=>'invoice_line','fd.description'=>"invoice_line",'fd.price'=>"invoice_line",'fd.total_ht'=>"invoice_line",'fd.total_tva'=>"invoice_line",'fd.total_ttc'=>"invoice_line",'fd.tva_tx'=>"invoice_line",'fd.qty'=>"invoice_line",'fd.date_start'=>"invoice_line",'fd.date_end'=>"invoice_line",'fd.fk_product'=>'product','p.ref'=>'product');
@@ -519,12 +565,12 @@ class moddoliFleet extends DolibarrModules
 	}
 
 	/**
-	 *		Function called when module is enabled.
-	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *		It also creates data directories
+	 *        Function called when module is enabled.
+	 *        The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *        It also creates data directories
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
-	 *      @return     int             	1 if OK, 0 if KO
+	 * @param string $options Options when enabling module ('', 'noboxes')
+	 * @return     int                1 if OK, 0 if KO
 	 */
 	public function init($options = '')
 	{
@@ -534,24 +580,24 @@ class moddoliFleet extends DolibarrModules
 
 		require dol_buildpath('/dolifleet/script/create-maj-base.php');
 
-		$result=$this->_load_tables('/dolifleet/sql/');
+		$result = $this->_load_tables('/dolifleet/sql/');
 
 		return $this->_init($sql, $options);
 	}
 
 	/**
-	 *		Function called when module is disabled.
+	 *        Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 *		Data directories are not deleted
+	 *        Data directories are not deleted
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
-	 *      @return     int             	1 if OK, 0 if KO
+	 * @param string $options Options when enabling module ('', 'noboxes')
+	 * @return     int                1 if OK, 0 if KO
 	 */
-    public function remove($options = '')
-    {
+	public function remove($options = '')
+	{
 		$sql = array();
 
 		return $this->_remove($sql, $options);
-    }
+	}
 
 }
