@@ -648,3 +648,53 @@ function printBannerVehicleCard($vehicle)
 	$vehicle->ref = $vehicle->vin;
 	dol_banner_tab($vehicle, 'vin', $linkback, 1, 'vin', 'ref', $morehtmlref, '', 0, '', '');
 }
+
+
+/**
+	 * @param       $method
+	 * @param       $url
+	 * @param false $data
+	 * @param false $header
+	 * @return array|false|int|mixed|object
+	 */
+	function callAPI($method, $url, $data = false, $header = false)
+	{
+		global $conf;
+
+		$curl = curl_init();
+
+		switch ($method) {
+			case "POST":
+				curl_setopt($curl, CURLOPT_POST, 1);
+				if ($data) curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+				break;
+
+			case "PUT":
+				curl_setopt($curl, CURLOPT_PUT, 1);
+				break;
+
+			default:
+				if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
+		}
+		curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($curl, CURLOPT_USERPWD, $conf->global->THEO_API_USER . ':' . $conf->global->THEO_API_PASS);
+
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+		curl_setopt($curl, CURLOPT_HEADER, false);
+
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+		$result = curl_exec($curl);
+		sleep(1);
+		if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 200) {
+			$TVehicleStatus = json_decode($result, true);
+			curl_close($curl);
+			return $TVehicleStatus;
+		} else {
+			//var_dump(curl_getinfo($curl));
+			curl_close($curl);
+			//exit;
+			return -1;
+		}
+	}
