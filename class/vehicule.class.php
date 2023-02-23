@@ -15,22 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('SeedObject'))
-{
+if (!class_exists('SeedObject')) {
 	/**
 	 * Needed if $form->showLinkedObjectBlock() is call or for session timeout on our module page
 	 */
 	define('INC_FROM_DOLIBARR', true);
-	require_once dirname(__FILE__).'/../config.php';
+	require_once dirname(__FILE__) . '/../config.php';
 }
 
 class doliFleetVehicule extends SeedObject
 {
 
-    /**
-     * Draft status
-     */
-    const STATUS_DRAFT = 0;
+	/**
+	 * Draft status
+	 */
+	const STATUS_DRAFT = 0;
 	/**
 	 * Validated status
 	 */
@@ -39,7 +38,7 @@ class doliFleetVehicule extends SeedObject
 	/** @var array $TStatus Array of translate key for each const */
 	public static $TStatus = array(
 		self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft'
-		,self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
+	, self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
 	);
 
 	/** @var string $table_element Table name in SQL */
@@ -49,78 +48,78 @@ class doliFleetVehicule extends SeedObject
 	public $element = 'dolifleet_vehicule';
 
 	/** @var int $isextrafieldmanaged Enable the fictionalises of extrafields */
-    public $isextrafieldmanaged = 1;
+	public $isextrafieldmanaged = 1;
 
-    /** @var int $ismultientitymanaged 0=No test on entity, 1=Test with field entity, 2=Test with link by societe */
-    public $ismultientitymanaged = 1;
+	/** @var int $ismultientitymanaged 0=No test on entity, 1=Test with field entity, 2=Test with link by societe */
+	public $ismultientitymanaged = 1;
 
-    /**
-     *  'type' is the field format.
-     *  'label' the translation key.
-     *  'enabled' is a condition when the field must be managed.
-     *  'visible' says if field is visible in list (Examples: 0=Not visible, 1=Visible on list and create/update/view forms, 2=Visible on list only, 3=Visible on create/update/view form only (not list), 4=Visible on list and update/view form only (not create). Using a negative value means field is not shown by default on list but can be selected for viewing)
-     *  'noteditable' says if field is not editable (1 or 0)
-     *  'notnull' is set to 1 if not null in database. Set to -1 if we must set data to null if empty ('' or 0).
-     *  'default' is a default value for creation (can still be replaced by the global setup of default values)
-     *  'index' if we want an index in database.
-     *  'foreignkey'=>'tablename.field' if the field is a foreign key (it is recommanded to name the field fk_...).
-     *  'position' is the sort order of field.
-     *  'searchall' is 1 if we want to search in this field when making a search from the quick search button.
-     *  'isameasure' must be set to 1 if you want to have a total on list for this field. Field type must be summable like integer or double(24,8).
-     *  'css' is the CSS style to use on field. For example: 'maxwidth200'
-     *  'help' is a string visible as a tooltip on field
-     *  'comment' is not used. You can store here any text of your choice. It is not used by application.
-     *  'showoncombobox' if value of the field must be visible into the label of the combobox that list record
-     *  'arraykeyval' to set list of value if type is a list of predefined values. For example: array("0"=>"Draft","1"=>"Active","-1"=>"Cancel")
-     */
+	/**
+	 *  'type' is the field format.
+	 *  'label' the translation key.
+	 *  'enabled' is a condition when the field must be managed.
+	 *  'visible' says if field is visible in list (Examples: 0=Not visible, 1=Visible on list and create/update/view forms, 2=Visible on list only, 3=Visible on create/update/view form only (not list), 4=Visible on list and update/view form only (not create). Using a negative value means field is not shown by default on list but can be selected for viewing)
+	 *  'noteditable' says if field is not editable (1 or 0)
+	 *  'notnull' is set to 1 if not null in database. Set to -1 if we must set data to null if empty ('' or 0).
+	 *  'default' is a default value for creation (can still be replaced by the global setup of default values)
+	 *  'index' if we want an index in database.
+	 *  'foreignkey'=>'tablename.field' if the field is a foreign key (it is recommanded to name the field fk_...).
+	 *  'position' is the sort order of field.
+	 *  'searchall' is 1 if we want to search in this field when making a search from the quick search button.
+	 *  'isameasure' must be set to 1 if you want to have a total on list for this field. Field type must be summable like integer or double(24,8).
+	 *  'css' is the CSS style to use on field. For example: 'maxwidth200'
+	 *  'help' is a string visible as a tooltip on field
+	 *  'comment' is not used. You can store here any text of your choice. It is not used by application.
+	 *  'showoncombobox' if value of the field must be visible into the label of the combobox that list record
+	 *  'arraykeyval' to set list of value if type is a list of predefined values. For example: array("0"=>"Draft","1"=>"Active","-1"=>"Cancel")
+	 */
 
-    public $fields = array(
+	public $fields = array(
 
-        'vin' => array(
-            'type' => 'varchar(50)',
-            'length' => 50,
-            'label' => 'VIN',
-            'enabled' => 1,
-            'visible' => 1,
-            'notnull' => 1,
-            'showoncombobox' => 1,
-            'index' => 1,
-            'position' => 10,
-            'searchall' => 1,
-            'comment' => 'Vehicule international number'
-        ),
+		'vin' => array(
+			'type' => 'varchar(50)',
+			'length' => 50,
+			'label' => 'VIN',
+			'enabled' => 1,
+			'visible' => 1,
+			'notnull' => 1,
+			'showoncombobox' => 1,
+			'index' => 1,
+			'position' => 10,
+			'searchall' => 1,
+			'comment' => 'Vehicule international number'
+		),
 
-        'entity' => array(
-            'type' => 'integer',
-            'label' => 'Entity',
-            'enabled' => 1,
-            'visible' => 0,
-            'default' => 1,
-            'notnull' => 1,
-            'index' => 1,
-            'position' => 20
-        ),
+		'entity' => array(
+			'type' => 'integer',
+			'label' => 'Entity',
+			'enabled' => 1,
+			'visible' => 0,
+			'default' => 1,
+			'notnull' => 1,
+			'index' => 1,
+			'position' => 20
+		),
 
-        'status' => array(
-            'type' => 'integer',
-            'label' => 'Status',
-            'enabled' => 1,
-            'visible' => 0,
-            'notnull' => 1,
-            'default' => 0,
-            'index' => 1,
-            'position' => 30,
-            'arrayofkeyval' => array(
+		'status' => array(
+			'type' => 'integer',
+			'label' => 'Status',
+			'enabled' => 1,
+			'visible' => 0,
+			'notnull' => 1,
+			'default' => 0,
+			'index' => 1,
+			'position' => 30,
+			'arrayofkeyval' => array(
 				self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft'
-				,self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
-            )
-        ),
+			, self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
+			)
+		),
 
 		'fk_vehicule_type' => array(
 			'type' => 'sellist:c_dolifleet_vehicule_type:label:rowid::active=1',
 			'label' => 'vehiculeType',
 			'visible' => 1,
-			'notnull' =>1,
+			'notnull' => 1,
 			'default' => 0,
 			'enabled' => 1,
 			'position' => 40,
@@ -131,92 +130,92 @@ class doliFleetVehicule extends SeedObject
 			'type' => 'sellist:c_dolifleet_vehicule_mark:label:rowid::active=1',
 			'label' => 'vehiculeMark',
 			'visible' => 1,
-			'notnull' =>1,
+			'notnull' => 1,
 			'default' => 0,
 			'enabled' => 1,
 			'position' => 50,
 			'index' => 1,
 		),
 
-        'immatriculation' => array(
-            'type' => 'varchar(20)',
-            'label' => 'immatriculation',
-            'enabled' => 1,
-            'visible' => 1,
-			'notnull' =>1,
-            'position' => 60,
-            'searchall' => 1,
-            'css' => 'minwidth200',
-            'showoncombobox' => 1
-        ),
+		'immatriculation' => array(
+			'type' => 'varchar(20)',
+			'label' => 'immatriculation',
+			'enabled' => 1,
+			'visible' => 1,
+			'notnull' => 1,
+			'position' => 60,
+			'searchall' => 1,
+			'css' => 'minwidth200',
+			'showoncombobox' => 1
+		),
 
-        'date_immat' => array(
+		'date_immat' => array(
 			'type' => 'date',
 			'label' => 'immatriculation_date',
 			'enabled' => 1,
 			'visible' => 1,
-			'notnull' =>1,
+			'notnull' => 1,
 			'default' => 0,
 			'position' => 70,
 			'searchall' => 1,
-        ),
+		),
 
-        'fk_soc' => array(
-            'type' => 'integer:Societe:societe/class/societe.class.php',
-            'label' => 'ThirdParty',
-            'visible' => 1,
-			'notnull' =>1,
+		'fk_soc' => array(
+			'type' => 'integer:Societe:societe/class/societe.class.php',
+			'label' => 'ThirdParty',
+			'visible' => 1,
+			'notnull' => 1,
 			'default' => 0,
-            'enabled' => 1,
-            'position' => 80,
-            'index' => 1,
-            'help' => 'LinkToThirparty'
-        ),
+			'enabled' => 1,
+			'position' => 80,
+			'index' => 1,
+			'help' => 'LinkToThirparty'
+		),
 
-        'date_customer_exploit' => array(
+		'date_customer_exploit' => array(
 			'type' => 'date',
 			'label' => 'date_customer_exploit',
-            'visible' => 1,
-            'enabled' => 1,
-            'position' => 90,
-            'index' => 1,
-            'help' => 'date_customer_exploit_help'
-        ),
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 90,
+			'index' => 1,
+			'help' => 'date_customer_exploit_help'
+		),
 
-        'km' => array(
+		'km' => array(
 			'type' => 'double',
 			'label' => 'kilometrage',
 			'visible' => 1,
-			'notnull' =>1,
+			'notnull' => 1,
 			'default' => 0,
 			'enabled' => 1,
 			'position' => 100
-        ),
+		),
 
-        'km_date' => array(
+		'km_date' => array(
 			'type' => 'date',
 			'label' => 'km_date',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 110
-        ),
+		),
 
-        'fk_contract_type' => array(
+		'fk_contract_type' => array(
 			'type' => 'sellist:c_dolifleet_contract_type:label:rowid::active=1',
 			'label' => 'contractType',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 120,
 			'index' => 1,
-        ),
+		),
 
-        'date_end_contract' => array(
+		'date_end_contract' => array(
 			'type' => 'date',
 			'label' => 'date_end_contract',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 130
-        ),
+		),
 
 //        'description' => array(
 //            'type' => 'text', // or html for WYSWYG
@@ -234,22 +233,22 @@ class doliFleetVehicule extends SeedObject
 //            'position' => 512
 //        ),
 
-        'import_key' => array(
-            'type' => 'varchar(14)',
-            'label' => 'ImportId',
-            'enabled' => 1,
-            'visible' => -2,
-            'notnull' => -1,
-            'index' => 0,
-            'position' => 1000
-        ),
+		'import_key' => array(
+			'type' => 'varchar(14)',
+			'label' => 'ImportId',
+			'enabled' => 1,
+			'visible' => -2,
+			'notnull' => -1,
+			'index' => 0,
+			'position' => 1000
+		),
 
-    );
+	);
 
-    /** @var string $vin Object reference */
+	/** @var string $vin Object reference */
 	public $vin;
 
-    /** @var int $entity Object entity */
+	/** @var int $entity Object entity */
 	public $entity;
 
 	/** @var int $status Object status */
@@ -267,42 +266,39 @@ class doliFleetVehicule extends SeedObject
 	public $date_end_contract;
 
 
-
-    /**
-     * doliFleetVehicule constructor.
-     * @param DoliDB    $db    Database connector
-     */
-    public function __construct($db)
-    {
+	/**
+	 * doliFleetVehicule constructor.
+	 * @param DoliDB $db Database connector
+	 */
+	public function __construct($db)
+	{
 		global $conf;
 
-        parent::__construct($db);
+		parent::__construct($db);
 
 		$this->init();
 
 		$this->status = self::STATUS_DRAFT;
 		$this->entity = $conf->entity;
-    }
+	}
 
-    /**
-     * @param User $user User object
-     * @return int
-     */
-    public function save($user, $notrigger = false)
-    {
-    	global $langs;
+	/**
+	 * @param User $user User object
+	 * @return int
+	 */
+	public function save($user, $notrigger = false)
+	{
+		global $langs;
 
-    	// TODO remake object field validation
+		// TODO remake object field validation
 		// vin type, marque, immat (format), dateMIC, tiers
-    	if (empty($this->vin))
-		{
+		if (empty($this->vin)) {
 			$this->errors[] = $langs->trans("ErrNoVinNumber");
 		}
 
 		$veh = new static($this->db);
 		$ret = $veh->fetchBy($this->vin, 'vin', false);
-		if ($ret > 0 && $veh->id != $this->id)
-		{
+		if ($ret > 0 && $veh->id != $this->id) {
 			$this->errors[] = $langs->trans('ErrVinAlreadyUsed', html_entity_decode($veh->getNomUrl()));
 		}
 
@@ -323,177 +319,168 @@ class doliFleetVehicule extends SeedObject
 //            $this->ref = '(PROV'.$this->id.')';
 //        }
 
-        return $this->create($user, $notrigger);
-    }
+		return $this->create($user, $notrigger);
+	}
 
 
-    /**
-     * @see cloneObject
-     * @return void
-     */
-    public function clearUniqueFields()
-    {
-        $this->ref = 'Copy of '.$this->ref;
-    }
+	/**
+	 * @return void
+	 * @see cloneObject
+	 */
+	public function clearUniqueFields()
+	{
+		$this->ref = 'Copy of ' . $this->ref;
+	}
 
 
-    /**
-     * @param User $user User object
-     * @return int
-     */
-    public function delete(User &$user, $notrigger = false)
-    {
-        $this->deleteObjectLinked();
+	/**
+	 * @param User $user User object
+	 * @return int
+	 */
+	public function delete(User &$user, $notrigger = false)
+	{
+		$this->deleteObjectLinked();
 
-        unset($this->fk_element); // avoid conflict with standard Dolibarr comportment
-        return parent::delete($user, $notrigger);
-    }
+		unset($this->fk_element); // avoid conflict with standard Dolibarr comportment
+		return parent::delete($user, $notrigger);
+	}
 
-    /**
-     * @return string
-     */
-    public function getRef()
-    {
-		if (preg_match('/^[\(]?PROV/i', $this->ref) || empty($this->ref))
-		{
+	/**
+	 * @return string
+	 */
+	public function getRef()
+	{
+		if (preg_match('/^[\(]?PROV/i', $this->ref) || empty($this->ref)) {
 			return $this->getNextRef();
 		}
 
 		return $this->ref;
-    }
+	}
 
-    /**
-     * @return string
-     */
-    private function getNextRef()
-    {
-		global $db,$conf;
+	/**
+	 * @return string
+	 */
+	private function getNextRef()
+	{
+		global $db, $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
 
 		$mask = !empty($conf->global->DOLIFLEET_REF_MASK) ? $conf->global->DOLIFLEET_REF_MASK : 'MM{yy}{mm}-{0000}';
 		$ref = get_next_value($db, $mask, 'dolifleet', 'ref');
 
 		return $ref;
-    }
+	}
 
 
-    /**
-     * @param User  $user   User object
-     * @return int
-     */
-    public function setDraft($user)
-    {
-        if ($this->status === self::STATUS_ACTIVE)
-        {
-            $this->status = self::STATUS_DRAFT;
-            $this->withChild = false;
+	/**
+	 * @param User $user User object
+	 * @return int
+	 */
+	public function setDraft($user)
+	{
+		if ($this->status === self::STATUS_ACTIVE) {
+			$this->status = self::STATUS_DRAFT;
+			$this->withChild = false;
 
-            return $this->update($user);
-        }
+			return $this->update($user);
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    /**
-     * @param User  $user   User object
-     * @return int
-     */
-    public function setValid($user)
-    {
-        if ($this->status === self::STATUS_DRAFT)
-        {
-            $this->status = self::STATUS_ACTIVE;
-            $this->withChild = false;
+	/**
+	 * @param User $user User object
+	 * @return int
+	 */
+	public function setValid($user)
+	{
+		if ($this->status === self::STATUS_DRAFT) {
+			$this->status = self::STATUS_ACTIVE;
+			$this->withChild = false;
 
-            return $this->update($user);
-        }
+			return $this->update($user);
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    /**
-     * @param User  $user   User object
-     * @return int
-     */
-    public function setAccepted($user)
-    {
-        if ($this->status === self::STATUS_VALIDATED)
-        {
-            $this->status = self::STATUS_ACCEPTED;
-            $this->withChild = false;
+	/**
+	 * @param User $user User object
+	 * @return int
+	 */
+	public function setAccepted($user)
+	{
+		if ($this->status === self::STATUS_VALIDATED) {
+			$this->status = self::STATUS_ACCEPTED;
+			$this->withChild = false;
 
-            return $this->update($user);
-        }
+			return $this->update($user);
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    /**
-     * @param User  $user   User object
-     * @return int
-     */
-    public function setRefused($user)
-    {
-        if ($this->status === self::STATUS_VALIDATED)
-        {
-            $this->status = self::STATUS_REFUSED;
-            $this->withChild = false;
+	/**
+	 * @param User $user User object
+	 * @return int
+	 */
+	public function setRefused($user)
+	{
+		if ($this->status === self::STATUS_VALIDATED) {
+			$this->status = self::STATUS_REFUSED;
+			$this->withChild = false;
 
-            return $this->update($user);
-        }
+			return $this->update($user);
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    /**
-     * @param User  $user   User object
-     * @return int
-     */
-    public function setReopen($user)
-    {
-        if ($this->status === self::STATUS_ACCEPTED || $this->status === self::STATUS_REFUSED)
-        {
-            $this->status = self::STATUS_VALIDATED;
-            $this->withChild = false;
+	/**
+	 * @param User $user User object
+	 * @return int
+	 */
+	public function setReopen($user)
+	{
+		if ($this->status === self::STATUS_ACCEPTED || $this->status === self::STATUS_REFUSED) {
+			$this->status = self::STATUS_VALIDATED;
+			$this->withChild = false;
 
-            return $this->update($user);
-        }
+			return $this->update($user);
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    public function getActivities($date_start = '', $date_end = '')
+	public function getActivities($date_start = '', $date_end = '')
 	{
 		$this->activities = array();
 
 		dol_include_once('/dolifleet/class/vehiculeActivity.class.php');
 		$act = new doliFleetVehiculeActivity($this->db);
 
-		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX.$act->table_element;
-		$sql.= " WHERE fk_vehicule = ".$this->id;
+		$sql = "SELECT rowid FROM " . MAIN_DB_PREFIX . $act->table_element;
+		$sql .= " WHERE fk_vehicule = " . $this->id;
 		if (!empty($date_end))
-			$sql.= " AND date_start < '".$this->db->idate($date_end)."'";
+			$sql .= " AND date_start < '" . $this->db->idate($date_end) . "'";
 		if (!empty($date_start))
-			$sql.= " AND date_end > '".$this->db->idate($date_start)."'";
-		$sql.= " AND fk_soc = ".$this->fk_soc;
-		$sql.= " ORDER BY date_start ASC";
+			$sql .= " AND date_end > '" . $this->db->idate($date_start) . "'";
+		$sql .= " AND fk_soc = " . $this->fk_soc;
+		$sql .= " ORDER BY date_start ASC";
 
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
+		if ($resql) {
 			$num = $this->db->num_rows($resql);
-			if ($num)
-			{
-				while ($obj = $this->db->fetch_object($resql))
-				{
+			if ($num) {
+				while ($obj = $this->db->fetch_object($resql)) {
 					$act = new doliFleetVehiculeActivity($this->db);
 
 					$ret = $act->fetch($obj->rowid);
 					if ($ret > 0) {
 						$this->activities[$obj->rowid] = $act;
 					} else {
-						$this->error=$act->error;
+						$this->error = $act->error;
 					}
 
 				}
@@ -517,8 +504,7 @@ class doliFleetVehicule extends SeedObject
 	{
 		global $user;
 
-		if (empty($type) || $type == '-1')
-		{
+		if (empty($type) || $type == '-1') {
 			$this->error = "ErrNoActivityType";
 			return -1;
 		}
@@ -533,12 +519,9 @@ class doliFleetVehicule extends SeedObject
 		$act->date_end = $date_end;
 
 		$retDate = $act->verifyDates();
-		if ($retDate)
-		{
+		if ($retDate) {
 			return $act->create($user);
-		}
-		else
-		{
+		} else {
 			$this->error = $act->error;
 			return -1;
 		}
@@ -553,17 +536,13 @@ class doliFleetVehicule extends SeedObject
 
 		$ret = $act->fetch($act_id);
 
-		if ($act->fk_vehicule != $this->id)
-		{
+		if ($act->fk_vehicule != $this->id) {
 			$this->error = "IllegalDeletion";
 			return -1;
-		}
-		else
-		{
+		} else {
 			$ret = $act->delete($user);
 			if ($ret > 0) return 1;
-			else
-			{
+			else {
 				$this->error = $act->error;
 				return -1;
 			}
@@ -612,13 +591,10 @@ class doliFleetVehicule extends SeedObject
 		$vehiculeToLink->fetch($id);
 
 		$this->getLinkedVehicules($date_start, $date_end);
-		if (!empty($this->linkedVehicules))
-		{
+		if (!empty($this->linkedVehicules)) {
 			// le véhicule courant est déjà lié pour la période saisie
-			foreach ($this->linkedVehicules as $v)
-			{
-				if (!in_array($v->fk_other_vehicule, array_keys($this->vehicules)))
-				{
+			foreach ($this->linkedVehicules as $v) {
+				if (!in_array($v->fk_other_vehicule, array_keys($this->vehicules))) {
 					$veh = new doliFleetVehicule($this->db);
 					$veh->fetch($v->fk_other_vehicule);
 					$this->vehicules[$v->fk_other_vehicule] = $veh;
@@ -627,7 +603,7 @@ class doliFleetVehicule extends SeedObject
 				$this->errors[] = $langs->trans(
 					"ErrVehiculeAlreadyLinkedDates",
 					'',
-					html_entity_decode($this->vehicules[$v->fk_other_vehicule]->getLinkUrl(0,'','immatriculation')),
+					html_entity_decode($this->vehicules[$v->fk_other_vehicule]->getLinkUrl(0, '', 'immatriculation')),
 					dol_print_date($v->date_start, "%d/%m/%Y"),
 					dol_print_date($v->date_end, "%d/%m/%Y"));
 			}
@@ -635,13 +611,10 @@ class doliFleetVehicule extends SeedObject
 		}
 
 		$vehiculeToLink->getLinkedVehicules($date_start, $date_end);
-		if (!empty($vehiculeToLink->linkedVehicules))
-		{
+		if (!empty($vehiculeToLink->linkedVehicules)) {
 			// le véhicule courant est déjà lié pour la période saisie
-			foreach ($vehiculeToLink->linkedVehicules as $v)
-			{
-				if (!in_array($v->fk_other_vehicule, array_keys($this->vehicules)))
-				{
+			foreach ($vehiculeToLink->linkedVehicules as $v) {
+				if (!in_array($v->fk_other_vehicule, array_keys($this->vehicules))) {
 					$veh = new doliFleetVehicule($this->db);
 					$veh->fetch($v->fk_other_vehicule);
 					$this->vehicules[$v->fk_other_vehicule] = $veh;
@@ -649,33 +622,30 @@ class doliFleetVehicule extends SeedObject
 
 				$this->errors[] = $langs->trans(
 					"ErrVehiculeAlreadyLinkedDates",
-					html_entity_decode($vehiculeToLink->getLinkUrl(0,'','immatriculation')),
-					html_entity_decode($this->vehicules[$v->fk_other_vehicule]->getLinkUrl(0,'','immatriculation')),
+					html_entity_decode($vehiculeToLink->getLinkUrl(0, '', 'immatriculation')),
+					html_entity_decode($this->vehicules[$v->fk_other_vehicule]->getLinkUrl(0, '', 'immatriculation')),
 					dol_print_date($v->date_start, "%d/%m/%Y"),
 					dol_print_date($v->date_end, "%d/%m/%Y"));
 			}
 		}
 
-		if ($this->fk_soc != $vehiculeToLink->fk_soc)
-		{
+		if ($this->fk_soc != $vehiculeToLink->fk_soc) {
 			$this->errors[] = $langs->trans('ErrVehiculeThirPartiesAreDifferent');
 		}
 
 		if (!empty($this->errors)) return -1;
-		else
-		{
+		else {
 			dol_include_once('/dolifleet/class/vehiculeLink.class.php');
 			$Vlink = new doliFleetVehiculeLink($this->db);
 			$Vlink->fk_source = $this->id;
-			$Vlink->fk_soc_vehicule_source=$this->fk_soc;
+			$Vlink->fk_soc_vehicule_source = $this->fk_soc;
 			$Vlink->fk_target = $id;
-			$Vlink->fk_soc_vehicule_target=$vehiculeToLink->fk_soc;
-			$Vlink->date_start= $date_start;
+			$Vlink->fk_soc_vehicule_target = $vehiculeToLink->fk_soc;
+			$Vlink->date_start = $date_start;
 			$Vlink->date_end = $date_end;
 
 			$ret = $Vlink->create($user);
-			if ($ret < 0)
-			{
+			if ($ret < 0) {
 				$this->errors[] = $Vlink->error;
 				return -2;
 			}
@@ -693,16 +663,14 @@ class doliFleetVehicule extends SeedObject
 
 		$ret = $link->fetch($id);
 
-		if ($ret > 0 && $link->fk_source != $this->id && $link->fk_target != $this->id)
-		{
+		if ($ret > 0 && $link->fk_source != $this->id && $link->fk_target != $this->id) {
 			$this->errors[] = "IllegalDeletion";
 			return -1;
 		}
 
 		$ret = $link->delete($user);
 		if ($ret > 0) return 1;
-		else
-		{
+		else {
 			$this->errors[] = $link->error;
 			return -1;
 		}
@@ -712,25 +680,22 @@ class doliFleetVehicule extends SeedObject
 	{
 		$this->rentals = array();
 
-		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."dolifleet_vehicule_rental";
-		$sql.= " WHERE fk_vehicule = ".$this->id;
+		$sql = "SELECT rowid FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_rental";
+		$sql .= " WHERE fk_vehicule = " . $this->id;
 		if (!empty($date_end))
-			$sql.= " AND date_start < '".$this->db->idate($date_end)."'";
+			$sql .= " AND date_start < '" . $this->db->idate($date_end) . "'";
 		if (!empty($date_start))
-			$sql.= " AND date_end > '".$this->db->idate($date_start)."'";
-		$sql.= " AND fk_soc ".($externalRental ? "<> 0 AND fk_soc IS NOT NULL" : "IS NULL");
-		$sql.= " ORDER BY date_start ASC";
+			$sql .= " AND date_end > '" . $this->db->idate($date_start) . "'";
+		$sql .= " AND fk_soc " . ($externalRental ? "<> 0 AND fk_soc IS NOT NULL" : "IS NULL");
+		$sql .= " ORDER BY date_start ASC";
 
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
+		if ($resql) {
 			$num = $this->db->num_rows($resql);
-			if ($num)
-			{
+			if ($num) {
 				dol_include_once('/dolifleet/class/vehiculeRental.class.php');
 
-				while ($obj = $this->db->fetch_object($resql))
-				{
+				while ($obj = $this->db->fetch_object($resql)) {
 					$rent = new dolifleetVehiculeRental($this->db);
 					$ret = $rent->fetch($obj->rowid);
 					if ($ret > 0) $this->rentals[] = $rent;
@@ -738,9 +703,7 @@ class doliFleetVehicule extends SeedObject
 			}
 
 			return $num;
-		}
-		else
-		{
+		} else {
 			$this->errors[] = $this->db->lasterror();
 			return -1;
 		}
@@ -755,15 +718,13 @@ class doliFleetVehicule extends SeedObject
 		$rent = new dolifleetVehiculeRental($this->db);
 		$rent->fetch($rent_id);
 
-		if ($rent->fk_vehicule != $this->id)
-		{
+		if ($rent->fk_vehicule != $this->id) {
 			$this->errors[] = "IllegalDeletion";
 			return -1;
 		}
 
 		$ret = $rent->delete($user);
-		if ($ret < 0)
-		{
+		if ($ret < 0) {
 			$this->errors = array_merge($rent->errors, array($rent->error));
 			return -1;
 		}
@@ -775,15 +736,13 @@ class doliFleetVehicule extends SeedObject
 	{
 		global $user, $langs;
 
-		if ($amountHT == '')
-		{
+		if ($amountHT == '') {
 			$this->errors[] = $langs->trans('ErrEmptyAmountForRental');
 			return -1;
 		}
 
 		$ret = $this->getRentals($date_start, $date_end, !empty($fk_soc));
-		if ($ret > 0)
-		{
+		if ($ret > 0) {
 			$this->errors[] = $langs->trans('ErrPeriodReservedForRental', dol_print_date($date_start, "%d/%m/%Y"), dol_print_date($date_end, "%d/%m/%Y"));
 			return -1;
 		}
@@ -799,8 +758,7 @@ class doliFleetVehicule extends SeedObject
 		$rent->fk_proposaldet = $fk_proposal_det;
 
 		$ret = $rent->create($user);
-		if ($ret < 0)
-		{
+		if ($ret < 0) {
 			$this->errors = array_merge($rent->errors, array($rent->error));
 			return -1;
 		}
@@ -812,56 +770,52 @@ class doliFleetVehicule extends SeedObject
 	{
 		$this->operations = array();
 
-		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX.$this->table_element."_operation";
-		$sql.= " WHERE fk_vehicule = ".$this->id;
-		$sql.= " ORDER BY rang ASC";
+		$sql = "SELECT rowid FROM " . MAIN_DB_PREFIX . $this->table_element . "_operation";
+		$sql .= " WHERE fk_vehicule = " . $this->id;
+		$sql .= " ORDER BY rang ASC";
 
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
+		if ($resql) {
 			$num = $this->db->num_rows($resql);
-			if ($num)
-			{
+			if ($num) {
 				dol_include_once('/dolifleet/class/vehiculeOperation.class.php');
 
-				while ($obj = $this->db->fetch_object($resql))
-				{
+				while ($obj = $this->db->fetch_object($resql)) {
 					$ope = new dolifleetVehiculeOperation($this->db);
 					$ret = $ope->fetch($obj->rowid);
 					if ($ret >= 0) {
 						$this->operations[] = $ope;
 					} else {
-						$this->error=$ope->error;
+						$this->error = $ope->error;
 						return $ret;
 					}
 				}
 			}
 
 			return $num;
-		}
-		else
-		{
+		} else {
 			$this->errors[] = $this->db->lasterror();
 			return -1;
 		}
 	}
 
-	public function addOperation($productid, $km = 0, $delayInMonths = 0)
+	public function addOperation($productid, $km = 0, $delayInMonths = 0, $dateDone = 0, $kmDone = 0)
 	{
 		global $langs, $user;
 
 		dol_include_once('/dolifleet/class/vehiculeOperation.class.php');
+
 		$ope = new dolifleetVehiculeOperation($this->db);
 
 		$ope->fk_vehicule = $this->id;
 		$ope->fk_product = $productid;
-		$ope->fk_soc_vehicule = $this->fk_soc;
 		$ope->km = $km;
 		$ope->delai_from_last_op = $delayInMonths;
+		$ope->km_done = $kmDone;
+		$ope->date_done = $dateDone;
 
 		$ret = $ope->create($user);
-		if($ret < 0)
-		{
+		if ($ret < 0) {
 			$this->errors = array_merge($ope->errors, array($ope->error));
 			return -1;
 		}
@@ -877,15 +831,13 @@ class doliFleetVehicule extends SeedObject
 		$ope = new dolifleetVehiculeOperation($this->db);
 		$ope->fetch($ope_id);
 
-		if ($ope->fk_vehicule != $this->id)
-		{
+		if ($ope->fk_vehicule != $this->id) {
 			$this->errors[] = "IllegalDeletion";
 			return -1;
 		}
 
 		$ret = $ope->delete($user);
-		if ($ret < 0)
-		{
+		if ($ret < 0) {
 			$this->errors = array_merge($ope->errors, array($ope->error));
 			return -2;
 		}
@@ -894,85 +846,113 @@ class doliFleetVehicule extends SeedObject
 
 	}
 
-    /**
-     * @param int    $withpicto     Add picto into link
-     * @param string $moreparams    Add more parameters in the URL
-     * @return string
-     */
-    public function getNomUrl($withpicto = 0, $moreparams = '')
-    {
-		global $langs, $db;
+	public function updateOperation($ope_id, $productid, $km = 0, $delayInMonths = 0, $dateDone = 0, $kmDone = 0)
+	{
+		global $langs, $user;
 
-        $result='';
-        $label = '<u>' . $langs->trans("ShowdoliFleetVehicule") . '</u>';
-        if (! empty($this->ref)) $label.= '<br><b>'.$langs->trans('VIN').':</b> '.$this->vin;
-        if (! empty($this->immatriculation)) $label.= '<br><b>'.$langs->trans('immatriculation').':</b> '.$this->immatriculation;
+		dol_include_once('/dolifleet/class/vehiculeOperation.class.php');
+		$ope = new dolifleetVehiculeOperation($this->db);
+		$result = $ope->fetch($ope_id);
+		if ($result < 0) {
+			$this->errors = array_merge($ope->errors, array($ope->error));
+			return $result;
+		}
 
-        // marque
-        dol_include_once('/dolifleet/class/dictionaryVehiculeMark.class.php');
-        $dict = new dictionaryVehiculeMark($db);
-        $label.= '<br><b>'.$langs->trans('vehiculeMark').':</b> '.$dict->getValueFromId($this->fk_vehicule_mark);
+		$ope->fk_vehicule = $this->id;
+		$ope->fk_product = $productid;
+		$ope->km = $km;
+		$ope->delai_from_last_op = $delayInMonths;
+		$ope->km_done = $kmDone;
+		$ope->date_done = $dateDone;
 
-        // type de véhicule
-        dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
-        $dict = new dictionaryVehiculeType($db);
-        $label.= '<br><b>'.$langs->trans('vehiculeType').':</b> '.$dict->getValueFromId($this->fk_vehicule_type);
+		$ret = $ope->update($user);
+		if ($ret < 0) {
+			$this->errors = array_merge($ope->errors, array($ope->error));
+			return -1;
+		}
 
-        // client
-        $this->fetch_thirdparty();
-        $label.= '<br><b>'.$langs->trans('ThirdParty').':</b> '.$this->thirdparty->name;
+		return $ret;
+	}
 
-        $linkclose = '" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
-        $link = '<a href="'.dol_buildpath('/dolifleet/vehicule_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
-
-        $linkend='</a>';
-
-        $picto='generic';
-//        $picto='dolifleet@dolifleet';
-
-        if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
-        if ($withpicto && $withpicto != 2) $result.=' ';
-
-        $result.=$link.$this->immatriculation . '-' . $this->vin.$linkend;
-
-        return $result;
-    }
-
-    public function getLinkUrl($withpicto = 0, $moreparams = '', $fieldtodisplay = 'immatriculation,vin')
+	/**
+	 * @param int $withpicto Add picto into link
+	 * @param string $moreparams Add more parameters in the URL
+	 * @return string
+	 */
+	public function getNomUrl($withpicto = 0, $moreparams = '')
 	{
 		global $langs, $db;
 
-		$result='';
+		$result = '';
 		$label = '<u>' . $langs->trans("ShowdoliFleetVehicule") . '</u>';
-		if (! empty($this->ref)) $label.= '<br><b>'.$langs->trans('VIN').':</b> '.$this->vin;
-		if (! empty($this->immatriculation)) $label.= '<br><b>'.$langs->trans('immatriculation').':</b> '.$this->immatriculation;
+		if (!empty($this->ref)) $label .= '<br><b>' . $langs->trans('VIN') . ':</b> ' . $this->vin;
+		if (!empty($this->immatriculation)) $label .= '<br><b>' . $langs->trans('immatriculation') . ':</b> ' . $this->immatriculation;
 
 		// marque
 		dol_include_once('/dolifleet/class/dictionaryVehiculeMark.class.php');
 		$dict = new dictionaryVehiculeMark($db);
-		$label.= '<br><b>'.$langs->trans('vehiculeMark').':</b> '.$dict->getValueFromId($this->fk_vehicule_mark);
+		$label .= '<br><b>' . $langs->trans('vehiculeMark') . ':</b> ' . $dict->getValueFromId($this->fk_vehicule_mark);
 
 		// type de véhicule
 		dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
 		$dict = new dictionaryVehiculeType($db);
-		$label.= '<br><b>'.$langs->trans('vehiculeType').':</b> '.$dict->getValueFromId($this->fk_vehicule_type);
+		$label .= '<br><b>' . $langs->trans('vehiculeType') . ':</b> ' . $dict->getValueFromId($this->fk_vehicule_type);
 
 		// client
 		$this->fetch_thirdparty();
-		$label.= '<br><b>'.$langs->trans('ThirdParty').':</b> '.$this->thirdparty->name;
+		$label .= '<br><b>' . $langs->trans('ThirdParty') . ':</b> ' . $this->thirdparty->name;
 
-		$linkclose = '" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
-		$link = '<a href="'.dol_buildpath('/dolifleet/vehicule_card.php', 1).'?id='.$this->id.urlencode($moreparams).$linkclose;
+		$linkclose = '" title="' . dol_escape_htmltag($label, 1) . '" class="classfortooltip">';
+		$link = '<a href="' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $this->id . urlencode($moreparams) . $linkclose;
 
-		$linkend='</a>';
+		$linkend = '</a>';
 
-		$picto='generic';
+		$picto = 'generic';
 //        $picto='dolifleet@dolifleet';
 
-		if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
-		if ($withpicto && $withpicto != 2) $result.=' ';
-		$result.=$link;
-		$fields = explode(',',$fieldtodisplay);
+		if ($withpicto) $result .= ($link . img_object($label, $picto, 'class="classfortooltip"') . $linkend);
+		if ($withpicto && $withpicto != 2) $result .= ' ';
+
+		$result .= $link . $this->immatriculation . '-' . $this->vin . $linkend;
+
+		return $result;
+	}
+
+	public function getLinkUrl($withpicto = 0, $moreparams = '', $fieldtodisplay = 'immatriculation,vin')
+	{
+		global $langs, $db;
+
+		$result = '';
+		$label = '<u>' . $langs->trans("ShowdoliFleetVehicule") . '</u>';
+		if (!empty($this->ref)) $label .= '<br><b>' . $langs->trans('VIN') . ':</b> ' . $this->vin;
+		if (!empty($this->immatriculation)) $label .= '<br><b>' . $langs->trans('immatriculation') . ':</b> ' . $this->immatriculation;
+
+		// marque
+		dol_include_once('/dolifleet/class/dictionaryVehiculeMark.class.php');
+		$dict = new dictionaryVehiculeMark($db);
+		$label .= '<br><b>' . $langs->trans('vehiculeMark') . ':</b> ' . $dict->getValueFromId($this->fk_vehicule_mark);
+
+		// type de véhicule
+		dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
+		$dict = new dictionaryVehiculeType($db);
+		$label .= '<br><b>' . $langs->trans('vehiculeType') . ':</b> ' . $dict->getValueFromId($this->fk_vehicule_type);
+
+		// client
+		$this->fetch_thirdparty();
+		$label .= '<br><b>' . $langs->trans('ThirdParty') . ':</b> ' . $this->thirdparty->name;
+
+		$linkclose = '" title="' . dol_escape_htmltag($label, 1) . '" class="classfortooltip">';
+		$link = '<a href="' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $this->id . urlencode($moreparams) . $linkclose;
+
+		$linkend = '</a>';
+
+		$picto = 'generic';
+//        $picto='dolifleet@dolifleet';
+
+		if ($withpicto) $result .= ($link . img_object($label, $picto, 'class="classfortooltip"') . $linkend);
+		if ($withpicto && $withpicto != 2) $result .= ' ';
+		$result .= $link;
+		$fields = explode(',', $fieldtodisplay);
 		$nb = count($fields);
 		$result .= $this->immatriculation;
 		$result .= ' - ' . $this->vin;
@@ -981,78 +961,83 @@ class doliFleetVehicule extends SeedObject
 		return $result;
 	}
 
-    /**
-     * @param int       $id             Identifiant
-     * @param null      $ref            Ref
-     * @param int       $withpicto      Add picto into link
-     * @param string    $moreparams     Add more parameters in the URL
-     * @return string
-     */
-    public static function getStaticNomUrl($id, $ref = null, $withpicto = 0, $moreparams = '')
-    {
+	/**
+	 * @param int $id Identifiant
+	 * @param null $ref Ref
+	 * @param int $withpicto Add picto into link
+	 * @param string $moreparams Add more parameters in the URL
+	 * @return string
+	 */
+	public static function getStaticNomUrl($id, $ref = null, $withpicto = 0, $moreparams = '')
+	{
 		global $db;
 
 		$object = new doliFleetVehicule($db);
 		$object->fetch($id, false, $ref);
 
 		return $object->getNomUrl($withpicto, $moreparams);
-    }
+	}
 
 
-    /**
-     * @param int $mode     0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
-     * @return string
-     */
-    public function getLibStatut($mode = 0)
-    {
-        return self::LibStatut($this->status, $mode);
-    }
+	/**
+	 * @param int $mode 0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
+	 * @return string
+	 */
+	public function getLibStatut($mode = 0)
+	{
+		return self::LibStatut($this->status, $mode);
+	}
 
-    /**
-     * @param int       $status   Status
-     * @param int       $mode     0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
-     * @return string
-     */
-    public static function LibStatut($status, $mode)
-    {
+	/**
+	 * @param int $status Status
+	 * @param int $mode 0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
+	 * @return string
+	 */
+	public static function LibStatut($status, $mode)
+	{
 		global $langs;
 
 		$langs->load('dolifleet@dolifleet');
-        $res = '';
+		$res = '';
 
-        if ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('doliFleetVehiculeStatusDraft'); $statusLabelShort=$langs->trans('doliFleetVehiculeStatusShortDraft'); }
-        elseif ($status==self::STATUS_ACTIVE) { $statusType='status4'; $statusLabel=$langs->trans('doliFleetVehiculeStatusActivated'); $statusLabelShort=$langs->trans('doliFleetVehiculeStatusShortValidate'); }
+		if ($status == self::STATUS_DRAFT) {
+			$statusType = 'status0';
+			$statusLabel = $langs->trans('doliFleetVehiculeStatusDraft');
+			$statusLabelShort = $langs->trans('doliFleetVehiculeStatusShortDraft');
+		} elseif ($status == self::STATUS_ACTIVE) {
+			$statusType = 'status4';
+			$statusLabel = $langs->trans('doliFleetVehiculeStatusActivated');
+			$statusLabelShort = $langs->trans('doliFleetVehiculeStatusShortValidate');
+		}
 
-        if (function_exists('dolGetStatus'))
-        {
-            $res = dolGetStatus($statusLabel, $statusLabelShort, '', $statusType, $mode);
-        }
-        else
-        {
-            if ($mode == 0) $res = $statusLabel;
-            elseif ($mode == 1) $res = $statusLabelShort;
-            elseif ($mode == 2) $res = img_picto($statusLabel, $statusType).$statusLabelShort;
-            elseif ($mode == 3) $res = img_picto($statusLabel, $statusType);
-            elseif ($mode == 4) $res = img_picto($statusLabel, $statusType).$statusLabel;
-            elseif ($mode == 5) $res = $statusLabelShort.img_picto($statusLabel, $statusType);
-            elseif ($mode == 6) $res = $statusLabel.img_picto($statusLabel, $statusType);
-        }
+		if (function_exists('dolGetStatus')) {
+			$res = dolGetStatus($statusLabel, $statusLabelShort, '', $statusType, $mode);
+		} else {
+			if ($mode == 0) $res = $statusLabel;
+			elseif ($mode == 1) $res = $statusLabelShort;
+			elseif ($mode == 2) $res = img_picto($statusLabel, $statusType) . $statusLabelShort;
+			elseif ($mode == 3) $res = img_picto($statusLabel, $statusType);
+			elseif ($mode == 4) $res = img_picto($statusLabel, $statusType) . $statusLabel;
+			elseif ($mode == 5) $res = $statusLabelShort . img_picto($statusLabel, $statusType);
+			elseif ($mode == 6) $res = $statusLabel . img_picto($statusLabel, $statusType);
+		}
 
-        return $res;
-    }
+		return $res;
+	}
 
 	/**
 	 * Return HTML string to show a field into a page
 	 *
-	 * @param  string  $key            Key of attribute
-	 * @param  string  $moreparam      To add more parameters on html input tag
-	 * @param  string  $keysuffix      Prefix string to add into name and id of field (can be used to avoid duplicate names)
-	 * @param  string  $keyprefix      Suffix string to add into name and id of field (can be used to avoid duplicate names)
-	 * @param  mixed   $morecss        Value for css to define size. May also be a numeric.
+	 * @param string $key Key of attribute
+	 * @param string $moreparam To add more parameters on html input tag
+	 * @param string $keysuffix Prefix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param string $keyprefix Suffix string to add into name and id of field (can be used to avoid duplicate names)
+	 * @param mixed $morecss Value for css to define size. May also be a numeric.
 	 * @return string
 	 */
-	public function showOutputFieldQuick($key, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = ''){
-		if($key == 'fk_contract_type_full') {
+	public function showOutputFieldQuick($key, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = '')
+	{
+		if ($key == 'fk_contract_type_full') {
 			$res = '';
 			if (!empty($this->fk_contract_type)) {
 				$res = $this->showOutputField($this->fields['fk_contract_type'], 'fk_contract_type', $this->fk_contract_type, $moreparam, $keysuffix, $keyprefix, $morecss);
@@ -1060,75 +1045,77 @@ class doliFleetVehicule extends SeedObject
 				$res .= $this->showOutputField($this->fields['date_end_contract'], 'date_end_contract', $this->date_end_contract, $moreparam, $keysuffix, $keyprefix, $morecss);
 				$res .= ')';
 			}
-		}elseif($key == 'operations'){
+		} elseif ($key == 'operations') {
 			$res = $this->printbuttons_or();
-		}elseif($key == 'linkedvh'){
+		} elseif ($key == 'linkedvh') {
 			$res = $this->getorlinkedHV();
-		}else{
+		} else {
 			$res = $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keysuffix, $keyprefix, $morecss);
 		}
 		return $res;
 	}
 
-    function addActionComEvent($label, $note = '', $type_code = 'AC_OTH_AUTO', $percentage = -1, $time = 0){
-        global $user;
+	function addActionComEvent($label, $note = '', $type_code = 'AC_OTH_AUTO', $percentage = -1, $time = 0)
+	{
+		global $user;
 
-        if(empty($time)) $time = time();
-        require_once DOL_DOCUMENT_ROOT . '/comm/action/class/actioncomm.class.php';
+		if (empty($time)) $time = time();
+		require_once DOL_DOCUMENT_ROOT . '/comm/action/class/actioncomm.class.php';
 
-        $object = new ActionComm($this->db);
-        $object->type_code = $type_code;
-        $object->label = $label;
-        $object->note_private = $note;
+		$object = new ActionComm($this->db);
+		$object->type_code = $type_code;
+		$object->label = $label;
+		$object->note_private = $note;
 
-        $object->datep = $time;
+		$object->datep = $time;
 
-        $object->fk_element = $this->id;    // Id of record
-        $object->elementid = 0;    // Id of record alternative for API
-        $object->elementtype = $this->element;   // Type of record. This if property ->element of object linked to.
+		$object->fk_element = $this->id;    // Id of record
+		$object->elementid = 0;    // Id of record alternative for API
+		$object->elementtype = $this->element;   // Type of record. This if property ->element of object linked to.
 
-        $object->socid = $this->fk_soc;
-        $object->userownerid = $user->id;
-        $object->percentage = $percentage;
+		$object->socid = $this->fk_soc;
+		$object->userownerid = $user->id;
+		$object->percentage = $percentage;
 
 
-        $newEventId = $object->create($user);
-        if($newEventId < 1)
-        {
-        	$this->errors = array($object->error);
-            dol_syslog(__CLASS__ . ":".__METHOD__." launched by " . __FILE__ . ". id=" . $this->id.' error code : '.$object->error, LOG_ERR);
-            return -1;
-        } else {
-            return $newEventId;
-        }
+		$newEventId = $object->create($user);
+		if ($newEventId < 1) {
+			$this->errors = array($object->error);
+			dol_syslog(__CLASS__ . ":" . __METHOD__ . " launched by " . __FILE__ . ". id=" . $this->id . ' error code : ' . $object->error, LOG_ERR);
+			return -1;
+		} else {
+			return $newEventId;
+		}
 
-    }
+	}
 
-	public function printbuttons_or(){
+	public function printbuttons_or()
+	{
 		global $langs;
 		$langs->load('clitheobald@clitheobald');
 
-		$nb=$this->countordertoplan('all');
+		$nb = $this->countordertoplan('all');
 		$nblate = $this->countordertoplan('late');
-		$nonplanned=array();
+		$nonplanned = array();
 		if (!empty($this->array_options['options_op_np'])) {
 			$nonplanned = explode(":", $this->array_options['options_op_np']);
 		}
 
-		if($nblate>0){
+		if ($nblate > 0) {
 			$class = 'class="badge  badge-danger classfortooltip"';
-		}else{
+		} else {
 			$class = 'class="badge  badge-success classfortooltip"';
 		}
 
-		$out = '<a href="javascript:elementtoplan()" '. $class . '">' . $langs->trans('OperationOrderToCreate') . ': ' .$nb . '</a>';
-		$out.= ' ';
-		$out.= '<a href="javascript:nonplanned()" class="badge  badge-success classfortooltip">' . $langs->trans('operationnonplanifiees') . ': ' .count($nonplanned) . '</a>';
+		$out = '<a href="javascript:elementtoplan()" ' . $class . '">' . $langs->trans('OperationOrderToCreate') . ': ' . $nb . '</a>';
+		$out .= ' ';
+		$out .= '<a href="javascript:nonplanned()" class="badge  badge-success classfortooltip">' . $langs->trans('operationnonplanifiees') . ': ' . count($nonplanned) . '</a>';
 
 		return $out;
 	}
 
-	public function countordertoplan($mode='all'){
+	public function countordertoplan($mode = 'all')
+	{
 		$sql = "SELECT COUNT(ev.id) AS nbop";
 		$sql .= " FROM llx_actioncomm AS ev";
 		$sql .= " INNER JOIN llx_actioncomm_extrafields AS ef ON ev.id = ef.fk_object";
@@ -1152,10 +1139,11 @@ class doliFleetVehicule extends SeedObject
 		return $ret;
 	}
 
-	public function getorlinkedHV() {
+	public function getorlinkedHV()
+	{
 		$out = 'Pas de véhicule lié';
-		$sql  = 'SELECT IF(fk_target = '. $this->id . ',fk_source,fk_target) as linked FROM ' . MAIN_DB_PREFIX . 'dolifleet_vehicule_link ';
-		$sql .= 'WHERE (fk_source = '. $this->id . ' OR fk_target = '. $this->id . ') ORDER BY date_start DESC';
+		$sql = 'SELECT IF(fk_target = ' . $this->id . ',fk_source,fk_target) as linked FROM ' . MAIN_DB_PREFIX . 'dolifleet_vehicule_link ';
+		$sql .= 'WHERE (fk_source = ' . $this->id . ' OR fk_target = ' . $this->id . ') ORDER BY date_start DESC';
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			$obj = $this->db->fetch_object($resql);

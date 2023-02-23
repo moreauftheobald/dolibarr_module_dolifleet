@@ -131,6 +131,10 @@ AmountIsFromGlobalConf=Prix par défaut
 OnlyUserWhoValidatedCanReopen=Seul l'utilisateur qui a validé la proposition peut la rouvrir
 UserMustBeDifferentFromValider=Seul un autre utilisateur ayant le droit approprié peut accepter la proposition
 CanNotDeleteClosedProposal=Impossible de supprimer une proposition cloturée
+VehiculeOperationDateNext=Date prochaine opération
+VehiculeOperationKmNext=Km prochaine opération
+VehiculeOperationOnTime=Retards
+VehiculeOperationNextOR=OR prochaine opération
 
 doliFleetModify=Modifier
 doliFleetClone=Cloner

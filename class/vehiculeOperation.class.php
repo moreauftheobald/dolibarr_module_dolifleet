@@ -15,13 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('SeedObject'))
-{
+if (!class_exists('SeedObject')) {
 	/**
 	 * Needed if $form->showLinkedObjectBlock() is call or for session timeout on our module page
 	 */
 	define('INC_FROM_DOLIBARR', true);
-	require_once dirname(__FILE__).'/../config.php';
+	require_once dirname(__FILE__) . '/../config.php';
 }
 
 class dolifleetVehiculeOperation extends SeedObject
@@ -39,19 +38,19 @@ class dolifleetVehiculeOperation extends SeedObject
 	/**
 	 * Planned status
 	 */
-	 const STATUS_PLANNED = 2;
+	const STATUS_PLANNED = 2;
 
 	/**
 	 * Done status
 	 */
-	 const STATUS_DONE = 3;
+	const STATUS_DONE = 3;
 
 	/** @var array $TStatus Array of translate key for each const */
 	public static $TStatus = array(
 		self::STATUS_DRAFT => 'doliFleetOperationStatusShortDraft'
-		,self::STATUS_TOPLAN => 'doliFleetOperationStatusShortToPlan'
-		,self::STATUS_PLANNED => 'doliFleetOperationStatusShortPlanned'
-		,self::STATUS_DONE => 'doliFleetOperationStatusShortDone'
+	, self::STATUS_TOPLAN => 'doliFleetOperationStatusShortToPlan'
+	, self::STATUS_PLANNED => 'doliFleetOperationStatusShortPlanned'
+	, self::STATUS_DONE => 'doliFleetOperationStatusShortDone'
 	);
 
 	/** @var string $table_element Table name in SQL */
@@ -62,8 +61,6 @@ class dolifleetVehiculeOperation extends SeedObject
 
 	/** @var int $fk_vehicule Object link to vehicule */
 	public $fk_vehicule;
-
-	public $fk_soc_vehicule;
 
 	public $fk_product;
 
@@ -79,6 +76,11 @@ class dolifleetVehiculeOperation extends SeedObject
 
 	public $km_done;
 
+	public $date_next;
+	public $km_next;
+	public $on_time;
+	public $or_next;
+
 	public $fields = array(
 		'fk_vehicule' => array(
 			'type' => 'integer:doliFleetVehicule:dolifleet/class/vehicule.class.php',
@@ -87,18 +89,6 @@ class dolifleetVehiculeOperation extends SeedObject
 			'enabled' => 1,
 			'position' => 10,
 			'index' => 1,
-		),
-
-		'fk_soc_vehicule' => array(
-			'type' => 'integer:Societe:societe/class/societe.class.php',
-			'label' => 'ThirdParty',
-			'visible' => 1,
-			'notnull' =>1,
-			'default' => 0,
-			'enabled' => 1,
-			'position' => 80,
-			'index' => 1,
-			'help' => 'LinkToThirparty'
 		),
 
 		'fk_product' => array(
@@ -121,9 +111,9 @@ class dolifleetVehiculeOperation extends SeedObject
 			'position' => 30,
 			'arrayofkeyval' => array(
 				self::STATUS_DRAFT => 'doliFleetOperationStatusShortDraft'
-				,self::STATUS_TOPLAN => 'doliFleetOperationStatusShortToPlan'
-				,self::STATUS_PLANNED => 'doliFleetOperationStatusShortPlanned'
-				,self::STATUS_DONE => 'doliFleetOperationStatusShortDone'
+			, self::STATUS_TOPLAN => 'doliFleetOperationStatusShortToPlan'
+			, self::STATUS_PLANNED => 'doliFleetOperationStatusShortPlanned'
+			, self::STATUS_DONE => 'doliFleetOperationStatusShortDone'
 			)
 		),
 
@@ -164,13 +154,45 @@ class dolifleetVehiculeOperation extends SeedObject
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 80,
+		),
+
+		'date_next' => array(
+			'type' => 'date',
+			'label' => 'VehiculeOperationDateNext',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 85,
+		),
+
+		'km_next' => array(
+			'type' => 'double',
+			'label' => 'VehiculeOperationKmNext',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 90,
+		),
+
+		'on_time' => array(
+			'type' => 'integer',
+			'label' => 'VehiculeOperationOnTime',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 95,
+		),
+
+		'or_next' => array(
+			'type' => 'integer',
+			'label' => 'VehiculeOperationNextOR',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 100,
 		)
 
 	);
 
 	/**
 	 * doliFleetVehiculeOperation constructor.
-	 * @param DoliDB    $db    Database connector
+	 * @param DoliDB $db Database connector
 	 */
 	public function __construct($db)
 	{
@@ -180,11 +202,14 @@ class dolifleetVehiculeOperation extends SeedObject
 
 		$this->init();
 
+		$this->date_next = null;
+		$this->date_done = null;
+
 		$this->entity = $conf->entity;
 	}
 
 	/**
-	 * @param int $mode     0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
+	 * @param int $mode 0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
 	 * @return string
 	 */
 	public function getLibStatut($mode = 0)
@@ -193,8 +218,8 @@ class dolifleetVehiculeOperation extends SeedObject
 	}
 
 	/**
-	 * @param int       $status   Status
-	 * @param int       $mode     0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
+	 * @param int $status Status
+	 * @param int $mode 0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
 	 * @return string
 	 */
 	public static function LibStatut($status, $mode)
@@ -204,24 +229,34 @@ class dolifleetVehiculeOperation extends SeedObject
 		$langs->load('dolifleet@dolifleet');
 		$res = '';
 
-		if ($status==self::STATUS_DRAFT) { $statusType='status0'; $statusLabel=$langs->trans('doliFleetOperationStatusDraft'); $statusLabelShort=$langs->trans('doliFleetOperationStatusShortDraft'); }
-		elseif ($status==self::STATUS_TOPLAN) { $statusType='status6'; $statusLabel=$langs->trans('doliFleetOperationStatusToPlan'); $statusLabelShort=$langs->trans('doliFleetOperationStatusShortToPlan'); }
-		elseif ($status==self::STATUS_PLANNED) { $statusType='status1'; $statusLabel=$langs->trans('doliFleetOperationStatusPlanned'); $statusLabelShort=$langs->trans('doliFleetOperationStatusShortPlanned'); }
-		elseif ($status==self::STATUS_DONE) { $statusType='status4'; $statusLabel=$langs->trans('doliFleetOperationStatusDone'); $statusLabelShort=$langs->trans('doliFleetOperationStatusShortDone'); }
-
-		if (function_exists('dolGetStatus'))
-		{
-			$res = dolGetStatus($statusLabel, $statusLabelShort, '', $statusType, $mode);
+		if ($status == self::STATUS_DRAFT) {
+			$statusType = 'status0';
+			$statusLabel = $langs->trans('doliFleetOperationStatusDraft');
+			$statusLabelShort = $langs->trans('doliFleetOperationStatusShortDraft');
+		} elseif ($status == self::STATUS_TOPLAN) {
+			$statusType = 'status6';
+			$statusLabel = $langs->trans('doliFleetOperationStatusToPlan');
+			$statusLabelShort = $langs->trans('doliFleetOperationStatusShortToPlan');
+		} elseif ($status == self::STATUS_PLANNED) {
+			$statusType = 'status1';
+			$statusLabel = $langs->trans('doliFleetOperationStatusPlanned');
+			$statusLabelShort = $langs->trans('doliFleetOperationStatusShortPlanned');
+		} elseif ($status == self::STATUS_DONE) {
+			$statusType = 'status4';
+			$statusLabel = $langs->trans('doliFleetOperationStatusDone');
+			$statusLabelShort = $langs->trans('doliFleetOperationStatusShortDone');
 		}
-		else
-		{
+
+		if (function_exists('dolGetStatus')) {
+			$res = dolGetStatus($statusLabel, $statusLabelShort, '', $statusType, $mode);
+		} else {
 			if ($mode == 0) $res = $statusLabel;
 			elseif ($mode == 1) $res = $statusLabelShort;
-			elseif ($mode == 2) $res = img_picto($statusLabel, $statusType).$statusLabelShort;
+			elseif ($mode == 2) $res = img_picto($statusLabel, $statusType) . $statusLabelShort;
 			elseif ($mode == 3) $res = img_picto($statusLabel, $statusType);
-			elseif ($mode == 4) $res = img_picto($statusLabel, $statusType).$statusLabel;
-			elseif ($mode == 5) $res = $statusLabelShort.img_picto($statusLabel, $statusType);
-			elseif ($mode == 6) $res = $statusLabel.img_picto($statusLabel, $statusType);
+			elseif ($mode == 4) $res = img_picto($statusLabel, $statusType) . $statusLabel;
+			elseif ($mode == 5) $res = $statusLabelShort . img_picto($statusLabel, $statusType);
+			elseif ($mode == 6) $res = $statusLabel . img_picto($statusLabel, $statusType);
 		}
 
 		return $res;
@@ -238,48 +273,45 @@ class dolifleetVehiculeOperation extends SeedObject
 	{
 		global $langs;
 
-		if (empty($this->fk_vehicule) || $this->fk_vehicule == '-1')
-		{
+		if (empty($this->fk_vehicule) || $this->fk_vehicule == '-1') {
 			$this->errors[] = $langs->trans('ErrInvalidFkVehicule');
 		}
 
-		if (empty($this->fk_product))
-		{
+		if (empty($this->fk_product)) {
 			$this->errors[] = $langs->trans('ErrOperationNoProdId');
 		}
 
-		require_once DOL_DOCUMENT_ROOT."/product/class/product.class.php";
+		require_once DOL_DOCUMENT_ROOT . "/product/class/product.class.php";
 		$prod = new Product($this->db);
 		$ret = $prod->fetch($this->fk_product);
-		if ($ret <= 0)
-		{
+		if ($ret <= 0) {
 			$this->errors[] = $langs->trans('ErrOperationInvalidProduct');
 		}
 
-		if (empty($this->km) && empty($this->delai_from_last_op))
-		{
+		if (empty($this->km) && empty($this->delai_from_last_op)) {
 			$this->errors[] = $langs->trans('ErrOperationNoCritera');
 		}
 
-		if (!empty($this->km))
-		{
-			$maxKM = $this->getMaxOperationKM();
-			if ($this->km < $maxKM) $this->errors[] = $langs->trans('ErrOperationMaxKM', $maxKM);
-		}
+		$this->calcNextOpe();
 
 		if (!empty($this->errors)) return -1;
 
-		if (empty($this->id)) $this->rang = (int) $this->getMaxRank() + 1;
+		if (empty($this->id)) $this->rang = (int)$this->getMaxRank() + 1;
 
-		return parent::create($user, $notrigger); // TODO: Change the autogenerated stub
+		return parent::create($user, $notrigger);
+	}
+
+	public function update(User &$user, $notrigger = false)
+	{
+		$this->calcNextOpe();
+		return parent::update($user, $notrigger);
 	}
 
 	public function getMaxRank()
 	{
-		$sql = "SELECT MAX(rang) as maxrank FROM ".MAIN_DB_PREFIX.$this->table_element." WHERE fk_vehicule = ".$this->fk_vehicule;
+		$sql = "SELECT MAX(rang) as maxrank FROM " . MAIN_DB_PREFIX . $this->table_element . " WHERE fk_vehicule = " . $this->fk_vehicule;
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
+		if ($resql) {
 			$obj = $this->db->fetch_object($resql);
 			return $obj->maxrank;
 		}
@@ -287,18 +319,19 @@ class dolifleetVehiculeOperation extends SeedObject
 		return 0;
 	}
 
-	public function getMaxOperationKM()
+	public function calcNextOpe()
 	{
-		$sql = "SELECT MAX(km) as km FROM ".MAIN_DB_PREFIX.$this->table_element;
-		$sql.= " WHERE fk_vehicule = ".$this->fk_vehicule;
 
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			$obj = $this->db->fetch_object($resql);
-			return (int) $obj->km;
+		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
+		if (!empty($this->km)) {
+			$this->km_next = (int)$this->km_done + (int)$this->km;
 		}
 
-		return 0;
+		if (empty($this->km) && !empty($this->delai_from_last_op)) {
+			$this->date_next = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
+		}
+
+
 	}
+
 }
