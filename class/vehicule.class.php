@@ -1116,27 +1116,33 @@ class doliFleetVehicule extends SeedObject
 
 	public function countordertoplan($mode = 'all')
 	{
-		$sql = "SELECT COUNT(ev.id) AS nbop";
-		$sql .= " FROM llx_actioncomm AS ev";
-		$sql .= " INNER JOIN llx_actioncomm_extrafields AS ef ON ev.id = ef.fk_object";
-		$sql .= " WHERE ef.fk_vehicule=" . $this->id;
-		$sql .= " AND ev.code='AC_OR'";
-		$sql .= " AND ev.percent<100";
+		global $conf;
+
+		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
+
+		$sql = "SELECT COUNT(op.rowid) as nbop FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation as op";
+		$sql .= " WHERE op.fk_vehicule=" . $this->id;
 
 		if ($mode == 'late') {
-			$sql .= " AND ev.datep <= '" . $this->db->idate(dol_now()) . "'";
+			$sql .= " AND op.on_time = 1";
 		}
+		$sql .= " AND (op.or_next IS NULL OR op.or_next=0) ";
+		$sql .= " AND op.date_next IS NOT NULL";
+		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(), 'm', (int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION * -1)) . "'";
 
 		$resql = $this->db->query($sql);
+
 		$num = $this->db->num_rows($resql);
-		$ret = 0;
 		if ($resql) {
 			if ($num > 0) {
 				$obj = $this->db->fetch_object($resql);
-				$ret = $obj->nbop;
+				return $obj->nbop;
 			}
+		} else {
+			setEventMessage($this->db->lasterror, 'errors');
+			return 0;
 		}
-		return $ret;
+
 	}
 
 	public function getorlinkedHV()
