@@ -461,6 +461,7 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 function printVehiculeOpérations($object)
 {
 	global $langs, $form;
+	dol_include_once('operationorder/class/operationorder.class.php');
 
 	print load_fiche_titre($langs->trans('VehiculeOperations'), '', '');
 
@@ -519,7 +520,16 @@ function printVehiculeOpérations($object)
 				print '<td align="center">'. $operation->date_next.'</td>';
 				print '<td align="center">'. $operation->km_next.'</td>';
 				print '<td align="center">'. $operation->on_time.'</td>';
-				print '<td align="center">'. $operation->or_next.'</td>';
+				print '<td align="center">';
+				if (!empty($operation->or_next)){
+					$operationorder = new OperationOrder($object->db);
+					$res = $operationorder->fetch($operation->or_next, false);
+					if ($res<0) {
+						setEventMessages($operationorder->error,$operationorder->errors,'errors');
+					}
+					print $operationorder->getNomUrl(0);
+				}
+				print '</td>';
 				print '<td align="center">';
 				print '<input class="button quatrevingtpercent" type="submit" name="saveOperation" value="' . $langs->trans("Save") . '">';
 				print '</td>';
@@ -541,7 +551,16 @@ function printVehiculeOpérations($object)
 				print '</td>';
 				print '<td align="center">'. $operation->km_next.'</td>';
 				print '<td align="center">'. $operation->on_time.'</td>';
-				print '<td align="center">'. $operation->or_next.'</td>';
+				print '<td align="center">';
+				if (!empty($operation->or_next)){
+					$operationorder = new OperationOrder($object->db);
+					$res = $operationorder->fetch($operation->or_next, false);
+					if ($res<0) {
+						setEventMessages($operationorder->error,$operationorder->errors,'errors');
+					}
+					print $operationorder->getNomUrl(0);
+				}
+				print '</td>';
 				print '<td align="center">';
 				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editOperation&ope_id=' . $operation->id . '">' . img_edit() . '</a>';
 				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperation&ope_id=' . $operation->id . '">' . img_delete() . '</a>';

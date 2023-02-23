@@ -159,7 +159,9 @@ class cron_dolifleet
 	{
 		global $conf, $user;
 
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 		dol_include_once('dolifleet/class/vehiculeOperation.class.php');
+		dol_include_once('operationorder/class/operationorderstatus.class.php');
 		$operation = new dolifleetVehiculeOperation($this->db);
 
 		$this->langs = new Translate('', $conf);
@@ -191,6 +193,14 @@ class cron_dolifleet
 			}
 		}
 
+		$operationOrderStatus = new OperationOrderStatus($this->db);
+		$resultStatus = $operationOrderStatus->fetchAll(0,0,array('display_on_planning'=>1));
+		if (!is_array($resultStatus) && $resultStatus<0) {
+			$this->output .= "Erreur Update:" . $operationOrderStatus->error . implode(',', $operationOrderStatus->errors);
+			return $resultStatus;
+		}
+
+		$successCounter=0;
 
 		$sql = "SELECT DISTINCT op.rowid as oprowid
        		FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation AS op
@@ -223,16 +233,49 @@ class cron_dolifleet
 						$operation->date_next = dol_now();
 					}
 				}
+
+
+				$stToTest=array();
+				$operation->or_next=null;
+				if (!empty($resultStatus)) {
+					foreach($resultStatus as $dStatus) {
+						$stToTest[]=$dStatus->id;
+					}
+
+					$sql = "SELECT ordp.rowid";
+					$sql .= " FROM ".MAIN_DB_PREFIX."operationorder as ordp INNER JOIN ".MAIN_DB_PREFIX."operationorderdet as ord";
+					$sql .= " ON ordp.rowid=ord.fk_operation_order";
+					$sql .= " WHERE ordp.fk_vehicule=".(int)$operation->fk_vehicule." AND ord.fk_product=".(int)$operation->fk_product;
+					$sql .= " AND ordp.status IN (".implode(',',$stToTest).")";
+					$sql .= " AND ordp.planned_date > NOW()";
+					$sql .= " ORDER BY planned_date";
+					$sql .= " LIMIT 1";
+
+
+					$resqlOR = $this->db->query($sql);
+					if (!$resqlOR) {
+						$this->output .= "Erreur SQL:" . $this->db->lasterror;
+						return -1;
+					}
+					if ($objOR=$this->db->fetch_object($resqlOR)) {
+						if (!empty($objOR->rowid)) {
+							$operation->or_next = $objOR->rowid;
+						}
+					}
+				}
+
 				$resultUpd = $operation->update($user);
 				if ($resultUpd < 0) {
 					$this->output .= "Erreur Update:" . $operation->error . implode(',', $operation->errors);
 					return $resultUpd;
 				}
+
+				$successCounter++;
 			}
 		}
 
 
-		if (!empty($successCounter)) $this->output .= $this->langs->trans('EventCreatedSucessfully', $successCounter);
+		if (!empty($successCounter)) $this->output .= $this->langs->trans('Sucessfully').$successCounter;
 
 		$now = dol_now();
 		$date = dol_print_date($now, "%d/%m/%Y %H:%M:%S");
