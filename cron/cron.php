@@ -229,7 +229,10 @@ class cron_dolifleet
 						if (array_key_exists($operation->fk_vehicule, $TKmAvg) && !empty($TKmAvg[$operation->fk_vehicule])) {
 							$nbDays = $diffKm / $TKmAvg[$operation->fk_vehicule];
 						}
-						$operation->date_next = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
+						$dt = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
+						if ($dt<$operation->date_next) {
+							$operation->date_next = $dt;
+						}
 					} else {
 						$operation->date_next = dol_now();
 					}
