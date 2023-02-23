@@ -629,30 +629,3 @@ function printBannerVehicleCard($vehicle)
 	$vehicle->ref = $vehicle->vin;
 	dol_banner_tab($vehicle, 'vin', $linkback, 1, 'vin', 'ref', $morehtmlref, '', 0, '', '');
 }
-
-function getAllKmMoyen()
-{
-	global $db;
-
-	//On récupère les km/jour en fonction du kilométrage sur le véhicule
-	$sql = "SELECT dv.rowid, dv.km_date, dvo.rowid as fk_operation, dv.km/DATEDIFF(dv.km_date, dv.date_immat) as km_by_day_veh FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule as dv
-			LEFT JOIN " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation AS dvo ON (dvo.fk_vehicule = dv.rowid)
-			WHERE dv.date_immat IS NOT NULL AND dv.date_immat !='0000-00-00'
-			AND dv.km_date IS NOT NULL AND dv.km_date !='0000-00-00'
-			AND dv.km IS NOT NULL AND dv.km != 0";
-	$resql = $db->query($sql);
-	if (!empty($resql) && $db->num_rows($resql)) {
-		while ($obj = $db->fetch_object($resql)) {
-			if (!empty($TKmByDays[$obj->rowid][$obj->fk_operation]['kmMoyen'])) {
-				if ($TKmByDays[$obj->rowid][$obj->fk_operation]['kmMoyen'] < $obj->km_by_day_veh)
-					$TKmByDays[$obj->rowid][$obj->fk_operation]['kmMoyen'] = $obj->km_by_day_veh; //On récupère le plus grand km moyen des deux
-			} else {
-				$TKmByDays[$obj->rowid][$obj->fk_operation]['kmMoyen'] = $obj->km_by_day_veh;
-			}
-			//Si on ne connait pas la dernière date, alors on récupère la date de dernier kilométrage
-			if (empty($TKmByDays[$obj->rowid][$obj->fk_operation]['lastDate']))
-				$TKmByDays[$obj->rowid][$obj->fk_operation]['lastDate'] = $obj->km_date;
-		}
-	}
-	return $TKmByDays;
-}

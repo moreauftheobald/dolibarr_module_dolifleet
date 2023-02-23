@@ -48,7 +48,8 @@ class cron_dolifleet
 			} else {
 				$obj = $this->db->fetch_object($resql);
 				$vehicle = new doliFleetVehicule($this->db);
-				$TVehiclesDoli = $vehicle->fetchAll('', '', array('fk_vehicule_mark' => $obj->rowid, 'status' => 1));
+				$TVehiclesDoli = $vehicle->fetchAll('', '', array('fk_vehicule_mark' => $obj->rowid,
+					'status' => 1));
 			}
 		} else {
 			$this->errors[] = $this->db->lasterror;
@@ -156,7 +157,10 @@ class cron_dolifleet
 	 */
 	public function createEventOperationOrder()
 	{
-		global $conf;
+		global $conf, $user;
+
+		dol_include_once('dolifleet/class/vehiculeOperation.class.php');
+		$operation = new dolifleetVehiculeOperation($this->db);
 
 		$this->langs = new Translate('', $conf);
 		$this->langs->setDefaultLang('fr_FR');
@@ -167,7 +171,65 @@ class cron_dolifleet
 		$date = dol_print_date($now, "%d/%m/%Y %H:%M:%S");
 		$this->output .= '<p>' . $date . ' Début de la tâche planifiée de ' . $this->langs->trans('2lTrucksCRONCreateEventOperationOrder') . '</p>';
 
+		$TKmAvg = array();
+		$TKmKMLast = array();
+		$sql = "SELECT dv.rowid, dv.km/DATEDIFF(dv.km_date, dv.date_immat) as km_by_day_veh, dv.km
+			FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule as dv
+			WHERE dv.date_immat IS NOT NULL AND dv.date_immat !='0000-00-00'
+			AND dv.km_date IS NOT NULL AND dv.km_date !='0000-00-00'
+			AND dv.km IS NOT NULL AND dv.km != 0
+			AND dv.status=1";
+		$resql = $this->db->query($sql);
+		if (!$resql) {
+			$this->output .= "Erreur SQL:" . $this->db->lasterror;
+			return -1;
+		}
+		if (!empty($resql) && $this->db->num_rows($resql)) {
+			while ($obj = $this->db->fetch_object($resql)) {
+				$TKmAvg[$obj->rowid] = $obj->km_by_day_veh;
+				$TKmKMLast[$obj->rowid] = $obj->km;
+			}
+		}
 
+
+		$sql = "SELECT DISTINCT op.rowid as oprowid
+       		FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation AS op
+			INNER JOIN " . MAIN_DB_PREFIX . "dolifleet_vehicule AS vh ON vh.rowid = op.fk_vehicule WHERE vh.status = 1";
+
+		$resql = $this->db->query($sql);
+		if (!$resql) {
+			$this->output .= "Erreur SQL:" . $this->db->lasterror;
+			return -1;
+		}
+		if (!empty($resql) && $this->db->num_rows($resql)) {
+			while ($obj = $this->db->fetch_object($resql)) {
+				$resultFetch = $operation->fetch($obj->oprowid);
+				if ($resultFetch < 0) {
+					$this->output .= "Erreur Fetch:" . $operation->error . implode(',', $operation->errors);
+					return $resultFetch;
+				}
+				if (!empty($operation->km)) {
+					if (empty($operation->km_next)) {
+						$operation->km_next =$operation->km_done+$operation->km;
+					}
+					$diffKm = $operation->km_next - $TKmKMLast[$operation->fk_vehicule];
+					if ($diffKm > 0) {
+						$nbDays=0;
+						if (array_key_exists($operation->fk_vehicule, $TKmAvg) && !empty($TKmAvg[$operation->fk_vehicule])) {
+							$nbDays = $diffKm / $TKmAvg[$operation->fk_vehicule];
+						}
+						$operation->date_next = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
+					} else {
+						$operation->date_next = dol_now();
+					}
+				}
+				$resultUpd = $operation->update($user);
+				if ($resultUpd < 0) {
+					$this->output .= "Erreur Update:" . $operation->error . implode(',', $operation->errors);
+					return $resultUpd;
+				}
+			}
+		}
 
 
 		if (!empty($successCounter)) $this->output .= $this->langs->trans('EventCreatedSucessfully', $successCounter);

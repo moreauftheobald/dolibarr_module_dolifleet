@@ -106,7 +106,7 @@ class dolifleetVehiculeOperation extends SeedObject
 			'enabled' => 1,
 			'visible' => 0,
 			'notnull' => 1,
-			'default' => 0,
+			'default' => 1,
 			'index' => 1,
 			'position' => 30,
 			'arrayofkeyval' => array(
@@ -186,6 +186,7 @@ class dolifleetVehiculeOperation extends SeedObject
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 100,
+			'default' => null,
 		)
 
 	);
@@ -325,10 +326,18 @@ class dolifleetVehiculeOperation extends SeedObject
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 		if (!empty($this->km)) {
 			$this->km_next = (int)$this->km_done + (int)$this->km;
+		} else {
+			$this->km_next=null;
 		}
 
 		if (empty($this->km) && !empty($this->delai_from_last_op)) {
 			$this->date_next = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
+		}
+
+		if ($this->date_next<dol_now()) {
+			$this->on_time=1;
+		} else {
+			$this->on_time=0;
 		}
 
 
