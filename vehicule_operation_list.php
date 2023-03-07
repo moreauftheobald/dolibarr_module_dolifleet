@@ -116,9 +116,12 @@ $sql.=$hookmanager->resPrint;
 
 $sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
 $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$operation->table_element.' o ON o.fk_vehicule=t.rowid ';
+$sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON te.fk_object=te.fk_vehicule ';
+
 
 $sql.= ' WHERE 1=1';
 $sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).')';
+$sql.= ' AND te.atelier IN ('.$conf->entity.')';
 //if ($type == 'mine') $sql.= ' AND t.fk_user = '.$user->id;
 if (!empty($fk_soc) && $fk_soc > 0) $sql.= ' AND t.fk_soc = '.$fk_soc;
 if (!empty($fk_product) && $fk_product > 0) $sql.= ' AND o.fk_product = '.$fk_product;
