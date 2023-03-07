@@ -116,8 +116,7 @@ $sql.=$hookmanager->resPrint;
 
 $sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
 $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$operation->table_element.' o ON o.fk_vehicule=t.rowid ';
-$sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON te.fk_object=te.fk_vehicule ';
-
+$sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON te.fk_object=t.rowid ';
 
 $sql.= ' WHERE 1=1';
 $sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).')';
