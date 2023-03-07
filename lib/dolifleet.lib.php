@@ -458,7 +458,7 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 /**
  * @param doliFleetVehicule $object
  */
-function printVehiculeOpérations($object)
+function printVehiculeOperations($object)
 {
 	global $langs, $form;
 	dol_include_once('operationorder/class/operationorder.class.php');

@@ -430,7 +430,7 @@ if ($action == 'create') {
 			print '<div class="underbanner clearboth"></div>';
 
 			// Opérations
-			printVehiculeOpérations($object);
+			printVehiculeOperations($object);
 
 			print '</div>';    // fin fichecenter
 

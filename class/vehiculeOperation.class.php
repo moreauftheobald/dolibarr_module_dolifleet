@@ -133,7 +133,7 @@ class dolifleetVehiculeOperation extends SeedObject
 
 		'delai_from_last_op' => array(
 			'type' => 'integer',
-			'label' => 'VehiculeOperationDelai',
+			'label' => 'VehiculeOperationDelay',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 60,
@@ -142,7 +142,7 @@ class dolifleetVehiculeOperation extends SeedObject
 
 		'date_done' => array(
 			'type' => 'date',
-			'label' => 'VehiculeOperationDateDone',
+			'label' => 'VehiculeOperationLastDateDone',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 70,
@@ -150,7 +150,7 @@ class dolifleetVehiculeOperation extends SeedObject
 
 		'km_done' => array(
 			'type' => 'double',
-			'label' => 'VehiculeOperationKmDone',
+			'label' => 'VehiculeOperationLastKmDone',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 80,

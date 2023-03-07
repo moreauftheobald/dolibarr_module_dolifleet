@@ -135,6 +135,9 @@ VehiculeOperationDateNext=Date prochaine opération
 VehiculeOperationKmNext=Km prochaine opération
 VehiculeOperationOnTime=Retards
 VehiculeOperationNextOR=OR prochaine opération
+doliFleetVehiculeOperationList=Liste des opérations par véhicule
+Empty=Vide
+NotEmpty=Non vide
 
 doliFleetModify=Modifier
 doliFleetClone=Cloner
