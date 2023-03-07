@@ -301,7 +301,6 @@ function _getORNomUrl($fk_or)
 
 	$or = new OperationOrder($db);
 	if (!empty($fk_or)) {
-		return $fk_or;
 		if ($or->fetch($fk_or,false) > 0) {
 			return $or->getNomUrl(1);
 		}
