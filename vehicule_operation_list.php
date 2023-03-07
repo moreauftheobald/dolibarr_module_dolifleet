@@ -206,7 +206,7 @@ $listViewConfig = array(
 		,'o_km_done' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km_done')
 		,'o_date_next' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_next')
 		,'o_km_next' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km_next')
-		,'o_on_time' =>  array('search_type' => true, 'table' => 'o', 'field' => 'on_time')
+		,'o_on_time' =>  array('search_type' => (array('1'=>$langs->trans('VehiculeOperationOnTime'))), 'table' => 'o', 'field' => 'on_time',)
 		,'o_or_next' =>  array('search_type' => 'override', 'override'=>$form->selectarray('or_next',array(0=>$langs->trans('Empty'),1=>$langs->trans('NotEmpty')),$or_next,1))
 	)
 	,'translate' => array()
@@ -301,6 +301,7 @@ function _getORNomUrl($fk_or)
 
 	$or = new OperationOrder($db);
 	if (!empty($fk_or)) {
+		return $fk_or;
 		if ($or->fetch($fk_or,false) > 0) {
 			return $or->getNomUrl(1);
 		}
