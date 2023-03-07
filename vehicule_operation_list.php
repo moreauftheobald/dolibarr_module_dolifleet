@@ -120,7 +120,9 @@ $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON
 
 $sql.= ' WHERE 1=1';
 $sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).')';
-$sql.= ' AND te.atelier IN ('.$conf->entity.')';
+if ($conf->entity!=1) {
+	$sql .= ' AND te.atelier IN (' . $conf->entity . ')';
+}
 //if ($type == 'mine') $sql.= ' AND t.fk_user = '.$user->id;
 if (!empty($fk_soc) && $fk_soc > 0) $sql.= ' AND t.fk_soc = '.$fk_soc;
 if (!empty($fk_product) && $fk_product > 0) $sql.= ' AND o.fk_product = '.$fk_product;
