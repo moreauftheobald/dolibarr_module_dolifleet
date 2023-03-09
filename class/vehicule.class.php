@@ -1128,7 +1128,7 @@ class doliFleetVehicule extends SeedObject
 		}
 		$sql .= " AND (op.or_next IS NULL OR op.or_next=0) ";
 		$sql .= " AND op.date_next IS NOT NULL";
-		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(), 'm', (int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION * -1)) . "'";
+		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(),  (int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION, 'm')) . "'";
 
 		$resql = $this->db->query($sql);
 
