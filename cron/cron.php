@@ -237,9 +237,10 @@ class cron_dolifleet
 						}
 						$dt = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
 
-						if ($dt<$operation->date_next) {
+						if ($dt<$operation->date_next || empty($operation->delai_from_last_op)) {
 							$operation->date_next = $dt;
 						}
+
 					} else {
 						$operation->date_next = dol_now();
 					}

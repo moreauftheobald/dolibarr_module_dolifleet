@@ -119,7 +119,7 @@ $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$operation->table_element.' o ON o.fk_vehi
 $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON te.fk_object=t.rowid ';
 
 $sql.= ' WHERE 1=1';
-$sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).')';
+$sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).') AND t.status = 1';
 if ($conf->entity!=1) {
 	$sql .= ' AND te.atelier IN (' . $conf->entity . ')';
 }
@@ -202,7 +202,6 @@ $listViewConfig = array(
 		,'t_km_date' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'km_date')
 		,'t_fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'),'table' => 't' ,'field' => 'fk_contract_type')
 		,'t_date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'date_end_contract')
-		,'t_status' => array('search_type' => doliFleetVehicule::$TStatus,'to_translate'=>true,'table' => 't' ,'field' => 'status') // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
 		,'o_fk_product' =>  array('search_type' => 'override', 'override'=> $form->select_produits($fk_product, 'fk_product', '1', 0, 0, 1, 2, '', 0, array(), 0, '1', 0, '', 1, '', null, 1))
 		,'o_km' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km')
 		,'o_delai_from_last_op' =>  array('search_type' => true, 'table' => 'o', 'field' => 'delai_from_last_op')
@@ -226,7 +225,6 @@ $listViewConfig = array(
 		,'t_fk_vehicule_mark' => '_getValueFromId("@val@", "dictionaryVehiculeMark")'
 		,'t_fk_soc'			=> '_getSocieteNomUrl("@val@")'
 		,'t_fk_contract_type' => '_getValueFromId("@val@", "dictionaryContractType")'
-		,'t_status' => 'doliFleetVehicule::LibStatut("@val@", 5)'
 		,'o_fk_product' => '_getProductNomUrl("@val@")'
 		,'o_on_time' => '_getBadgeLate("@val@")'
 		,'o_or_next' => '_getORNomUrl("@val@")'
