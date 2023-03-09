@@ -219,18 +219,27 @@ class cron_dolifleet
 					$this->output .= "Erreur Fetch:" . $operation->error . implode(',', $operation->errors);
 					return $resultFetch;
 				}
+				if(!empty($operation->delay_from_last_op)){
+					$operation->date_next = dol_time_plus_duree($operation->date_done, (int)$operation->delay_from_last_op, 'm');
+				}
+
 				if (!empty($operation->km)) {
 					if (empty($operation->km_next)) {
 						$operation->km_next =$operation->km_done+$operation->km;
 					}
 					$diffKm = $operation->km_next - $TKmKMLast[$operation->fk_vehicule];
+
 					if ($diffKm > 0) {
 						$nbDays=0;
 						if (array_key_exists($operation->fk_vehicule, $TKmAvg) && !empty($TKmAvg[$operation->fk_vehicule])) {
 							$nbDays = $diffKm / $TKmAvg[$operation->fk_vehicule];
 						}
 						$dt = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
-						if ($dt<$operation->date_next) {
+
+
+
+
+						if (empty($operation->date_next) || $dt<$operation->date_next) {
 							$operation->date_next = $dt;
 						}
 					} else {
