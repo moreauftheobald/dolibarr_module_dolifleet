@@ -330,7 +330,13 @@ class dolifleetVehiculeOperation extends SeedObject
 		}
 
 		if (empty($this->km) && !empty($this->delai_from_last_op)) {
-			$this->date_next = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
+			$dt = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
+			if($dt>dol_now()){
+				$this->date_next = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
+			} else {
+				$this->date_next = dol_now();
+			}
+
 		}
 
 		if ($this->date_next<=dol_now() && empty($this->or_next)) {

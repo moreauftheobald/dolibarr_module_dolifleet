@@ -275,7 +275,14 @@ class cron_dolifleet
 						}
 					}
 				}
+				if($operation->date_next < dol_now()){
 
+					$operation->date_next = dol_now();
+					/*if($operation->fk_vehicule == 1 && $operation->fk_product == 5088){
+						var_dump($operation,dol_now());
+						exit;
+					}*/
+				}
 				$resultUpd = $operation->update($user);
 				if ($resultUpd < 0) {
 					$this->output .= "Erreur Update:" . $operation->error . implode(',', $operation->errors);
