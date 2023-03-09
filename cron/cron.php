@@ -219,8 +219,9 @@ class cron_dolifleet
 					$this->output .= "Erreur Fetch:" . $operation->error . implode(',', $operation->errors);
 					return $resultFetch;
 				}
-				if(!empty($operation->delay_from_last_op)){
-					$operation->date_next = dol_time_plus_duree($operation->date_done, (int)$operation->delay_from_last_op, 'm');
+
+				if(!empty($operation->delai_from_last_op) && $operation->delai_from_last_op > 0){
+					$operation->date_next = dol_time_plus_duree($operation->date_done, (int)$operation->delai_from_last_op, 'm');
 				}
 
 				if (!empty($operation->km)) {

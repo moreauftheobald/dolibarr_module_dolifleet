@@ -68,7 +68,7 @@ class dolifleetVehiculeOperation extends SeedObject
 
 	public $km;
 
-	public $delay_from_last_op;
+	public $delai_from_last_op;
 
 	public $date_done;
 
