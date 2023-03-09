@@ -230,7 +230,7 @@ $listViewConfig = array(
 		,'o_fk_product' => '_getProductNomUrl("@val@")'
 		,'o_on_time' => '_getBadgeLate("@val@")'
 		,'o_or_next' => '_getORNomUrl("@val@")'
-	), 'sortfield'=> 'o.date_next', 'sortorder' => 'desc'
+	), 'sortfield'=> 'o.date_next', 'sortorder' => 'asc'
 );
 
 $r = new Listview($db, 'dolifleet');
