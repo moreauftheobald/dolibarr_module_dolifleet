@@ -222,6 +222,7 @@ class cron_dolifleet
 
 				if(!empty($operation->delai_from_last_op) && $operation->delai_from_last_op > 0){
 					$operation->date_next = dol_time_plus_duree($operation->date_done, (int)$operation->delai_from_last_op, 'm');
+					$operation->date_due = dol_time_plus_duree($operation->date_done, (int)$operation->delai_from_last_op, 'm');
 				}
 
 				if (!empty($operation->km)) {
@@ -229,9 +230,8 @@ class cron_dolifleet
 						$operation->km_next =$operation->km_done+$operation->km;
 					}
 					$diffKm = $operation->km_next - $TKmKMLast[$operation->fk_vehicule];
-
+					$nbDays=0;
 					if ($diffKm > 0) {
-						$nbDays=0;
 						if (array_key_exists($operation->fk_vehicule, $TKmAvg) && !empty($TKmAvg[$operation->fk_vehicule])) {
 							$nbDays = $diffKm / $TKmAvg[$operation->fk_vehicule];
 						}
@@ -239,10 +239,21 @@ class cron_dolifleet
 
 						if ($dt<$operation->date_next || empty($operation->delai_from_last_op)) {
 							$operation->date_next = $dt;
+							$operation->date_due = $dt;
 						}
 
 					} else {
+						if (array_key_exists($operation->fk_vehicule, $TKmAvg) && !empty($TKmAvg[$operation->fk_vehicule])) {
+							$nbDays = $diffKm / $TKmAvg[$operation->fk_vehicule];
+						}
+						$dt2 = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
+						if(empty($operation->date_due)){
+							$operation->date_due = $dt2;
+						}
 						$operation->date_next = dol_now();
+						if($operation->date_due > dol_now()){
+							$operation->date_due = dol_now();
+						}
 					}
 				}
 
@@ -276,12 +287,7 @@ class cron_dolifleet
 					}
 				}
 				if($operation->date_next < dol_now()){
-
 					$operation->date_next = dol_now();
-					/*if($operation->fk_vehicule == 1 && $operation->fk_product == 5088){
-						var_dump($operation,dol_now());
-						exit;
-					}*/
 				}
 				$resultUpd = $operation->update($user);
 				if ($resultUpd < 0) {

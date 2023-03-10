@@ -72,6 +72,8 @@ class dolifleetVehiculeOperation extends SeedObject
 
 	public $date_done;
 
+	public $date_due;
+
 	public $rang;
 
 	public $km_done;
@@ -164,12 +166,20 @@ class dolifleetVehiculeOperation extends SeedObject
 			'position' => 85,
 		),
 
+		'date_due' => array(
+			'type' => 'date',
+			'label' => 'VehiculeOperationDateDue',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 90,
+		),
+
 		'km_next' => array(
 			'type' => 'double',
 			'label' => 'VehiculeOperationKmNext',
 			'visible' => 1,
 			'enabled' => 1,
-			'position' => 90,
+			'position' => 95,
 		),
 
 		'on_time' => array(
@@ -177,7 +187,7 @@ class dolifleetVehiculeOperation extends SeedObject
 			'label' => 'VehiculeOperationOnTime',
 			'visible' => 1,
 			'enabled' => 1,
-			'position' => 95,
+			'position' => 100,
 		),
 
 		'or_next' => array(
@@ -185,7 +195,7 @@ class dolifleetVehiculeOperation extends SeedObject
 			'label' => 'VehiculeOperationNextOR',
 			'visible' => 1,
 			'enabled' => 1,
-			'position' => 100,
+			'position' => 105,
 			'default' => null,
 		)
 
@@ -205,6 +215,7 @@ class dolifleetVehiculeOperation extends SeedObject
 
 		$this->date_next = null;
 		$this->date_done = null;
+		$this->date_due = null;
 
 		$this->entity = $conf->entity;
 	}
@@ -331,6 +342,7 @@ class dolifleetVehiculeOperation extends SeedObject
 
 		if (empty($this->km) && !empty($this->delai_from_last_op)) {
 			$dt = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
+			$this->date_due = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
 			if($dt>dol_now()){
 				$this->date_next = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
 			} else {

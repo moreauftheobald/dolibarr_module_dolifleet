@@ -117,6 +117,7 @@ VehiculeOperation=Opération
 VehiculeOperationDelay=Délais depuis dernière opé.
 VehiculeOperationLastDateDone=Date dernière opé.
 VehiculeOperationLastKmDone=Km dernière opé.
+VehiculeOperationDateDue=Date réele procaine opération
 dolifleetRentalProposal=Proposition de loyers
 doliFleetRentalProposalCard=Fiche proposition de loyers
 ShowdolifleetRentalProposal=Voir la proposition de loyers

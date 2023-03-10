@@ -122,7 +122,9 @@ $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON
 
 $sql.= ' WHERE 1=1';
 $sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).') AND t.status = 1';
-$sql .= " AND o.date_next < '".$db->idate(dol_time_plus_duree(dol_now(),(int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION ,'m'))."'";
+if($conf->entity !=1) {
+	$sql .= " AND o.date_next < '" . $db->idate(dol_time_plus_duree(dol_now(), (int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION, 'm')) . "'";
+}
 if ($conf->entity!=1) {
 	$sql .= ' AND te.atelier IN (' . $conf->entity . ')';
 }
@@ -191,6 +193,7 @@ $listViewConfig = array(
 		,'t_date_end_contract'=>'date'
 		,'o_date_done'=>'date'
 		,'o_date_next'=>'date'
+		,'o_date_due'=>'date'
 	)
 	,'search' => array(
 		't_vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
@@ -211,6 +214,7 @@ $listViewConfig = array(
 		,'o_date_done' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_done')
 		,'o_km_done' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km_done')
 		,'o_date_next' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_next')
+		,'o_date_due' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_due')
 		,'o_km_next' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km_next')
 		,'o_on_time' =>  array('search_type' => (array('1'=>$langs->trans('VehiculeOperationOnTime'))), 'table' => 'o', 'field' => 'on_time',)
 		,'o_or_next' =>  array('search_type' => 'override', 'override'=>$form->selectarray('or_next',array(0=>$langs->trans('Empty'),1=>$langs->trans('NotEmpty')),$or_next,1))
