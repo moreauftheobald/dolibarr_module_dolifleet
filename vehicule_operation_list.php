@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+global $conf;
+
 require 'config.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
@@ -120,6 +122,7 @@ $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON
 
 $sql.= ' WHERE 1=1';
 $sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).') AND t.status = 1';
+$sql .= " AND o.date_next < '".$db->idate(dol_time_plus_duree(dol_now(),(int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION ,'m'))."'";
 if ($conf->entity!=1) {
 	$sql .= ' AND te.atelier IN (' . $conf->entity . ')';
 }
