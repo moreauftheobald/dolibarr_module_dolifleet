@@ -100,6 +100,11 @@ function vehicule_prepare_head(doliFleetVehicule $object)
 	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">' . ($nbFiles + $nbLinks) . '</span>';
 	$head[$h][2] = 'document';
 	$h++;
+	$nbOperationOrder = getNbORVehicle($object->id);
+	$head[$h][0] = dol_buildpath('operationorder/list.php?&origin=vehicule&originid=' . $object->id , 1);
+	$head[$h][1] = $langs->trans('CliTheobaldORList') . '<span class="badge marginleftonlyshort">' . ($nbOperationOrder >= 0 ? $nbOperationOrder : 0) . '</span>';
+	$head[$h][2] = 'list';
+
 
 	// Show more tabs from modules
 	// Entries must be declared in modules descriptor with line
@@ -649,6 +654,27 @@ function printBannerVehicleCard($vehicle)
 	dol_banner_tab($vehicle, 'vin', $linkback, 1, 'vin', 'ref', $morehtmlref, '', 0, '', '');
 }
 
+
+function getNbORVehicle($idvehicle)
+{
+	global $db;
+
+	$sql = 'SELECT COUNT(o.rowid) as nb FROM ' . MAIN_DB_PREFIX . 'operationorder as o ';
+	$sql .= ' WHERE o.fk_vehicule = ' . $idvehicle;
+	$sql .= ' AND o.entity IN (' . getEntity('operationorder') . ')';
+	$resql = $db->query($sql);
+
+	if ($resql) {
+		$obj = $db->fetch_object($resql);
+
+		$nbOperationOrder = $obj->nb;
+
+		return $nbOperationOrder;
+
+	} else {
+		return -1;
+	}
+}
 
 /**
 	 * @param       $method
