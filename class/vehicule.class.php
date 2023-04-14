@@ -466,7 +466,7 @@ class doliFleetVehicule extends SeedObject
 			$sql .= " AND date_start < '" . $this->db->idate($date_end) . "'";
 		if (!empty($date_start))
 			$sql .= " AND date_end > '" . $this->db->idate($date_start) . "'";
-		$sql .= " AND fk_soc = " . $this->fk_soc;
+		// $sql .= " AND fk_soc = " . $this->fk_soc;
 		$sql .= " ORDER BY date_start ASC";
 
 		$resql = $this->db->query($sql);
@@ -521,6 +521,44 @@ class doliFleetVehicule extends SeedObject
 		$retDate = $act->verifyDates();
 		if ($retDate) {
 			return $act->create($user);
+		} else {
+			$this->error = $act->error;
+			return -1;
+		}
+	}
+
+	/**
+	 * @param int $type Activity Type
+	 * @param $date_start
+	 * @param $date_end
+	 *
+	 * @return int >0 OK <0 KO
+	 */
+	public function updateActivity($act_id,$type, $date_start, $date_end, $fk_soc)
+	{
+		global $user;
+		if (empty($type) || $type == '-1') {
+			$this->error = "ErrNoActivityType";
+			return -1;
+		}
+
+		dol_include_once("/dolifleet/class/vehiculeActivity.class.php");
+		$act = new doliFleetVehiculeActivity($this->db);
+		$result = $act->fetch($act_id);
+		if ($result < 0) {
+			$this->errors = array_merge($act->errors, array($act->error));
+			return $result;
+		}
+
+		$act->fk_vehicule = $this->id;
+		$act->fk_type = $type;
+		$act->fk_soc = $fk_soc;
+		$act->date_start = $date_start;
+		$act->date_end = $date_end;
+
+		$retDate = $act->verifyDatesforupdate();
+		if ($retDate) {
+			return $act->update($user);
 		} else {
 			$this->error = $act->error;
 			return -1;

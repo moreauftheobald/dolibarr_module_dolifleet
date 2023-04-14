@@ -130,7 +130,6 @@ class doliFleetVehiculeActivity extends SeedObject
 		$sql.= " WHERE fk_vehicule = ". $this->fk_vehicule;
 		if (!empty($this->date_start)) $sql.= " AND date_end > '" . $this->db->idate($this->date_start) ."'";
 		if (!empty($this->date_end)) $sql.= " AND date_start < '" . $this->db->idate($this->date_end) . "'";
-
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
@@ -142,6 +141,33 @@ class doliFleetVehiculeActivity extends SeedObject
 		else $this->error = $this->db->lasterror();
 
 		return false;
+	}
+
+	public function verifyDatesforupdate()
+	{
+		global $langs;
+
+		$sql = "SELECT COUNT(rowid) as nb FROM ".MAIN_DB_PREFIX.$this->table_element;
+		$sql.= " WHERE fk_vehicule = ". $this->fk_vehicule;
+		$sql.= " AND rowid <> ". $this->id;
+		$sql.= " AND ((date_start < '" . $this->db->idate($this->date_start) ."' AND date_end > '" . $this->db->idate($this->date_start) . "')";
+		$sql.= " OR (date_start < '" . $this->db->idate($this->date_end) ."' AND date_end > '" . $this->db->idate($this->date_end) . "'))";
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$obj = $this->db->fetch_object($resql);
+
+			if (empty($obj->nb)) return true;
+			else $this->error = $langs->trans('ErrAlreadyInActivity');
+		}
+		else $this->error = $this->db->lasterror();
+
+		return false;
+	}
+
+	public function update(User &$user, $notrigger = false)
+	{
+		return parent::update($user, $notrigger);
 	}
 
 }

@@ -303,6 +303,31 @@ if (empty($reshook)) {
 				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
 				exit;
 			}
+
+		case 'updateActivity':
+
+			$act_id=GETPOST('act_id','int');
+			$act_type=GETPOST('activityTypes','int');
+			$date_start=dol_mktime(0,0,0,
+				GETPOST('activityDate_startmonth','int'),
+				GETPOST('activityDate_startday','int'),
+				GETPOST('activityDate_startyear','int'));
+			$date_end=dol_mktime(0,0,0,
+				GETPOST('activityDate_endmonth','int'),
+				GETPOST('activityDate_endday','int'),
+				GETPOST('activityDate_endyear','int'));
+
+			$soc_id = GETPOST('socid','int');
+
+			$ret = $object->updateActivity($act_id,$act_type, $date_start, $date_end, $soc_id);
+
+			if ($ret < 0) {
+				setEventMessages('', $object->errors, "errors");
+				break;
+			} else {
+				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
+				exit;
+			}
 	}
 }
 
@@ -406,6 +431,52 @@ if ($action == 'create') {
 
 			print '<div class="clearboth"></div><br />';
 
+			print '<div class="tabsAction">' . "\n";
+			$parameters = array();
+			$reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
+			if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+
+			if (empty($reshook)) {
+
+				// Modify
+				if (!empty($user->rights->dolifleet->write)) {
+
+					// Modify
+					print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("doliFleetModify") . '</a></div>' . "\n";
+
+					// Clone
+//					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
+
+					// Activer
+					if ($object->status === doliFleetVehicule::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=valid">' . $langs->trans('doliFleetActivate') . '</a></div>' . "\n";
+
+					// Désactiver
+					if ($object->status === doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('doliFleetUnactivate') . '</a></div>' . "\n";
+
+				} else {
+
+					// Modify
+					if ($object->status !== doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("doliFleetModify") . '</a></div>' . "\n";
+
+					// Clone
+//					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
+
+					// Activer
+					if ($object->status === doliFleetVehicule::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans('doliFleetActivate') . '</a></div>' . "\n";
+
+					// Désactiver
+					if ($object->status === doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans('doliFleetUnactivate') . '</a></div>' . "\n";
+
+				}
+
+				if (!empty($user->rights->dolifleet->delete)) {
+					print '<div class="inline-block divButAction"><a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete">' . $langs->trans("doliFleetDelete") . '</a></div>' . "\n";
+				} else {
+					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("doliFleetDelete") . '</a></div>' . "\n";
+				}
+			}
+			print '</div>' . "\n";
+
 			print '<div class="fichecenter">';
 
 			print '<div class="fichehalfleft">';
@@ -455,51 +526,7 @@ if ($action == 'create') {
 			print '</div>';    // fin fichecenter
 			print '<div class="clearboth"></div><br />';
 
-			print '<div class="tabsAction">' . "\n";
-			$parameters = array();
-			$reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-			if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
-			if (empty($reshook)) {
-
-				// Modify
-				if (!empty($user->rights->dolifleet->write)) {
-
-					// Modify
-					print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("doliFleetModify") . '</a></div>' . "\n";
-
-					// Clone
-//					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
-
-					// Activer
-					if ($object->status === doliFleetVehicule::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=valid">' . $langs->trans('doliFleetActivate') . '</a></div>' . "\n";
-
-					// Désactiver
-					if ($object->status === doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('doliFleetUnactivate') . '</a></div>' . "\n";
-
-				} else {
-
-					// Modify
-					if ($object->status !== doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("doliFleetModify") . '</a></div>' . "\n";
-
-					// Clone
-//					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
-
-					// Activer
-					if ($object->status === doliFleetVehicule::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans('doliFleetActivate') . '</a></div>' . "\n";
-
-					// Désactiver
-					if ($object->status === doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans('doliFleetUnactivate') . '</a></div>' . "\n";
-
-				}
-
-				if (!empty($user->rights->dolifleet->delete)) {
-					print '<div class="inline-block divButAction"><a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete">' . $langs->trans("doliFleetDelete") . '</a></div>' . "\n";
-				} else {
-					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("doliFleetDelete") . '</a></div>' . "\n";
-				}
-			}
-			print '</div>' . "\n";
 
 
 			print '</div></div></div>';

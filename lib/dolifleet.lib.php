@@ -202,18 +202,32 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 function printVehiculeActivities($object, $fromcard = false)
 {
 	global $langs, $db, $form;
+
+	$dict = new dictionaryVehiculeActivityType($db);
+	$TTypeActivity = $dict->getAllActiveArray('label');
+
 	print load_fiche_titre($langs->trans('VehiculeActivities'), '', '');
+
+	if (GETPOST('action', 'alpha') == 'editActivity') {
+		$actionForm='updateActivity';
+	} else {
+		$actionForm='addActivity';
+	}
 
 	print '<form id="activityForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-	print '<input type="hidden" name="action" value="addActivity">';
+	print '<input type="hidden" name="action" value="'.$actionForm.'">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
+	if (!empty(GETPOST('act_id', 'int'))) {
+		print '<input type="hidden" name="act_id" value="' . GETPOST('act_id', 'int') . '">';
+	}
 
 	print '<table class="border" width="100%">' . "\n";
 	print '<tr class="liste_titre">
 					<td align="center">' . $langs->trans('ActivityType') . '</td>
 					<td align="center">' . $langs->trans('DateStart') . '</td>
 					<td align="center">' . $langs->trans('DateEnd') . '</td>
+					<td align="center">' . $langs->trans('soc') . '</td>
 					<td></td>
 					</tr>';
 
@@ -225,44 +239,63 @@ function printVehiculeActivities($object, $fromcard = false)
 
 	$ret = $object->getActivities($date_start, $date_end);
 	if ($ret == 0) {
-		print '<tr><td align="center" colspan="4">' . $langs->trans('NodoliFleetActivity') . '</td></tr>';
+		print '<tr><td align="center" colspan="5">' . $langs->trans('NodoliFleetActivity') . '</td></tr>';
 	} else if ($ret > 0) {
 		/** @var doliFleetVehiculeActivity $activity */
 		foreach ($object->activities as $activity) {
-			print '<tr>';
-			print '<td align="center">' . $activity->getType() . '</td>';
-			print '<td align="center">' . dol_print_date($activity->date_start, "%d/%m/%Y") . '</td>';
-			print '<td align="center">' . (!empty($activity->date_end) ? dol_print_date($activity->date_end, "%d/%m/%Y") : '') . '</td>';
-			print '<td align="center">';
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '">' . img_delete() . '</a>';
-			print '</td>';
-			print '</tr>';
+			if (GETPOST('action', 'alpha') == 'editActivity'
+				&& $activity->id == GETPOST('act_id', 'int')) {
+				print '<tr>';
+				print '<td align="center">' . $form->selectArray('activityTypes', $TTypeActivity, $activity->fk_type, 1, 0, 0, 'style="width: 100%"') . '</td>';
+				print '<td align="center">' . $form->selectDate($activity->date_start, 'activityDate_start') . '</td>';
+				print '<td align="center">' . $form->selectDate($activity->date_end, 'activityDate_end') . '</td>';
+				print '<td align="center">' .$form->select_thirdparty_list($activity->fk_soc, 'socid', 's.client = 1', '',0, 0, array(), '', 0, 0, $morecss = '', 'style="width: 80%"'). '</td>';
+				print '<td align="center"><input class="button" type="submit" name="addActivity" value="' . $langs->trans("Save") . '"></td>';
+				print '</tr>';
+			} else {
+				print '<tr>';
+				print '<td align="center">' . $activity->getType() . '</td>';
+				print '<td align="center">' . dol_print_date($activity->date_start, "%d/%m/%Y") . '</td>';
+				print '<td align="center">' . (!empty($activity->date_end) ? dol_print_date($activity->date_end, "%d/%m/%Y") : '') . '</td>';
+				print '<td align="center">' . $activity->showOutputField($activity->fields['fk_soc'], 'fk_soc', $activity->fk_soc) . '</td>';
+				print '<td align="center">';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '">' . img_edit() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '">' . img_delete() . '</a>';
+				print '</td>';
+				print '</tr>';
+			}
 		}
 	}
+	if (GETPOST('action', 'alpha') !== 'editActivity'
+		&& GETPOST('action', 'alpha') !== 'delActivity') {
+		// ligne nouvelle activité
+		print '<tr id="newActivity">';
+		print '<td align="center">';
 
-	// ligne nouvelle activité
-	print '<tr id="newActivity">';
-	print '<td align="center">';
+		$dict = new dictionaryVehiculeActivityType($db);
+		$TTypeActivity = $dict->getAllActiveArray('label');
+		print $form->selectArray('activityTypes', $TTypeActivity, GETPOST('activityTypes'), 1);
 
-	$dict = new dictionaryVehiculeActivityType($db);
-	$TTypeActivity = $dict->getAllActiveArray('label');
-	print $form->selectArray('activityTypes', $TTypeActivity, GETPOST('activityTypes'), 1);
+		print '</td>';
 
-	print '</td>';
+		print '<td align="center">';
+		print $form->selectDate('', 'activityDate_start');
+		print '</td>';
 
-	print '<td align="center">';
-	print $form->selectDate('', 'activityDate_start');
-	print '</td>';
+		print '<td align="center">';
+		print $form->selectDate('', 'activityDate_end');
+		print '</td>';
 
-	print '<td align="center">';
-	print $form->selectDate('', 'activityDate_end');
-	print '</td>';
+		print '<td align="center">';
+		print $object->showOutputField($object->fields['fk_soc'], 'fk_soc', $object->fk_soc);
+		print '</td>';
 
-	print '<td align="center">';
-	print '<input class="button" type="submit" name="addActivity" value="' . $langs->trans("Add") . '">';
-	print '</td>';
+		print '<td align="center">';
+		print '<input class="button" type="submit" name="addActivity" value="' . $langs->trans("Add") . '">';
+		print '</td>';
 
-	print '</tr>';
+		print '</tr>';
+	}
 
 	print '</table>';
 
@@ -305,7 +338,7 @@ function printLinkedVehicules($object, $fromcard = false)
 		$date_end = strtotime("+3 month", $date_start);
 	}
 
-	$object->getLinkedVehicules($date_start, $date_end);
+	$object->getLinkedVehicules();
 	if (empty($object->linkedVehicules)) {
 		print '<tr><td align="center" colspan="4">' . $langs->trans('NodoliFleet') . '</td></tr>';
 	} else {
@@ -375,10 +408,15 @@ function printLinkedVehicules($object, $fromcard = false)
  */
 function printVehiculeRental($object, $fromcard = false, $external = false)
 {
-	global $langs, $form;
+	global $langs, $form, $db;
 
 	$title = $langs->trans('VehiculeRentals');
-	if ($external) $title .= ' ' . $langs->trans('Customer');
+	if ($external) {
+		dol_include_once('dolifleet/class/rentalProposal.class.php');
+		$prop = new dolifleetRentalProposal($db);
+		$det = new dolifleetRentalProposalDet($db);
+		$title .= ' ' . $langs->trans('Customer');
+	}
 
 	print load_fiche_titre($title, '', '');
 
@@ -389,10 +427,17 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 
 	print '<table class="border" width="100%">' . "\n";
 	print '<tr class="liste_titre">';
+	if($external){
+		print '<td align="center">' . $langs->trans('soc') . '</td>';
+	}
 	print '<td align="center">' . $langs->trans('DateStart') . '</td>';
 	print '<td align="center">' . $langs->trans('DateEnd') . '</td>';
 	print '<td align="center">' . $langs->trans('TotalHT') . '</td>';
-	print '<td align="center"></td>';
+	if(!$external){
+		print '<td align="center"></td>';
+	}else {
+		print '<td align="center">' . $langs->trans('Prefac') . '</td>';
+	}
 	print '</tr>';
 
 	$date_start = $date_end = '';
@@ -404,13 +449,16 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 	$object->getRentals($date_start, $date_end, $external);
 	if (empty($object->rentals)) {
 		print '<tr>';
-		print '<td align="center" colspan="4">' . $langs->trans('NodoliFleet') . '</td>';
+		print '<td align="center" colspan="5">' . $langs->trans('NodoliFleet') . '</td>';
 		print '</tr>';
 	} else {
 
 		foreach ($object->rentals as $rent) {
 			print '<tr>';
-
+			if($external){
+				//print '<td align="center">' . $rent->fk_soc . '</td>';
+				print '<td align="center">' . $rent->showOutputField($rent->fields['fk_soc'], 'fk_soc', $rent->fk_soc) . '</td>';
+			}
 			print '<td align="center">';
 			print dol_print_date($rent->date_start, "%d/%m/%Y");
 			print '</td>';
@@ -424,7 +472,13 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 			print '</td>';
 
 			print '<td align="center">';
-			if (!$external) print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delRental&rent_id=' . $rent->id . '">' . img_delete() . '</a>';
+			if (!$external) {
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delRental&rent_id=' . $rent->id . '">' . img_delete() . '</a>';
+			} else {
+				$det->fetch($rent->fk_proposaldet);
+				$prop->fetch($det->fk_rental_proposal);
+				print $prop->getNomUrl(1);
+			}
 			print '</td>';
 
 			print '</tr>';

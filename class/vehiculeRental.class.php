@@ -83,7 +83,7 @@ class dolifleetVehiculeRental extends SeedObject
 		'fk_soc' => array(
 			'type' => 'integer:Societe:societe/class/societe.class.php',
 			'enabled' => 1,
-			'visible' => 0,
+			'visible' => 1,
 			'position' => 90,
 			'index' => 1,
 		),
