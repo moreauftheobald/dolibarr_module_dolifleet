@@ -36,6 +36,11 @@ class DolifleetApi extends DolibarrApi
     public $vehicule;
 
     /**
+     * @var VehiculeOperation $vehiculeOperation
+     */
+    public $vehiculeOperation;
+
+    /**
      * Contructor
      *
      *
@@ -47,8 +52,10 @@ class DolifleetApi extends DolibarrApi
         $this->db = &$db;
 
         require_once __DIR__ . '/vehicule.class.php';
+        require_once __DIR__ . '/vehiculeOperation.class.php';
 
         $this->vehicule = new doliFleetVehicule($this->db);
+        $this->vehiculeOperation = new dolifleetVehiculeOperation($this->db);
     }
 
     /**
@@ -155,9 +162,7 @@ class DolifleetApi extends DolibarrApi
                 $obj = $this->db->fetch_object($result);
                 $vehiculeStatic = new doliFleetVehicule($this->db);
 
-                if ($vehiculeStatic->fetch($obj->rowid)) {
-                    // Add external contacts ids
-                    $vehiculeStatic->contacts_ids = $vehiculeStatic->liste_contact(-1, 'external', 1);
+                if ($vehiculeStatic->fetch($obj->rowid, true)) {
                     $obj_ret[] = $this->_cleanObjectDatas($vehiculeStatic);
                 }
 
@@ -169,6 +174,117 @@ class DolifleetApi extends DolibarrApi
 
         if (!count($obj_ret)) {
             throw new RestException(404, 'No vehicule found');
+        }
+
+        return $obj_ret;
+    }
+
+    /**
+     * Get properties of an vehicule Operation object by id
+     *
+     * Return an array with vehicule Operation informations
+     *
+     * @param       int         $id            ID of order
+     * @return 	array|mixed data without useless information
+     *
+     * @url GET    vehiculeoperation/{id}
+     * @throws 	RestException
+     */
+    public function getVehiculeOperation($id)
+    {
+        if (!DolibarrApiAccess::$user->rights->dolifleet->read) {
+            throw new RestException(401);
+        }
+
+
+        $result = $this->vehiculeOperation->fetch($id, true);
+
+        if (!$result) {
+            throw new RestException(404, 'Vehicule Operation not found');
+        }
+
+        return $this->_cleanObjectDatas($this->vehiculeOperation);
+    }
+
+    /**
+     * List Vehicule Operations
+     *
+     * Get a list of Vehicule Operations
+     *
+     * @param string	       $sortfield	        Sort field
+     * @param string	       $sortorder	        Sort order
+     * @param int		       $limit		        Limit for list
+     * @param int		       $page		        Page number
+     * @param string           $sqlfilters          Other criteria to filter answers separated by a comma. Syntax example "(t.ref:like:'SO-%') and (t.date_creation:<:'20160101')"
+     * @return  array                               Array of order objects
+     *
+     * @url GET    vehiculeoperations Operations
+     * 
+     * @throws RestException 404 Not found
+     * @throws RestException 503 Error
+     */
+    public function indexOperation($sortfield = "t.rowid", $sortorder = 'ASC', $limit = 100, $page = 0, $sqlfilters = '')
+    {
+        global $user;
+
+        if (!DolibarrApiAccess::$user->rights->dolifleet->read) {
+            throw new RestException(401);
+        }
+
+        $obj_ret = array();
+
+        $sql = "SELECT t.rowid";
+
+        $sql .= " FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation as t";
+
+        $sql .= ' WHERE 1=1';
+
+        // Add sql filters
+        if ($sqlfilters) {
+            if (!DolibarrApi::_checkFilters($sqlfilters)) {
+                throw new RestException(503, 'Error when validating parameter sqlfilters ' . $sqlfilters);
+            }
+            
+            $regexstring = '\(([^:\'\(\)]+:[^:\'\(\)]+:[^\(\)]+)\)';
+            $sql .= " AND (" . preg_replace_callback(
+                            '/' . $regexstring . '/', 'DolibarrApi::_forge_criteria_callback', $sqlfilters) . ")";
+        }
+
+        $sql .= $this->db->order($sortfield, $sortorder);
+
+        if ($limit) {
+            if ($page < 0) {
+                $page = 0;
+            }
+            $offset = $limit * $page;
+
+            $sql .= $this->db->plimit($limit + 1, $offset);
+        }
+
+        dol_syslog("API Rest request");
+        $result = $this->db->query($sql);
+
+        if ($result) {
+            $num = $this->db->num_rows($result);
+            $min = min($num, ($limit <= 0 ? $num : $limit));
+            $i = 0;
+
+            while ($i < $min) {
+                $obj = $this->db->fetch_object($result);
+                $vehiculeOperationStatic = new doliFleetVehiculeOperation($this->db);
+
+                if ($vehiculeOperationStatic->fetch($obj->rowid, true)) {
+                    $obj_ret[] = $this->_cleanObjectDatas($vehiculeOperationStatic);
+                }
+
+                $i++;
+            }
+        } else {
+            throw new RestException(503, 'Error when retrieve vehicule operation list : ' . $this->db->lasterror());
+        }
+
+        if (!count($obj_ret)) {
+            throw new RestException(404, 'No vehicule operation found');
         }
 
         return $obj_ret;
@@ -195,6 +311,7 @@ class DolifleetApi extends DolibarrApi
 
 
         $result = $this->vehicule->fetch($id, true, $ref);
+
         if (!$result) {
             throw new RestException(404, 'Operation Order not found');
         }
