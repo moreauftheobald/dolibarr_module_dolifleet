@@ -437,7 +437,52 @@ if ($action == 'create') {
 			if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 			if (empty($reshook)) {
+				if ($object->status == 1) {
+					print '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/operationorder/operationorder_card.php', 1) . '?action=create&mainmenu=commercial&fk_soc=' . $object->fk_soc . '&fk_vehicule=' . $object->id . '">' . $langs->trans("cliCreateOperationOrderFromVehicule") . '</a></div>' . "\n";
+					print '<input type="hidden" name="ordercreatedid" id="ordercreatedid" />';
 
+					?>
+					<script type="text/javascript">
+						function elementtoplan() {
+							$div = $('<div id="elementtoplan"  title="<?php print $langs->trans('OperationOrderToCreate'); ?>"><iframe width="100%" height="100%" frameborder="0" src="<?php print dol_buildpath('/clitheobald/tpl/ordertoplan.php?vhid=' . $object->id, 1); ?>&origin=vehicule"></iframe></div>');
+							$div.dialog({
+								modal: true
+								, width: "1200px"
+								, height: $(window).height() - 200
+								, close: function () {
+									if ($('#ordercreatedid').val() > 0) {
+										document.location.href = '<?php echo dol_buildpath('operationorder/operationorder_card.php', 2) . '?id=';?>' + $('#ordercreatedid').val();
+									} else {
+										document.location.reload(true);
+									}
+								}
+							});
+						};
+
+						function nonplanned() {
+							$div = $('<div id="nonplanned" title="<?php print $langs->trans('operationnonplanifiees'); ?>"><iframe width="100%" height="100%" frameborder="0" src="<?php print dol_buildpath('/clitheobald/tpl/nonplanned.php?vhid=' . $object->id, 1) ?>&origin=vehicule"></iframe></div>');
+							$div.dialog({
+								modal: true
+								, width: "1200px"
+								, height: $(window).height() - 200
+								, close: function () {
+									if ($('#ordercreatedid').val() > 0) {
+										document.location.href = '<?php echo dol_buildpath('operationorder/operationorder_card.php', 2) . '?id=';?>' + $('#ordercreatedid').val();
+									} else {
+										document.location.reload(true);
+									}
+								}
+							});
+						}
+					</script>
+					<?php
+				} else {
+					?>
+					<script type="text/javascript">
+						$('.dolifleet_vehicule_extras_ortocreate').children().hide();
+					</script>
+					<?php
+				}
 				// Modify
 				if (!empty($user->rights->dolifleet->write)) {
 
