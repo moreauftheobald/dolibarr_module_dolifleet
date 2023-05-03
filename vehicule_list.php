@@ -22,7 +22,7 @@ dol_include_once('dolifleet/class/dictionaryContractType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeMark.class.php');
 
-if(empty($user->rights->dolifleet->read)) accessforbidden();
+if (empty($user->rights->dolifleet->read)) accessforbidden();
 
 $langs->load('abricot@abricot');
 $langs->load('dolifleet@dolifleet');
@@ -47,10 +47,9 @@ $dictVM = new dictionaryVehiculeMark($db);
 
 $hookmanager->initHooks(array('vehiculelist'));
 
-if ($object->isextrafieldmanaged)
-{
-    $extrafields = new ExtraFields($db);
-    $extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
+if ($object->isextrafieldmanaged) {
+	$extrafields = new ExtraFields($db);
+	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
 }
 
 /*
@@ -61,18 +60,15 @@ $parameters=array();
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend')
-{
-    $massaction = '';
+if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+	$massaction = '';
 }
 
-if (GETPOST('button_removefilter_x','alpha') || GETPOST('button_removefilter.x','alpha') || GETPOST('button_removefilter','alpha'))
-{
+if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
 	unset($fk_soc);
 }
 
-if (empty($reshook))
-{
+if (empty($reshook)) {
 	// do action from GETPOST ...
 }
 
@@ -101,10 +97,9 @@ print $formconfirm;
 $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
 
-if (!empty($object->isextrafieldmanaged))
-{
+if (!empty($object->isextrafieldmanaged)) {
 	$keys = array_keys($extralabels);
-	if(!empty($keys)) {
+	if (!empty($keys)) {
 		$fieldList .= ', et.' . implode(', et.', $keys);
 	}
 }
@@ -118,9 +113,8 @@ $sql.=$hookmanager->resPrint;
 
 $sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
 
-if (!empty($object->isextrafieldmanaged) && array_keys($extralabels))
-{
-    $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.$object->table_element.'_extrafields et ON (et.fk_object = t.rowid)';
+if (!empty($object->isextrafieldmanaged) && array_keys($extralabels)) {
+	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.$object->table_element.'_extrafields et ON (et.fk_object = t.rowid)';
 }
 
 $sql.= ' WHERE 1=1';
@@ -145,19 +139,16 @@ if (empty($nbLine)) $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user
 
 $TTitle = array();
 
-foreach ($object->fields as $fieldKey => $infos)
-{
+foreach ($object->fields as $fieldKey => $infos) {
 	if (isset($infos['label']) && $infos['visible'] > 0) $TTitle[$fieldKey] = $langs->trans($infos['label']);
 }
 
 $TTitle['status'] = $langs->trans('Status');
 
-if (!empty(array_keys($extralabels)))
-{
-	foreach ($extralabels as $k => $v)
-	{
-		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k],1);
-			if (in_array(abs($permit),array(1,2,4)) && !empty(abs($permit))) {
+if (!empty(array_keys($extralabels))) {
+	foreach ($extralabels as $k => $v) {
+		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k], 1);
+		if (in_array(abs($permit), array(1,2,4)) && !empty(abs($permit))) {
 			$TTitle[$k] = $v;
 		}
 	}
@@ -225,27 +216,23 @@ $listViewConfig = array(
 	)
 );
 
-if (!empty($extralabels))
-{
-	foreach ($extralabels as $k => $v)
-	{
-		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k],1);
-		if (in_array(abs($permit),array(1,2,4)) && !empty(abs($permit))) {
-			$listViewConfig['eval'][$k] = '_evalEF("' . $k . '", "@val@")';
+if (!empty($extralabels)) {
+	foreach ($extralabels as $k => $v) {
+		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k], 1);
+		if (in_array(abs($permit), array(1,2,4)) && !empty(abs($permit))) {
+			$listViewConfig['eval'][$k] = '_evalEF("' . $k . '", "@val@", "'.$object->table_element.'")';
 		}
 	}
-
 }
 
 $r = new Listview($db, 'dolifleet');
 
 // Change view from hooks
 $parameters=array(  'listViewConfig' => $listViewConfig);
-$reshook=$hookmanager->executeHooks('listViewConfig',$parameters,$r);    // Note that $action and $object may have been modified by hook
+$reshook=$hookmanager->executeHooks('listViewConfig', $parameters, $r);    // Note that $action and $object may have been modified by hook
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
-if ($reshook>0)
-{
-    $listViewConfig = $hookmanager->resArray;
+if ($reshook>0) {
+	$listViewConfig = $hookmanager->resArray;
 }
 
 
@@ -269,8 +256,7 @@ function _getObjectNomUrl($id)
 
 	$o = new doliFleetVehicule($db);
 	$res = $o->fetch($id, false);
-	if ($res > 0)
-	{
+	if ($res > 0) {
 		return $o->getNomUrl(1);
 	}
 
@@ -285,8 +271,7 @@ function _getSocieteNomUrl($fk_soc)
 	global $db;
 
 	$soc = new Societe($db);
-	if ($soc->fetch($fk_soc) > 0)
-	{
+	if ($soc->fetch($fk_soc) > 0) {
 		return $soc->getNomUrl(1);
 	}
 
@@ -297,17 +282,15 @@ function _getValueFromId($id, $dictionaryClassname)
 {
 	global $db;
 
-	if (class_exists($dictionaryClassname))
-	{
+	if (class_exists($dictionaryClassname)) {
 		$dict = new $dictionaryClassname($db);
 		return $dict->getValueFromId($id, 'label');
-	}
-	else return '';
+	} else return '';
 }
 
-function _evalEF($key, $val)
+function _evalEF($key, $val, $extrafieldsobjectkey)
 {
 	global $extrafields;
 
-	return $extrafields->showOutputField($key, $val);
+	return $extrafields->showOutputField($key, $val, '', $extrafieldsobjectkey);
 }
