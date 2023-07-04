@@ -593,7 +593,7 @@ function printVehiculeOperations($object)
 				print '<input class="button quatrevingtpercent" type="submit" name="saveOperation" value="' . $langs->trans("Save") . '">';
 				print '</td>';
 			} else {
-				print '<td align="center">' . $operation->getName() . '</td>';
+				print '<td align="left">' . $operation->getName() . '</td>';
 				print '<td align="center">' . (!empty($operation->km) ? price2num($operation->km) : '') . '</td>';
 				print '<td align="center">' . (!empty($operation->delai_from_last_op) ? $operation->delai_from_last_op . ' ' . $langs->trans('Months') : '') . '</td>';
 				print '<td align="center">';
