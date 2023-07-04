@@ -98,7 +98,6 @@ elseif ($reshook > 0) $formconfirm = $hookmanager->resPrint;
 // Print form confirm
 print $formconfirm;
 
-
 $TfieldList=array();
 foreach ($object->fields as $key=>$datafields) {
 	$TfieldList[] = 't.'.$key. ' as t_'.$key;
@@ -141,8 +140,6 @@ $parameters=array('sql' => $sql);
 $reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
 $sql.=$hookmanager->resPrint;
 
-//print $sql;
-
 $formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_dolifleet', 'GET');
 print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 $form = new Form($db);
@@ -158,8 +155,6 @@ foreach ($object->fields as $fieldKey => $infos)
 {
 	if (isset($infos['label']) && $infos['visible'] > 0) $TTitle['t_'.$fieldKey] = $langs->trans($infos['label']);
 }
-
-//$TTitle['t_status'] = $langs->trans('Status');
 
 foreach ($operation->fields as $fieldKey => $infos)
 {
