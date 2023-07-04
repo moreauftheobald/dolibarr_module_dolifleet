@@ -277,7 +277,7 @@ class dolifleetVehiculeOperation extends SeedObject
 	public function getName()
 	{
 		$ret = $this->fetch_product();
-		if ($ret > 0) return $this->product->getNomUrl(1);
+		if ($ret > 0) return $this->product->getNomUrl(1) . ' ' . $this->product->label;
 		else return '';
 	}
 
