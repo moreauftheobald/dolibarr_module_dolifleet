@@ -159,13 +159,13 @@ foreach ($object->fields as $fieldKey => $infos)
 	if (isset($infos['label']) && $infos['visible'] > 0) $TTitle['t_'.$fieldKey] = $langs->trans($infos['label']);
 }
 
-$TTitle['t_status'] = $langs->trans('Status');
+//$TTitle['t_status'] = $langs->trans('Status');
 
 foreach ($operation->fields as $fieldKey => $infos)
 {
 	if (isset($infos['label']) && $infos['visible'] > 0) $TTitle['o_'.$fieldKey] = $langs->trans($infos['label']);
 }
-
+unset($TTitle['o_fk_vehicule']);
 $TTitle['p_label'] = $langs->trans('libelle');
 
 $listViewConfig = array(
