@@ -154,6 +154,7 @@ DateEndLocation=Date de fin de location
 SortiePrevue=Sortie prévue
 DimensionsPneumatiques=Dimensions Pneumatiques
 NbPneu=Nombre de Pneumatique
+AgeVeh=Age
 
 doliFleetModify=Modifier
 doliFleetClone=Cloner

@@ -309,7 +309,7 @@ class doliFleetVehicule extends SeedObject
 		),
 		'age_veh' => array(
 			'type' => 'int',
-			'label' => 'SortiePrevue',
+			'label' => 'AgeVeh',
 			'enabled' => 1,
 			'visible' => 0,
 			'position' => 230
