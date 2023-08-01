@@ -84,7 +84,9 @@ if (empty($reshook)) {
 		case 'add':
 		case 'update':
 			$object->setValues($_REQUEST); // Set standard attributes
-
+			if (GETPOSTISSET('dim_pneu')) {
+				$object->dim_pneu = implode(',', GETPOST('dim_pneu','array'));
+			}
 			if ($object->isextrafieldmanaged) {
 				$ret = $extrafields->setOptionalsFromPost($extralabels, $object);
 				if ($ret < 0) $error++;
@@ -400,14 +402,14 @@ if ($action == 'create') {
 	} else {
 		$object->fields['carrosserie']['visible'] = ($object->fk_vehicule_type == 2) ? 3 : 0;
 		$object->fields['essieu']['visible'] = ($object->fk_vehicule_type == 3) ? 3 : 0;
-		$object->fields['type']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['com']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['sort']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['age']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		if (!empty($object->id) && $action === 'edit') {
 			print '<form method="POST" action="' . $_SERVER["PHP_SELF"] . '">';
 			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -422,7 +424,17 @@ if ($action == 'create') {
 			print '<table class="border centpercent">' . "\n";
 
 			// Common attributes
+			$object->fields['dim_pneu']['visible'] = 0;
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_edit.tpl.php';
+
+			print '<tr class="field_dim_pneu" class="valuefieldcreate dolifleet_vehicule_dim_pneu trextrafields_collapse_dim_pneu">';
+			print '<td class="titlefieldcreate wordbreak">';
+			print $langs->trans($object->fields['dim_pneu']['label']);
+			print '</td>';
+			print '<td id="valuefieldcreate" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
+			print $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], explode(',', $object->dim_pneu), '', 0, '', 0, '100%');
+			print '</td>';
+			print '</tr>';
 
 			// Other attributes
 			include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_edit.tpl.php';
@@ -454,7 +466,26 @@ if ($action == 'create') {
 
 			// Common attributes
 			$keyforbreak = 'atelier';
+			$object->fields['dim_pneu']['visible'] = 0;
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
+
+			print '<tr class="trextrafields_collapse_dim_pneu">';
+			print '<td class="titlefield">';
+			print '<table class="nobordernopadding centpercent">';
+			print '<tbody><tr><td class="">' . $langs->trans($object->fields['dim_pneu']['label']) . '</td></tr></tbody>';
+			print '</table>';
+			print '</td>';
+			print '<td id="dolifleet_vehicule_extras_ortocreate_dim_pneu" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
+			print '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
+			$selected = explode(',', $object->dim_pneu);
+			foreach ($selected as $sel) {
+				print  '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">'.
+					$object->fields['dim_pneu']['arrayofkeyval'][$sel].
+				'</li>';
+			}
+			print '</ul></div>';
+			print '</td>';
+			print '</tr>';
 
 			print '<tr class="trextrafields_collapse_operations">';
 			print '<td class="titlefield">';
