@@ -120,8 +120,7 @@ if (!$resql) {
 } else {
 	dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
 	while ($obj = $db->fetch_object($resql)) {
-		print 'VehId:' . $obj->fk_object . "\n<BR>";
-		print 'operations:' . $obj->op_np . "\n<BR>";
+
 		$ope_array = explode(':', $obj->op_np);
 		if (!empty($ope_array)) {
 			foreach ($ope_array as $prdId) {
@@ -133,18 +132,36 @@ if (!$resql) {
 				$ret = $ope->create($user);
 				if ($ret < 0) {
 					$error++;
+					print 'VehId:' . $obj->fk_object . "\n<BR>";
+					print 'operations:' . $obj->op_np . "\n<BR>";
 					print 'ERROR:' . $ope->error . ' ' . implode(' ', $ope->errors) . "\n<BR>";
 				}
 			}
 		}
 	}
 }
-/*$sql  ='UPDATE '.MAIN_DB_PREFIX.'propal SET fk_input_reason=0 WHERE fk_input_reason<>0';
+$sql  ='UPDATE llx_dolifleet_vehicule as dest, llx_dolifleet_vehicule_extrafields as src
+	SET dest.atelier=src.atelier,
+	dest.carrosserie=src.carrosserie,
+	dest.dfol=src.dfol,
+	dest.essieu=src.essieu,
+	dest.type_custom=src.type,
+	dest.coutm=src.coutm,
+	dest.date_fin_fin=src.date_fin_fin,
+	dest.type_fin=src.type_fin,
+	dest.com_custom=src.com,
+	dest.date_fin_loc=src.date_fin_loc,
+	dest.exit_data=src.sort,
+	dest.age_veh=src.age,
+	dest.dim_pneu=src.dim_pneu,
+	dest.nb_pneu=src.nb_pneu
+	WHERE src.fk_object=dest.rowid';
+print 'SQL atelier:' . $sql . "\n<BR>";
 $resql = $db->query($sql);
 if (!$resql) {
 	print 'ERROR:'.$db->lasterror."\n<BR>";
 	$error++;
-}*/
+}
 
 // -------------------- END OF YOUR CODE --------------------
 

@@ -128,7 +128,7 @@ if($conf->entity !=1) {
 	$sql .= " AND o.date_next < '" . $db->idate(dol_time_plus_duree(dol_now(), (int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION, 'm')) . "'";
 }
 if ($conf->entity!=1) {
-	$sql .= ' AND te.atelier IN (' . $conf->entity . ')';
+	$sql .= ' AND t.atelier IN (' . $conf->entity . ')';
 }
 //if ($type == 'mine') $sql.= ' AND t.fk_user = '.$user->id;
 if (!empty($fk_soc) && $fk_soc > 0) $sql.= ' AND t.fk_soc = '.$fk_soc;

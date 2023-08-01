@@ -217,21 +217,117 @@ class doliFleetVehicule extends SeedObject
 			'position' => 130
 		),
 
-	//        'description' => array(
-	//            'type' => 'text', // or html for WYSWYG
-	//            'label' => 'Description',
-	//            'enabled' => 1,
-	//            'visible' => -1, //  un bug sur la version 9.0 de Dolibarr necessite de mettre -1 pour ne pas apparaitre sur les listes au lieu de la valeur 3
-	//            'position' => 60
-	//        ),
+		'atelier' => array(
+			'type' => 'sellist:entity:label:rowid::visible=1',
+			'label' => 'AtelierPrincipal',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 140
+		),
 
-	//        'fk_user_valid' =>array(
-	//            'type' => 'integer',
-	//            'label' => 'UserValidation',
-	//            'enabled' => 1,
-	//            'visible' => -1,
-	//            'position' => 512
-	//        ),
+		'carrosserie' => array(
+			'type' => 'text', // or html for WYSWYG
+			'label' => 'SNCarrosserie',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 150
+		),
+
+		'dfol' => array(
+			'type' => 'integer',
+			'label' => 'DFolVC',
+			'enabled' => 1,
+			'visible' => 1,
+			'notnull' => 1,
+			'default' => 0,
+			'position' => 160,
+			'arrayofkeyval' => array(
+				0 => 'Non'
+			, 1 => 'Oui'
+			)
+		),
+
+		'essieu' => array(
+			'type' => 'varchar(255)',
+			'label' => 'SNEssieu',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 170
+		),
+
+		'type_custom' => array(
+			'type' => 'int',
+			'label' => 'Type',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 170
+		),
+
+		'coutm' => array(
+			'type' => 'price',
+			'label' => 'CoutMensuel',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 170
+		),
+
+		'date_fin_fin' => array(
+			'type' => 'date',
+			'label' => 'DateFinFinancement',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 180
+		),
+
+		'type_fin' => array(
+			'type' => 'varchar(255)',
+			'label' => 'TypeFinancement',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 190
+		),
+		'com_custom' => array(
+			'type' => 'varchar(255)',
+			'label' => 'Comment',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 200
+		),
+		'date_fin_loc' => array(
+			'type' => 'date',
+			'label' => 'DateEndLocation',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 210
+		),
+		'exit_data' => array(
+			'type' => 'int',
+			'label' => 'SortiePrevue',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 220
+		),
+		'age_veh' => array(
+			'type' => 'int',
+			'label' => 'SortiePrevue',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 230
+		),
+		'dim_pneu' => array(
+			'type' => 'varchar(2000)',
+			'label' => 'DimensionsPneumatiques',
+			'enabled' => 1,
+			'visible' => '1',
+			'position' => 240
+		),
+		'nb_pneu' => array(
+			'type' => 'int',
+			'label' => 'NbPneu',
+			'enabled' => 1,
+			'visible' => '1',
+			'position' => 250
+		),
 
 		'import_key' => array(
 			'type' => 'varchar(14)',
@@ -264,6 +360,11 @@ class doliFleetVehicule extends SeedObject
 	public $km_date;
 	public $fk_contract_type;
 	public $date_end_contract;
+	public $atelier;
+	public $carrosserie;
+	public $dfol;
+	public $essieu;
+	public $type_custom;
 
 
 	/**
@@ -925,7 +1026,7 @@ class doliFleetVehicule extends SeedObject
 		return $ret;
 	}
 
-		/**
+	/**
 	 * @return false|int
 	 */
 	public function getOperationsNp()
@@ -1262,7 +1363,7 @@ class doliFleetVehicule extends SeedObject
 		}
 		$sql .= " AND (op.or_next IS NULL OR op.or_next=0) ";
 		$sql .= " AND op.date_next IS NOT NULL";
-		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(),  (int) $conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION, 'm')) . "'";
+		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(), (int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION, 'm')) . "'";
 
 		$resql = $this->db->query($sql);
 

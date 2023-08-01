@@ -255,11 +255,11 @@ if (empty($reshook)) {
 			$productid = GETPOST('productid', 'int');
 			$km = GETPOST('km', 'int');
 			$delay = GETPOST('delay', 'int');
-			$date_done=dol_mktime(0, 0, 0,
-			GETPOST('date_donemonth', 'int'),
-			GETPOST('date_doneday', 'int'),
-			GETPOST('date_doneyear', 'int'));
-			$km_done=GETPOST('km_done', 'int');
+			$date_done = dol_mktime(0, 0, 0,
+				GETPOST('date_donemonth', 'int'),
+				GETPOST('date_doneday', 'int'),
+				GETPOST('date_doneyear', 'int'));
+			$km_done = GETPOST('km_done', 'int');
 
 			$ret = $object->addOperation($productid, $km, $delay, $date_done, $km_done);
 			if ($ret < 0) {
@@ -284,15 +284,15 @@ if (empty($reshook)) {
 			}
 
 		case 'updateOperation':
-			$ope_id=GETPOST('ope_id', 'int');
+			$ope_id = GETPOST('ope_id', 'int');
 			$productid = GETPOST('productid', 'int');
 			$km = GETPOST('km', 'int');
 			$delay = GETPOST('delay', 'int');
-			$date_done=dol_mktime(0, 0, 0,
+			$date_done = dol_mktime(0, 0, 0,
 				GETPOST('date_donemonth', 'int'),
 				GETPOST('date_doneday', 'int'),
 				GETPOST('date_doneyear', 'int'));
-			$km_done=GETPOST('km_done', 'int');
+			$km_done = GETPOST('km_done', 'int');
 
 			$ret = $object->updateOperation($ope_id, $productid, $km, $delay, $date_done, $km_done);
 			if ($ret < 0) {
@@ -330,13 +330,13 @@ if (empty($reshook)) {
 
 		case 'updateActivity':
 
-			$act_id=GETPOST('act_id', 'int');
-			$act_type=GETPOST('activityTypes', 'int');
-			$date_start=dol_mktime(0, 0, 0,
+			$act_id = GETPOST('act_id', 'int');
+			$act_type = GETPOST('activityTypes', 'int');
+			$date_start = dol_mktime(0, 0, 0,
 				GETPOST('activityDate_startmonth', 'int'),
 				GETPOST('activityDate_startday', 'int'),
 				GETPOST('activityDate_startyear', 'int'));
-			$date_end=dol_mktime(0, 0, 0,
+			$date_end = dol_mktime(0, 0, 0,
 				GETPOST('activityDate_endmonth', 'int'),
 				GETPOST('activityDate_endday', 'int'),
 				GETPOST('activityDate_endyear', 'int'));
@@ -398,6 +398,16 @@ if ($action == 'create') {
 		$langs->load('errors');
 		print $langs->trans('ErrorRecordNotFound');
 	} else {
+		$object->fields['carrosserie']['visible'] = ($object->fk_vehicule_type == 2) ? 3 : 0;
+		$object->fields['essieu']['visible'] = ($object->fk_vehicule_type == 3) ? 3 : 0;
+		$object->fields['type']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['com']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['sort']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['age']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		if (!empty($object->id) && $action === 'edit') {
 			print '<form method="POST" action="' . $_SERVER["PHP_SELF"] . '">';
 			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -443,17 +453,17 @@ if ($action == 'create') {
 			print '<table class="border tableforfield" width="100%">' . "\n";
 
 			// Common attributes
-			//$keyforbreak='fieldkeytoswithonsecondcolumn';
+			$keyforbreak = 'atelier';
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
 
 			print '<tr class="trextrafields_collapse_operations">';
 			print '<td class="titlefield">';
 			print '<table class="nobordernopadding centpercent">';
-			print '<tbody><tr><td class="">'.$langs->trans("operations").'</td></tr></tbody>';
+			print '<tbody><tr><td class="">' . $langs->trans("operations") . '</td></tr></tbody>';
 			print '</table>';
 			print '</td>';
 			print '<td id="dolifleet_vehicule_extras_ortocreate_operations" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
-			$res=dol_include_once('clitheobald/class/clitheobald.class.php');
+			$res = dol_include_once('clitheobald/class/clitheobald.class.php');
 			$objCli = new CliTheobald($db);
 			print $objCli->printbuttons_vh($object);
 			print '</td>';
@@ -611,8 +621,6 @@ if ($action == 'create') {
 
 			print '</div>';    // fin fichecenter
 			print '<div class="clearboth"></div><br />';
-
-
 
 
 			print '</div></div></div>';

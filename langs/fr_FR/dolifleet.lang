@@ -143,6 +143,17 @@ Empty=Vide
 NotEmpty=Non vide
 operationDeleted=Opération supprimée
 operationNpDeleted=Opération non planifiée supprimée
+AtelierPrincipal=Atelier principal
+SNCarrosserie=S/N Carrosserie
+SNEssieu=S/N Essieu
+DFolVC=Present dans Volvo Connect
+CoutMensuel=Cout Mensuel
+DateFinFinancement=Date fin financement
+TypeFinancement=Type financement
+DateEndLocation=Date de fin de location
+SortiePrevue=Sortie prévue
+DimensionsPneumatiques=Dimensions Pneumatiques
+NbPneu=Nombre de Pneumatique
 
 doliFleetModify=Modifier
 doliFleetClone=Cloner
