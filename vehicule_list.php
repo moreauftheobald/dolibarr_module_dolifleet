@@ -129,6 +129,14 @@ $sql .= ' WHERE 1=1';
 $sql .= ' AND t.entity IN (' . getEntity('dolifleet', 1) . ')';
 //if ($type == 'mine') $sql.= ' AND t.fk_user = '.$user->id;
 if (!empty($fk_soc) && $fk_soc > 0) $sql .= ' AND t.fk_soc = ' . $fk_soc;
+if (GETPOSTISSET('dim_pneu')) {
+	$sql .= ' AND t.dim_pneu IN (' . implode(',', GETPOST('dim_pneu', 'array')) . ')';
+}
+if (GETPOSTISSET('atelier') && GETPOST('atelier','int')>0) {
+	$sql .= ' AND t.atelier = '.GETPOST('atelier','int');
+}
+$sql .= ' AND t.entity IN (' . getEntity('dolifleet', 1) . ')';
+
 // Add where from hooks
 $parameters = array('sql' => $sql);
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
@@ -169,7 +177,7 @@ $listViewConfig = array(
 		'nbLine' => $nbLine
 	)
 , 'list' => array(
-	  'title' => $langs->trans('doliFleetVehiculeList')
+		'title' => $langs->trans('doliFleetVehiculeList')
 	, 'image' => 'title_generic.png'
 	, 'picto_precedent' => '<'
 	, 'picto_suivant' => '>'
@@ -183,7 +191,7 @@ $listViewConfig = array(
 , 'subQuery' => array()
 , 'link' => array()
 , 'type' => array(
-      'date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
+		'date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
 	, 'tms' => 'date'
 	, 'date_immat' => 'date'
 	, 'date_customer_exploit' => 'date'
@@ -191,7 +199,7 @@ $listViewConfig = array(
 	, 'date_end_contract' => 'date'
 	)
 , 'search' => array(
-      'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
+		'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
 	, 'fk_vehicule_type' => array('search_type' => $dictVT->getAllActiveArray('label'))
 	, 'fk_vehicule_mark' => array('search_type' => $dictVM->getAllActiveArray('label'))
 	, 'immatriculation' => array('search_type' => true, 'table' => 't', 'field' => 'immatriculation')
@@ -203,9 +211,11 @@ $listViewConfig = array(
 	, 'km_date' => array('search_type' => 'calendars', 'allow_is_null' => false)
 	, 'fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'))
 	, 'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false)
-	, 'dfol' =>array('search_type' =>array(1=>'Oui',0=>'Non'))
+	, 'dfol' => array('search_type' => array(1 => 'Oui', 0 => 'Non'))
 	, 'nb_pneu' => array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu')
-	, 'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
+	, 'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true)
+	, 'dim_pneu' => array('search_type' => 'override', 'override' => $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], GETPOST('dim_pneu', 'array'), '', 0, '', 0, '100%'))
+	, 'atelier' => array('search_type' => 'override', 'override' => $object->showInputField($object->fields['atelier'],'atelier',GETPOST('atelier','int')))
 	)
 , 'translate' => array()
 , 'hide' => array(
@@ -213,8 +223,9 @@ $listViewConfig = array(
 	)
 , 'title' => $TTitle
 , 'eval' => array(
-	'vin' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
-    ,'status' => 'doliFleetVehicule::LibStatut("@val@", 5)' // Si on a un fk_user dans notre requête
+		'vin' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
+	, 'status' => 'doliFleetVehicule::LibStatut("@val@", 5)' // Si on a un fk_user dans notre requête
+	, 'dim_pneu' => '_getDimPneu("@val@")' // Si on a un fk_user dans notre requête
 	)
 );
 
@@ -228,7 +239,7 @@ if (!empty($extralabels)) {
 
 }
 
-if($user->rights->dolifleet->extended_read) {
+if ($user->rights->dolifleet->extended_read) {
 	$listViewConfig['search']['type_custom'] = array('search_type' => true, 'table' => 't', 'field' => 'type');
 	$listViewConfig['search']['coutm'] = array('search_type' => true, 'table' => 't', 'field' => 'coutm');
 	$listViewConfig['search']['date_fin_fin'] = array('search_type' => 'calendars', 'allow_is_null' => false);
@@ -239,12 +250,11 @@ if($user->rights->dolifleet->extended_read) {
 	$listViewConfig['search']['age_veh'] = array('search_type' => true, 'table' => 't', 'field' => 'age_veh');
 }
 
-foreach ($object->fields as $key => $field){
-	if(!isset($listViewConfig['eval'][$key])){
-		$listViewConfig['eval'][$key] = '_getObjectOutputField(\''.$key.'\', \'@val@\')';
+foreach ($object->fields as $key => $field) {
+	if (!isset($listViewConfig['eval'][$key])) {
+		$listViewConfig['eval'][$key] = '_getObjectOutputField(\'' . $key . '\', \'@val@\')';
 	}
 }
-
 
 
 $r = new Listview($db, 'dolifleet');
@@ -307,4 +317,21 @@ function _getObjectOutputField($key, $value)
 	$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 	$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 	return $object->showOutputField($object->fields[$key], $key, $value);
+}
+
+function _getDimPneu($value) {
+
+	global $db;
+	$object = new doliFleetVehicule($db);
+
+	$output = '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
+	$selected = explode(',', $value);
+	foreach ($selected as $sel) {
+		$output.=  '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">'.
+			$object->fields['dim_pneu']['arrayofkeyval'][$sel].
+		'</li>';
+	}
+	$output.= '</ul></div>';
+
+	return $output;
 }
