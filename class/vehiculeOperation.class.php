@@ -308,7 +308,7 @@ class dolifleetVehiculeOperation extends SeedObject
 
 		if (!empty($this->errors)) return -1;
 
-		if (empty($this->id)) $this->rang = (int)$this->getMaxRank() + 1;
+		if (empty($this->id)) $this->rang = (int) $this->getMaxRank() + 1;
 
 		return parent::create($user, $notrigger);
 	}
@@ -335,20 +335,19 @@ class dolifleetVehiculeOperation extends SeedObject
 	{
 		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 		if (!empty($this->km)) {
-			$this->km_next = (int)$this->km_done + (int)$this->km;
+			$this->km_next = (int) $this->km_done + (int) $this->km;
 		} else {
 			$this->km_next=null;
 		}
 
 		if (empty($this->km) && !empty($this->delai_from_last_op)) {
-			$dt = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
-			$this->date_due = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
-			if($dt>dol_now()){
-				$this->date_next = dol_time_plus_duree($this->date_done, (int)$this->delai_from_last_op, 'm');
+			$dt = dol_time_plus_duree($this->date_done, (int) $this->delai_from_last_op, 'm');
+			$this->date_due = dol_time_plus_duree($this->date_done, (int) $this->delai_from_last_op, 'm');
+			if ($dt>dol_now()) {
+				$this->date_next = dol_time_plus_duree($this->date_done, (int) $this->delai_from_last_op, 'm');
 			} else {
 				$this->date_next = dol_now();
 			}
-
 		}
 
 		if ($this->date_next<=dol_now() && empty($this->or_next)) {

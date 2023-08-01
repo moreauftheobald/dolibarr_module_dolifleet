@@ -154,8 +154,7 @@ foreach ($object->fields as $fieldKey => $infos) {
 
 $TTitle['t_status'] = $langs->trans('Status');
 
-foreach ($operation->fields as $fieldKey => $infos)
-{
+foreach ($operation->fields as $fieldKey => $infos) {
 	if (isset($infos['label']) && $infos['visible'] > 0) $TTitle['o_'.$fieldKey] = $langs->trans($infos['label']);
 }
 unset($TTitle['o_fk_vehicule']);
