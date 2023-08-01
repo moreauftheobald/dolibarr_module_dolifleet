@@ -217,21 +217,21 @@ class doliFleetVehicule extends SeedObject
 			'position' => 130
 		),
 
-//        'description' => array(
-//            'type' => 'text', // or html for WYSWYG
-//            'label' => 'Description',
-//            'enabled' => 1,
-//            'visible' => -1, //  un bug sur la version 9.0 de Dolibarr necessite de mettre -1 pour ne pas apparaitre sur les listes au lieu de la valeur 3
-//            'position' => 60
-//        ),
+	//        'description' => array(
+	//            'type' => 'text', // or html for WYSWYG
+	//            'label' => 'Description',
+	//            'enabled' => 1,
+	//            'visible' => -1, //  un bug sur la version 9.0 de Dolibarr necessite de mettre -1 pour ne pas apparaitre sur les listes au lieu de la valeur 3
+	//            'position' => 60
+	//        ),
 
-//        'fk_user_valid' =>array(
-//            'type' => 'integer',
-//            'label' => 'UserValidation',
-//            'enabled' => 1,
-//            'visible' => -1,
-//            'position' => 512
-//        ),
+	//        'fk_user_valid' =>array(
+	//            'type' => 'integer',
+	//            'label' => 'UserValidation',
+	//            'enabled' => 1,
+	//            'visible' => -1,
+	//            'position' => 512
+	//        ),
 
 		'import_key' => array(
 			'type' => 'varchar(14)',
@@ -313,11 +313,11 @@ class doliFleetVehicule extends SeedObject
 
 		if (!empty($this->errors)) return -1;
 
-//        if (!empty($this->is_clone))
-//        {
-//            // TODO determinate if auto generate
-//            $this->ref = '(PROV'.$this->id.')';
-//        }
+		//        if (!empty($this->is_clone))
+		//        {
+		//            // TODO determinate if auto generate
+		//            $this->ref = '(PROV'.$this->id.')';
+		//        }
 
 		return $this->create($user, $notrigger);
 	}
@@ -482,7 +482,6 @@ class doliFleetVehicule extends SeedObject
 					} else {
 						$this->error = $act->error;
 					}
-
 				}
 			}
 
@@ -534,7 +533,7 @@ class doliFleetVehicule extends SeedObject
 	 *
 	 * @return int >0 OK <0 KO
 	 */
-	public function updateActivity($act_id,$type, $date_start, $date_end, $fk_soc)
+	public function updateActivity($act_id, $type, $date_start, $date_end, $fk_soc)
 	{
 		global $user;
 		if (empty($type) || $type == '-1') {
@@ -610,7 +609,7 @@ class doliFleetVehicule extends SeedObject
 					$ret = $Vlink->fetch($obj->rowid);
 
 					if ($Vlink->fk_source != $this->id) $Vlink->fk_other_vehicule = $Vlink->fk_source;
-					else if ($Vlink->fk_target != $this->id) $Vlink->fk_other_vehicule = $Vlink->fk_target;
+					elseif ($Vlink->fk_target != $this->id) $Vlink->fk_other_vehicule = $Vlink->fk_target;
 
 					if ($ret > 0) $this->linkedVehicules[$Vlink->date_start] = $Vlink;
 				}
@@ -804,6 +803,9 @@ class doliFleetVehicule extends SeedObject
 		return 1;
 	}
 
+	/**
+	 * @return false|int
+	 */
 	public function getOperations()
 	{
 		$this->operations = array();
@@ -837,6 +839,14 @@ class doliFleetVehicule extends SeedObject
 		}
 	}
 
+	/**
+	 * @param $productid
+	 * @param $km
+	 * @param $delayInMonths
+	 * @param $dateDone
+	 * @param $kmDone
+	 * @return int
+	 */
 	public function addOperation($productid, $km = 0, $delayInMonths = 0, $dateDone = 0, $kmDone = 0)
 	{
 		global $langs, $user;
@@ -861,6 +871,10 @@ class doliFleetVehicule extends SeedObject
 		return $ret;
 	}
 
+	/**
+	 * @param $ope_id
+	 * @return int
+	 */
 	public function delOperation($ope_id)
 	{
 		global $user;
@@ -881,7 +895,6 @@ class doliFleetVehicule extends SeedObject
 		}
 
 		return 1;
-
 	}
 
 	public function updateOperation($ope_id, $productid, $km = 0, $delayInMonths = 0, $dateDone = 0, $kmDone = 0)
@@ -910,6 +923,91 @@ class doliFleetVehicule extends SeedObject
 		}
 
 		return $ret;
+	}
+
+		/**
+	 * @return false|int
+	 */
+	public function getOperationsNp()
+	{
+		$this->operations = array();
+
+		$sql = "SELECT rowid FROM " . MAIN_DB_PREFIX . $this->table_element . "_operation_np";
+		$sql .= " WHERE fk_vehicule = " . $this->id;
+
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$num = $this->db->num_rows($resql);
+			if ($num) {
+				dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
+
+				while ($obj = $this->db->fetch_object($resql)) {
+					$ope = new dolifleetVehiculeOperationNp($this->db);
+					$ret = $ope->fetch($obj->rowid);
+					if ($ret >= 0) {
+						$this->operations[] = $ope;
+					} else {
+						$this->error = $ope->error;
+						return $ret;
+					}
+				}
+			}
+
+			return $num;
+		} else {
+			$this->errors[] = $this->db->lasterror();
+			return -1;
+		}
+	}
+
+	/**
+	 * @param $productid
+	 * @return int
+	 */
+	public function addOperationNp($productid)
+	{
+		global $langs, $user;
+
+		dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
+
+		$ope = new dolifleetVehiculeOperationNp($this->db);
+
+		$ope->fk_vehicule = $this->id;
+		$ope->fk_product = $productid;
+
+		$ret = $ope->create($user);
+		if ($ret < 0) {
+			$this->errors = array_merge($ope->errors, array($ope->error));
+			return -1;
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * @param $ope_id
+	 * @return int
+	 */
+	public function delOperationNp($ope_id)
+	{
+		global $user;
+
+		dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
+		$ope = new dolifleetVehiculeOperationNp($this->db);
+		$ope->fetch($ope_id);
+
+		if ($ope->fk_vehicule != $this->id) {
+			$this->errors[] = "IllegalDeletion";
+			return -1;
+		}
+
+		$ret = $ope->delete($user);
+		if ($ret < 0) {
+			$this->errors = array_merge($ope->errors, array($ope->error));
+			return -2;
+		}
+
+		return 1;
 	}
 
 	/**
@@ -946,7 +1044,7 @@ class doliFleetVehicule extends SeedObject
 		$linkend = '</a>';
 
 		$picto = 'generic';
-//        $picto='dolifleet@dolifleet';
+		//        $picto='dolifleet@dolifleet';
 
 		if ($withpicto) $result .= ($link . img_object($label, $picto, 'class="classfortooltip"') . $linkend);
 		if ($withpicto && $withpicto != 2) $result .= ' ';
@@ -985,7 +1083,7 @@ class doliFleetVehicule extends SeedObject
 		$linkend = '</a>';
 
 		$picto = 'generic';
-//        $picto='dolifleet@dolifleet';
+		//        $picto='dolifleet@dolifleet';
 
 		if ($withpicto) $result .= ($link . img_object($label, $picto, 'class="classfortooltip"') . $linkend);
 		if ($withpicto && $withpicto != 2) $result .= ' ';
@@ -1124,7 +1222,6 @@ class doliFleetVehicule extends SeedObject
 		} else {
 			return $newEventId;
 		}
-
 	}
 
 	public function printbuttons_or()
@@ -1134,10 +1231,7 @@ class doliFleetVehicule extends SeedObject
 
 		$nb = $this->countordertoplan('all');
 		$nblate = $this->countordertoplan('late');
-		$nonplanned = array();
-		if (!empty($this->array_options['options_op_np'])) {
-			$nonplanned = explode(":", $this->array_options['options_op_np']);
-		}
+
 
 		if ($nblate > 0) {
 			$class = 'class="badge  badge-danger classfortooltip"';
@@ -1145,9 +1239,11 @@ class doliFleetVehicule extends SeedObject
 			$class = 'class="badge  badge-success classfortooltip"';
 		}
 
+		$nonplanned = $this->countordernp();
+
 		$out = '<a href="javascript:elementtoplan()" ' . $class . '">' . $langs->trans('OperationOrderToCreate') . ': ' . $nb . '</a>';
 		$out .= ' ';
-		$out .= '<a href="javascript:nonplanned()" class="badge  badge-success classfortooltip">' . $langs->trans('operationnonplanifiees') . ': ' . count($nonplanned) . '</a>';
+		$out .= '<a href="javascript:nonplanned()" class="badge  badge-success classfortooltip">' . $langs->trans('operationnonplanifiees') . ': ' . $nonplanned . '</a>';
 
 		return $out;
 	}
@@ -1166,7 +1262,7 @@ class doliFleetVehicule extends SeedObject
 		}
 		$sql .= " AND (op.or_next IS NULL OR op.or_next=0) ";
 		$sql .= " AND op.date_next IS NOT NULL";
-		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(),  (int)$conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION, 'm')) . "'";
+		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(),  (int) $conf->global->THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION, 'm')) . "'";
 
 		$resql = $this->db->query($sql);
 
@@ -1180,7 +1276,29 @@ class doliFleetVehicule extends SeedObject
 			setEventMessage($this->db->lasterror, 'errors');
 			return 0;
 		}
+	}
 
+	/**
+	 * @return int|void
+	 */
+	public function countordernp()
+	{
+		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
+		$sql = "SELECT COUNT(op.rowid) as nbop FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation_np as op";
+		$sql .= " WHERE op.fk_vehicule=" . $this->id;
+
+		$resql = $this->db->query($sql);
+
+		$num = $this->db->num_rows($resql);
+		if ($resql) {
+			if ($num > 0) {
+				$obj = $this->db->fetch_object($resql);
+				return $obj->nbop;
+			}
+		} else {
+			setEventMessage($this->db->lasterror, 'errors');
+			return 0;
+		}
 	}
 
 	public function getorlinkedHV()

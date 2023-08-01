@@ -303,6 +303,31 @@ if (empty($reshook)) {
 				exit;
 			}
 
+		case 'addVehiculeOperationNp':
+			$productid = GETPOST('productidnp', 'int');
+
+			$ret = $object->addOperationNp($productid);
+			if ($ret < 0) {
+				setEventMessages('', $object->errors, "errors");
+				break;
+			} else {
+				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
+				exit;
+			}
+
+		case 'confirm_delOperationNp':
+			$ope_id = GETPOST('openp_id', 'int');
+
+			$ret = $object->delOperationNp($ope_id);
+			if ($ret < 0) {
+				setEventMessages('', $object->errors, "errors");
+				break;
+			} else {
+				setEventMessage($langs->trans('operationNpDeleted'));
+				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
+				exit;
+			}
+
 		case 'updateActivity':
 
 			$act_id=GETPOST('act_id', 'int');
@@ -555,6 +580,14 @@ if ($action == 'create') {
 
 			// Opérations
 			printVehiculeOperations($object);
+
+			print '</div>';    // fin fichecenter
+
+			print '<div class="fichecenter">';
+			print '<div class="underbanner clearboth"></div>';
+
+			// Opérations Np
+			printVehiculeOperationsNp($object);
 
 			print '</div>';    // fin fichecenter
 

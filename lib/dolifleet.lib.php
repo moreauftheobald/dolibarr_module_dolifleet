@@ -101,7 +101,7 @@ function vehicule_prepare_head(doliFleetVehicule $object)
 	$head[$h][2] = 'document';
 	$h++;
 	$nbOperationOrder = getNbORVehicle($object->id);
-	$head[$h][0] = dol_buildpath('operationorder/list.php?&origin=vehicule&originid=' . $object->id , 1);
+	$head[$h][0] = dol_buildpath('operationorder/list.php?&origin=vehicule&originid=' . $object->id, 1);
 	$head[$h][1] = $langs->trans('CliTheobaldORList') . '<span class="badge marginleftonlyshort">' . ($nbOperationOrder >= 0 ? $nbOperationOrder : 0) . '</span>';
 	$head[$h][2] = 'list';
 
@@ -188,6 +188,9 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 	} elseif ($action === 'delOperation' && !empty($user->rights->dolifleet->write)) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
+	} elseif ($action === 'delOperationNp' && !empty($user->rights->dolifleet->write)) {
+		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
+		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&openp_id=' . GETPOST('openp_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperationNp', '', 0, 1);
 	} elseif ($action === 'delMatrixLine' && !empty($user->rights->dolifleet->write)) {
 		$body = $langs->trans('ConfirmDeldoliFleetLineBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . GETPOST('id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delMatrixLine', '', 0, 1);
@@ -240,7 +243,7 @@ function printVehiculeActivities($object, $fromcard = false)
 	$ret = $object->getActivities($date_start, $date_end);
 	if ($ret == 0) {
 		print '<tr><td align="center" colspan="5">' . $langs->trans('NodoliFleetActivity') . '</td></tr>';
-	} else if ($ret > 0) {
+	} elseif ($ret > 0) {
 		/** @var doliFleetVehiculeActivity $activity */
 		foreach ($object->activities as $activity) {
 			if (GETPOST('action', 'alpha') == 'editActivity'
@@ -249,7 +252,7 @@ function printVehiculeActivities($object, $fromcard = false)
 				print '<td align="center">' . $form->selectArray('activityTypes', $TTypeActivity, $activity->fk_type, 1, 0, 0, 'style="width: 100%"') . '</td>';
 				print '<td align="center">' . $form->selectDate($activity->date_start, 'activityDate_start') . '</td>';
 				print '<td align="center">' . $form->selectDate($activity->date_end, 'activityDate_end') . '</td>';
-				print '<td align="center">' .$form->select_thirdparty_list($activity->fk_soc, 'socid', 's.client = 1', '',0, 0, array(), '', 0, 0, $morecss = '', 'style="width: 80%"'). '</td>';
+				print '<td align="center">' .$form->select_thirdparty_list($activity->fk_soc, 'socid', 's.client = 1', '', 0, 0, array(), '', 0, 0, $morecss = '', 'style="width: 80%"'). '</td>';
 				print '<td align="center"><input class="button" type="submit" name="addActivity" value="' . $langs->trans("Save") . '"></td>';
 				print '</tr>';
 			} else {
@@ -307,7 +310,6 @@ function printVehiculeActivities($object, $fromcard = false)
 		$("#activityDate_end").addClass("quatrevingtpercent");
 	</script>
 	<?php
-
 }
 
 /**
@@ -367,8 +369,7 @@ function printLinkedVehicules($object, $fromcard = false)
 	if (!empty($DOLIFLEET_MOTRICE_TYPES)) {
 		if (in_array($object->fk_vehicule_type, $DOLIFLEET_MOTRICE_TYPES))
 			$sql .= " AND v.fk_vehicule_type NOT IN (" . implode(', ', $DOLIFLEET_MOTRICE_TYPES) . ")";
-		else
-			$sql .= " AND v.fk_vehicule_type IN (" . implode(', ', $DOLIFLEET_MOTRICE_TYPES) . ")";
+		else $sql .= " AND v.fk_vehicule_type IN (" . implode(', ', $DOLIFLEET_MOTRICE_TYPES) . ")";
 	} else {
 		// a minima on ne peut lier 2 véhicules de même nature
 		$sql .= " AND v.fk_vehicule_type <> " . $object->fk_vehicule_type;
@@ -420,22 +421,22 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 
 	print load_fiche_titre($title, '', '');
 
-	print '<form id="vehiculeLinkedForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<form id="vehiculeRentalForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 	print '<input type="hidden" name="action" value="addVehiculeRental">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
 
 	print '<table class="border" width="100%">' . "\n";
 	print '<tr class="liste_titre">';
-	if($external){
+	if ($external) {
 		print '<td align="center">' . $langs->trans('soc') . '</td>';
 	}
 	print '<td align="center">' . $langs->trans('DateStart') . '</td>';
 	print '<td align="center">' . $langs->trans('DateEnd') . '</td>';
 	print '<td align="center">' . $langs->trans('TotalHT') . '</td>';
-	if(!$external){
+	if (!$external) {
 		print '<td align="center"></td>';
-	}else {
+	} else {
 		print '<td align="center">' . $langs->trans('Prefac') . '</td>';
 	}
 	print '</tr>';
@@ -452,10 +453,9 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 		print '<td align="center" colspan="5">' . $langs->trans('NodoliFleet') . '</td>';
 		print '</tr>';
 	} else {
-
 		foreach ($object->rentals as $rent) {
 			print '<tr>';
-			if($external){
+			if ($external) {
 				//print '<td align="center">' . $rent->fk_soc . '</td>';
 				print '<td align="center">' . $rent->showOutputField($rent->fields['fk_soc'], 'fk_soc', $rent->fk_soc) . '</td>';
 			}
@@ -530,7 +530,7 @@ function printVehiculeOperations($object)
 		$actionForm='addVehiculeOperation';
 	}
 
-	print '<form id="vehiculeLinkedForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<form id="vehiculeOperationsForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 	print '<input type="hidden" name="action" value="'.$actionForm.'">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
@@ -578,13 +578,13 @@ function printVehiculeOperations($object)
 				print '<td align="center"><input class="quatrevingtpercent" type="number" name="km_done" id="km" step="1" value="' . $operation->km_done . '"></td>';
 				print '<td align="center">'. $operation->date_next.'</td>';
 				print '<td align="center">'. $operation->km_next.'</td>';
-				print '<td align="center">'. (!empty($operation->on_time)?dolGetBadge($langs->trans('VehiculeOperationOnTime'),'','danger'):'').'</td>';
+				print '<td align="center">'. (!empty($operation->on_time)?dolGetBadge($langs->trans('VehiculeOperationOnTime'), '', 'danger'):'').'</td>';
 				print '<td align="center">';
-				if (!empty($operation->or_next)){
+				if (!empty($operation->or_next)) {
 					$operationorder = new OperationOrder($object->db);
 					$res = $operationorder->fetch($operation->or_next, false);
 					if ($res<0) {
-						setEventMessages($operationorder->error,$operationorder->errors,'errors');
+						setEventMessages($operationorder->error, $operationorder->errors, 'errors');
 					}
 					print $operationorder->getNomUrl(0);
 				}
@@ -609,13 +609,13 @@ function printVehiculeOperations($object)
 				}
 				print '</td>';
 				print '<td align="center">'. $operation->km_next.'</td>';
-				print '<td align="center">'.  (!empty($operation->on_time)?dolGetBadge($langs->trans('VehiculeOperationOnTime'),'','danger'):'').'</td>';
+				print '<td align="center">'.  (!empty($operation->on_time)?dolGetBadge($langs->trans('VehiculeOperationOnTime'), '', 'danger'):'').'</td>';
 				print '<td align="center">';
-				if (!empty($operation->or_next)){
+				if (!empty($operation->or_next)) {
 					$operationorder = new OperationOrder($object->db);
 					$res = $operationorder->fetch($operation->or_next, false);
 					if ($res<0) {
-						setEventMessages($operationorder->error,$operationorder->errors,'errors');
+						setEventMessages($operationorder->error, $operationorder->errors, 'errors');
 					}
 					print $operationorder->getNomUrl(0);
 				}
@@ -646,16 +646,80 @@ function printVehiculeOperations($object)
 		print '<input class="soixantepercent" type="number" name="delay" id="delay" step="1" value="' . GETPOST('delay') . '">&nbsp;' . $langs->trans('Months');
 		print '</td>';
 		print '<td align="center">';
-		$date_done=dol_mktime(0,0,0,
-				GETPOST('date_donemonth','int'),
-				GETPOST('date_doneday','int'),
-				GETPOST('date_doneyear','int'));
+		$date_done=dol_mktime(0, 0, 0,
+				GETPOST('date_donemonth', 'int'),
+				GETPOST('date_doneday', 'int'),
+				GETPOST('date_doneyear', 'int'));
 		print $form->selectDate($date_done, 'date_done');
 		print '</td>';
-		print '<td align="center"><input class="quatrevingtpercent" type="number" name="km_done" id="km" step="1" value="' . GETPOST('km_done','int') . '"></td>';
+		print '<td align="center"><input class="quatrevingtpercent" type="number" name="km_done" id="km" step="1" value="' . GETPOST('km_done', 'int') . '"></td>';
 
 		print '<td align="center" colspan="5">';
 		print '<input class="button quatrevingtpercent" type="submit" name="addOperation" value="' . $langs->trans("Add") . '">';
+		print '</td>';
+
+		print '</tr>';
+	}
+
+	print '</table>';
+
+	print '</form>';
+	?>
+	<script>
+		$("#search_productid").removeClass("minwidth100");
+		$("#search_productid").addClass("quatrevingtpercent");
+	</script>
+	<?php
+}
+
+/**
+ * @param doliFleetVehicule $object
+ */
+function printVehiculeOperationsNp($object)
+{
+	global $langs, $form;
+	dol_include_once('operationorder/class/operationorder.class.php');
+
+	print load_fiche_titre($langs->trans('VehiculeOperationsNp'), '', '');
+
+	print '<form id="vehiculeOperationsNpForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="action" value="addVehiculeOperationNp">';
+	print '<input type="hidden" name="id" value="' . $object->id . '">';
+
+	print '<table class="border" width="100%">' . "\n";
+	print '<tr class="liste_titre">';
+	print '<td align="center">' . $langs->trans('VehiculeOperationNp') . '</td>';
+	print '<td align="center"></td>';
+	print '</tr>';
+
+	$res = $object->getOperationsNp();
+	if ($res < 0) {
+		setEventMessages($object->error, $object->errors, 'errors');
+	}
+	if (empty($object->operations)) {
+		print '<tr><td align="center" colspan="6">' . $langs->trans('NodoliFleet') . '</td></tr>';
+	} else {
+		foreach ($object->operations as $operation) {
+			print '<tr>';
+			print '<td align="left">' . $operation->getName() . '</td>';
+			print '<td align="center">';
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperationNp&openp_id=' . $operation->id . '">' . img_delete() . '</a>';
+			print '</td>';
+			print '</tr>';
+		}
+	}
+
+	if (GETPOST('action', 'alpha') !== 'delOperationNp') {
+		// new line
+		print '<tr>';
+
+		print '<td align="center">';
+		print $form->select_produits(GETPOST('productidnp'), 'productidnp', '', 20, 0, 1, 2, '', 2);
+		print '</td>';
+
+		print '<td align="center" colspan="2">';
+		print '<input class="button quatrevingtpercent" type="submit" name="addOperationNp" value="' . $langs->trans("Add") . '">';
 		print '</td>';
 
 		print '</tr>';
@@ -724,7 +788,6 @@ function getNbORVehicle($idvehicle)
 		$nbOperationOrder = $obj->nb;
 
 		return $nbOperationOrder;
-
 	} else {
 		return -1;
 	}
@@ -737,44 +800,44 @@ function getNbORVehicle($idvehicle)
 	 * @param false $header
 	 * @return array|false|int|mixed|object
 	 */
-	function callAPI($method, $url, $data = false, $header = false)
-	{
-		global $conf;
+function callAPI($method, $url, $data = false, $header = false)
+{
+	global $conf;
 
-		$curl = curl_init();
+	$curl = curl_init();
 
-		switch ($method) {
-			case "POST":
-				curl_setopt($curl, CURLOPT_POST, 1);
-				if ($data) curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-				break;
+	switch ($method) {
+		case "POST":
+			curl_setopt($curl, CURLOPT_POST, 1);
+			if ($data) curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+			break;
 
-			case "PUT":
-				curl_setopt($curl, CURLOPT_PUT, 1);
-				break;
+		case "PUT":
+			curl_setopt($curl, CURLOPT_PUT, 1);
+			break;
 
-			default:
-				if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
-		}
-		curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($curl, CURLOPT_USERPWD, $conf->global->THEO_API_USER . ':' . $conf->global->THEO_API_PASS);
-
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-		curl_setopt($curl, CURLOPT_HEADER, false);
-
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-		$result = curl_exec($curl);
-		sleep(1);
-		if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 200) {
-			$TVehicleStatus = json_decode($result, true);
-			curl_close($curl);
-			return $TVehicleStatus;
-		} else {
-			//var_dump(curl_getinfo($curl));
-			curl_close($curl);
-			//exit;
-			return -1;
-		}
+		default:
+			if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
 	}
+	curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	curl_setopt($curl, CURLOPT_USERPWD, $conf->global->THEO_API_USER . ':' . $conf->global->THEO_API_PASS);
+
+	curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+	curl_setopt($curl, CURLOPT_HEADER, false);
+
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+	$result = curl_exec($curl);
+	sleep(1);
+	if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 200) {
+		$TVehicleStatus = json_decode($result, true);
+		curl_close($curl);
+		return $TVehicleStatus;
+	} else {
+		//var_dump(curl_getinfo($curl));
+		curl_close($curl);
+		//exit;
+		return -1;
+	}
+}
