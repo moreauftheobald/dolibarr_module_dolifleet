@@ -92,6 +92,14 @@ elseif ($reshook > 0) $formconfirm = $hookmanager->resPrint;
 // Print form confirm
 print $formconfirm;
 
+$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
@@ -161,7 +169,7 @@ $listViewConfig = array(
 		'nbLine' => $nbLine
 	)
 , 'list' => array(
-		'title' => $langs->trans('doliFleetVehiculeList')
+	  'title' => $langs->trans('doliFleetVehiculeList')
 	, 'image' => 'title_generic.png'
 	, 'picto_precedent' => '<'
 	, 'picto_suivant' => '>'
@@ -175,7 +183,7 @@ $listViewConfig = array(
 , 'subQuery' => array()
 , 'link' => array()
 , 'type' => array(
-		'date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
+      'date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
 	, 'tms' => 'date'
 	, 'date_immat' => 'date'
 	, 'date_customer_exploit' => 'date'
@@ -183,10 +191,7 @@ $listViewConfig = array(
 	, 'date_end_contract' => 'date'
 	)
 , 'search' => array(
-//		'date_creation' => array('search_type' => 'calendars', 'allow_is_null' => true)
-//		,'tms' => array('search_type' => 'calendars', 'allow_is_null' => false)
-//		,'label' => array('search_type' => true, 'table' => array('t', 't'), 'field' => array('label')) // input text de recherche sur plusieurs champs
-		'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
+      'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
 	, 'fk_vehicule_type' => array('search_type' => $dictVT->getAllActiveArray('label'))
 	, 'fk_vehicule_mark' => array('search_type' => $dictVM->getAllActiveArray('label'))
 	, 'immatriculation' => array('search_type' => true, 'table' => 't', 'field' => 'immatriculation')
@@ -198,6 +203,8 @@ $listViewConfig = array(
 	, 'km_date' => array('search_type' => 'calendars', 'allow_is_null' => false)
 	, 'fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'))
 	, 'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false)
+	, 'dfol' =>array('search_type' =>array(1=>'Oui',0=>'Non'))
+	, 'nb_pneu' => array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu')
 	, 'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
 	)
 , 'translate' => array()
@@ -206,12 +213,8 @@ $listViewConfig = array(
 	)
 , 'title' => $TTitle
 , 'eval' => array(
-		'vin' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
-	, 'fk_vehicule_type' => '_getValueFromId("@val@", "dictionaryVehiculeType")'
-	, 'fk_vehicule_mark' => '_getValueFromId("@val@", "dictionaryVehiculeMark")'
-	, 'fk_soc' => '_getSocieteNomUrl("@val@")'
-	, 'fk_contract_type' => '_getValueFromId("@val@", "dictionaryContractType")'
-	, 'status' => 'doliFleetVehicule::LibStatut("@val@", 5)' // Si on a un fk_user dans notre requête
+	'vin' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
+    ,'status' => 'doliFleetVehicule::LibStatut("@val@", 5)' // Si on a un fk_user dans notre requête
 	)
 );
 
@@ -225,6 +228,25 @@ if (!empty($extralabels)) {
 
 }
 
+if($user->rights->dolifleet->extended_read) {
+	$listViewConfig['search']['type_custom'] = array('search_type' => true, 'table' => 't', 'field' => 'type');
+	$listViewConfig['search']['coutm'] = array('search_type' => true, 'table' => 't', 'field' => 'coutm');
+	$listViewConfig['search']['date_fin_fin'] = array('search_type' => 'calendars', 'allow_is_null' => false);
+	$listViewConfig['search']['type_fin'] = array('search_type' => true, 'table' => 't', 'field' => 'type_fin');
+	$listViewConfig['search']['com_custom'] = array('search_type' => true, 'table' => 't', 'field' => 'com_custom');
+	$listViewConfig['search']['date_fin_loc'] = array('search_type' => 'calendars', 'allow_is_null' => false);
+	$listViewConfig['search']['exit_data'] = array('search_type' => 'calendars', 'allow_is_null' => false);
+	$listViewConfig['search']['age_veh'] = array('search_type' => true, 'table' => 't', 'field' => 'age_veh');
+}
+
+foreach ($object->fields as $key => $field){
+	if(!isset($listViewConfig['eval'][$key])){
+		$listViewConfig['eval'][$key] = '_getObjectOutputField(\''.$key.'\', \'@val@\')';
+	}
+}
+
+
+
 $r = new Listview($db, 'dolifleet');
 
 // Change view from hooks
@@ -234,8 +256,6 @@ if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'e
 if ($reshook > 0) {
 	$listViewConfig = $hookmanager->resArray;
 }
-
-
 echo $r->render($sql, $listViewConfig);
 
 $parameters = array('sql' => $sql);
@@ -266,31 +286,25 @@ function _getObjectNomUrl($id)
 /**
  * TODO remove if unused
  */
-function _getSocieteNomUrl($fk_soc)
-{
-	global $db;
-
-	$soc = new Societe($db);
-	if ($soc->fetch($fk_soc) > 0) {
-		return $soc->getNomUrl(1);
-	}
-
-	return '';
-}
-
-function _getValueFromId($id, $dictionaryClassname)
-{
-	global $db;
-
-	if (class_exists($dictionaryClassname)) {
-		$dict = new $dictionaryClassname($db);
-		return $dict->getValueFromId($id, 'label');
-	} else return '';
-}
 
 function _evalEF($key, $val)
 {
 	global $extrafields;
 
 	return $extrafields->showOutputField($key, $val);
+}
+
+function _getObjectOutputField($key, $value)
+{
+	global $db, $user;
+	$object = new doliFleetVehicule($db);
+	$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	return $object->showOutputField($object->fields[$key], $key, $value);
 }

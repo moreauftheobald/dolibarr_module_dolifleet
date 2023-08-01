@@ -259,7 +259,7 @@ class doliFleetVehicule extends SeedObject
 			'type' => 'int',
 			'label' => 'Type',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 170
 		),
 
@@ -267,7 +267,7 @@ class doliFleetVehicule extends SeedObject
 			'type' => 'price',
 			'label' => 'CoutMensuel',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 170
 		),
 
@@ -275,7 +275,7 @@ class doliFleetVehicule extends SeedObject
 			'type' => 'date',
 			'label' => 'DateFinFinancement',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 180
 		),
 
@@ -283,42 +283,42 @@ class doliFleetVehicule extends SeedObject
 			'type' => 'varchar(255)',
 			'label' => 'TypeFinancement',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 190
 		),
 		'com_custom' => array(
 			'type' => 'varchar(255)',
 			'label' => 'Comment',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 200
 		),
 		'date_fin_loc' => array(
 			'type' => 'date',
 			'label' => 'DateEndLocation',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 210
 		),
 		'exit_data' => array(
 			'type' => 'int',
 			'label' => 'SortiePrevue',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 220
 		),
 		'age_veh' => array(
 			'type' => 'int',
 			'label' => 'SortiePrevue',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => 0,
 			'position' => 230
 		),
 		'dim_pneu' => array(
 			'type' => 'varchar(2000)',
 			'label' => 'DimensionsPneumatiques',
 			'enabled' => 1,
-			'visible' => '1',
+			'visible' => 1,
 			'position' => 240
 		),
 		'nb_pneu' => array(
