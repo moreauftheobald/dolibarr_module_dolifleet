@@ -95,7 +95,6 @@ elseif ($reshook > 0) $formconfirm = $hookmanager->resPrint;
 // Print form confirm
 print $formconfirm;
 
-
 $TfieldList=array();
 foreach ($object->fields as $key=>$datafields) {
 	$TfieldList[] = 't.'.$key. ' as t_'.$key;
@@ -104,6 +103,8 @@ foreach ($object->fields as $key=>$datafields) {
 foreach ($operation->fields as $key=>$datafields) {
 	$TfieldList[] = 'o.'.$key. ' as o_'.$key;
 }
+$TfieldList[] = 'p.label as p_label';
+
 $fieldList = implode(',', $TfieldList);
 
 $sql = 'SELECT '.$fieldList;
@@ -116,6 +117,7 @@ $sql.=$hookmanager->resPrint;
 $sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
 $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$operation->table_element.' o ON o.fk_vehicule=t.rowid ';
 $sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON te.fk_object=t.rowid ';
+$sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.'product as p ON o.fk_product=p.rowid ';
 
 $sql.= ' WHERE 1=1';
 $sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).') AND t.status = 1';
@@ -135,8 +137,6 @@ $parameters=array('sql' => $sql);
 $reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
 $sql.=$hookmanager->resPrint;
 
-//print $sql;
-
 $formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_dolifleet', 'GET');
 print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 $form = new Form($db);
@@ -154,9 +154,12 @@ foreach ($object->fields as $fieldKey => $infos) {
 
 $TTitle['t_status'] = $langs->trans('Status');
 
-foreach ($operation->fields as $fieldKey => $infos) {
+foreach ($operation->fields as $fieldKey => $infos)
+{
 	if (isset($infos['label']) && $infos['visible'] > 0) $TTitle['o_'.$fieldKey] = $langs->trans($infos['label']);
 }
+unset($TTitle['o_fk_vehicule']);
+$TTitle['p_label'] = $langs->trans('libelle');
 
 $listViewConfig = array(
 	'view_type' => 'list' // default = [list], [raw], [chart]
@@ -204,6 +207,7 @@ $listViewConfig = array(
 		,'t_fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'),'table' => 't' ,'field' => 'fk_contract_type')
 		,'t_date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'date_end_contract')
 		,'o_fk_product' =>  array('search_type' => 'override', 'override'=> $form->select_produits($fk_product, 'fk_product', '1', 0, 0, 1, 2, '', 0, array(), 0, '1', 0, '', 1, '', null, 1))
+		,'p_label' => array('search_type' => true, 'table' => 'p', 'field' => 'label')
 		,'o_km' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km')
 		,'o_delai_from_last_op' =>  array('search_type' => true, 'table' => 'o', 'field' => 'delai_from_last_op')
 		,'o_date_done' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_done')
