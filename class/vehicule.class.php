@@ -315,11 +315,12 @@ class doliFleetVehicule extends SeedObject
 			'position' => 230
 		),
 		'dim_pneu' => array(
-			'type' => 'varchar(2000)',
+			'type' => 'varchar(255)',
 			'label' => 'DimensionsPneumatiques',
 			'enabled' => 1,
 			'visible' => '1',
-			'position' => 240
+			'position' => 240,
+			'arrayofkeyval'=> array(1=>'315/80-R22.5',2=>'385/55-R22.5',3=>'315/60-R22.5',4=>'315/70-R22.5',5=>'245/70-R19.5',6=>'255/60-R22.5',7=>'275/70-R22.5',8=>'295/55 R22.5')
 		),
 		'nb_pneu' => array(
 			'type' => 'int',
@@ -365,6 +366,15 @@ class doliFleetVehicule extends SeedObject
 	public $dfol;
 	public $essieu;
 	public $type_custom;
+	public $coutm;
+	public $date_fin_fin;
+	public $type_fin;
+	public $com_custom;
+	public $date_fin_loc;
+	public $exit_data;
+	public $age_veh;
+	public $dim_pneu;
+	public $nb_pneu;
 
 
 	/**
