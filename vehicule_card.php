@@ -68,7 +68,6 @@ if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'e
 
 // Si vide alors le comportement n'est pas remplacé
 if (empty($reshook)) {
-
 	if ($cancel) {
 		if (!empty($backtopage)) {
 			header("Location: " . $backtopage);
@@ -256,13 +255,13 @@ if (empty($reshook)) {
 			$productid = GETPOST('productid', 'int');
 			$km = GETPOST('km', 'int');
 			$delay = GETPOST('delay', 'int');
-			$date_done=dol_mktime(0,0,0,
-			GETPOST('date_donemonth','int'),
-			GETPOST('date_doneday','int'),
-			GETPOST('date_doneyear','int'));
-			$km_done=GETPOST('km_done','int');
+			$date_done=dol_mktime(0, 0, 0,
+			GETPOST('date_donemonth', 'int'),
+			GETPOST('date_doneday', 'int'),
+			GETPOST('date_doneyear', 'int'));
+			$km_done=GETPOST('km_done', 'int');
 
-			$ret = $object->addOperation($productid, $km, $delay,$date_done,$km_done);
+			$ret = $object->addOperation($productid, $km, $delay, $date_done, $km_done);
 			if ($ret < 0) {
 				setEventMessages('', $object->errors, "errors");
 				break;
@@ -285,17 +284,17 @@ if (empty($reshook)) {
 			}
 
 		case 'updateOperation':
-			$ope_id=GETPOST('ope_id','int');
+			$ope_id=GETPOST('ope_id', 'int');
 			$productid = GETPOST('productid', 'int');
 			$km = GETPOST('km', 'int');
 			$delay = GETPOST('delay', 'int');
-			$date_done=dol_mktime(0,0,0,
-				GETPOST('date_donemonth','int'),
-				GETPOST('date_doneday','int'),
-				GETPOST('date_doneyear','int'));
-			$km_done=GETPOST('km_done','int');
+			$date_done=dol_mktime(0, 0, 0,
+				GETPOST('date_donemonth', 'int'),
+				GETPOST('date_doneday', 'int'),
+				GETPOST('date_doneyear', 'int'));
+			$km_done=GETPOST('km_done', 'int');
 
-			$ret = $object->updateOperation($ope_id,$productid, $km, $delay,$date_done,$km_done);
+			$ret = $object->updateOperation($ope_id, $productid, $km, $delay, $date_done, $km_done);
 			if ($ret < 0) {
 				setEventMessages('', $object->errors, "errors");
 				break;
@@ -306,20 +305,20 @@ if (empty($reshook)) {
 
 		case 'updateActivity':
 
-			$act_id=GETPOST('act_id','int');
-			$act_type=GETPOST('activityTypes','int');
-			$date_start=dol_mktime(0,0,0,
-				GETPOST('activityDate_startmonth','int'),
-				GETPOST('activityDate_startday','int'),
-				GETPOST('activityDate_startyear','int'));
-			$date_end=dol_mktime(0,0,0,
-				GETPOST('activityDate_endmonth','int'),
-				GETPOST('activityDate_endday','int'),
-				GETPOST('activityDate_endyear','int'));
+			$act_id=GETPOST('act_id', 'int');
+			$act_type=GETPOST('activityTypes', 'int');
+			$date_start=dol_mktime(0, 0, 0,
+				GETPOST('activityDate_startmonth', 'int'),
+				GETPOST('activityDate_startday', 'int'),
+				GETPOST('activityDate_startyear', 'int'));
+			$date_end=dol_mktime(0, 0, 0,
+				GETPOST('activityDate_endmonth', 'int'),
+				GETPOST('activityDate_endday', 'int'),
+				GETPOST('activityDate_endyear', 'int'));
 
-			$soc_id = GETPOST('socid','int');
+			$soc_id = GETPOST('socid', 'int');
 
-			$ret = $object->updateActivity($act_id,$act_type, $date_start, $date_end, $soc_id);
+			$ret = $object->updateActivity($act_id, $act_type, $date_start, $date_end, $soc_id);
 
 			if ($ret < 0) {
 				setEventMessages('', $object->errors, "errors");
@@ -422,6 +421,19 @@ if ($action == 'create') {
 			//$keyforbreak='fieldkeytoswithonsecondcolumn';
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
 
+			print '<tr class="trextrafields_collapse_operations">';
+			print '<td class="titlefield">';
+			print '<table class="nobordernopadding centpercent">';
+			print '<tbody><tr><td class="">'.$langs->trans("operations").'</td></tr></tbody>';
+			print '</table>';
+			print '</td>';
+			print '<td id="dolifleet_vehicule_extras_ortocreate_operations" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
+			$res=dol_include_once('clitheobald/class/clitheobald.class.php');
+			$objCli = new CliTheobald($db);
+			print $objCli->printbuttons_vh($object);
+			print '</td>';
+			print '</tr>';
+
 			// Other attributes
 			include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
 			print '</table>';
@@ -485,33 +497,29 @@ if ($action == 'create') {
 				}
 				// Modify
 				if (!empty($user->rights->dolifleet->write)) {
-
 					// Modify
 					print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("doliFleetModify") . '</a></div>' . "\n";
 
 					// Clone
-//					print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
+					//                  print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=clone">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
 
 					// Activer
 					if ($object->status === doliFleetVehicule::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=valid">' . $langs->trans('doliFleetActivate') . '</a></div>' . "\n";
 
 					// Désactiver
 					if ($object->status === doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('doliFleetUnactivate') . '</a></div>' . "\n";
-
 				} else {
-
 					// Modify
 					if ($object->status !== doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("doliFleetModify") . '</a></div>' . "\n";
 
 					// Clone
-//					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
+					//                  print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("doliFleetClone").'</a></div>'."\n";
 
 					// Activer
 					if ($object->status === doliFleetVehicule::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans('doliFleetActivate') . '</a></div>' . "\n";
 
 					// Désactiver
 					if ($object->status === doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans('doliFleetUnactivate') . '</a></div>' . "\n";
-
 				}
 
 				if (!empty($user->rights->dolifleet->delete)) {
