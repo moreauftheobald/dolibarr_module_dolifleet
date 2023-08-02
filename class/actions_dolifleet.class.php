@@ -127,18 +127,11 @@ class ActionsdoliFleet
 
 		$arrayresult = array();
 		if (empty($conf->global->DOLIFLEET_HIDE_QUICK_SEARCH) && $user->rights->dolifleet->read) {
-			$str_search_vin = '&Listview_dolifleet_search_vin=' . urlencode($parameters['search_boxvalue']);
-			$arrayresult['searchintovehiculevin'] = array(
+			$str_search = '&Listview_dolifleet_search_sall=' . urlencode($parameters['search_boxvalue']);
+			$arrayresult['searchintovehicule'] = array(
 				'position' => $modDolifleet->numero,
-				'text' => img_object('', 'dolifleet@dolifleet') . ' VIN',
-				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?search_by=Listview_dolifleet_search_vin' . $str_search_vin
-			);
-
-			$str_search_immat = '&Listview_dolifleet_search_immatriculation=' . urlencode($parameters['search_boxvalue']);
-			$arrayresult['searchintovehiculeimmat'] = array(
-				'position' => $modDolifleet->numero,
-				'text' => img_object('', 'dolifleet@dolifleet') . ' Immat',
-				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?search_by=Listview_dolifleet_search_immatriculation' . $str_search_immat
+				'text' => img_object('', 'dolifleet@dolifleet') . ' Vehicule',
+				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?' . $str_search
 			);
 
 		}
