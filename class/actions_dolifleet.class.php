@@ -27,10 +27,10 @@
  */
 class ActionsdoliFleet
 {
-    /**
-     * @var DoliDb		Database handler (result of a new DoliDB)
-     */
-    public $db;
+	/**
+	 * @var DoliDb        Database handler (result of a new DoliDB)
+	 */
+	public $db;
 
 	/**
 	 * @var array Hook results. Propagated to $hookmanager->resArray for later reuse
@@ -49,7 +49,7 @@ class ActionsdoliFleet
 
 	/**
 	 * Constructor
-     * @param DoliDB    $db    Database connector
+	 * @param DoliDB $db Database connector
 	 */
 	public function __construct($db)
 	{
@@ -59,10 +59,10 @@ class ActionsdoliFleet
 	/**
 	 * Overloading the doActions function : replacing the parent's function with the one below
 	 *
-	 * @param   array()         $parameters     Hook metadatas (context, etc...)
-	 * @param   CommonObject    $object        The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
-	 * @param   string          $action        Current action (if set). Generally create or edit or null
-	 * @param   HookManager     $hookmanager    Hook manager propagated to allow calling another hook
+	 * @param array()         $parameters     Hook metadatas (context, etc...)
+	 * @param CommonObject $object The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
+	 * @param string $action Current action (if set). Generally create or edit or null
+	 * @param HookManager $hookmanager Hook manager propagated to allow calling another hook
 	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager)
@@ -96,11 +96,10 @@ class ActionsdoliFleet
 	{
 		global $langs;
 
-		if (!empty($parameters['object']) && is_object($parameters['object']) && get_class($parameters['object']) == "Societe" && $parameters['mode'] == 'add')
-		{
+		if (!empty($parameters['object']) && is_object($parameters['object']) && get_class($parameters['object']) == "Societe" && $parameters['mode'] == 'add') {
 			$this->results = $parameters['head'];
 			$this->results[] = array(
-				dol_buildpath('dolifleet/matrix_tab.php?socid='.$parameters['object']->id, 1),
+				dol_buildpath('dolifleet/matrix_tab.php?socid=' . $parameters['object']->id, 1),
 				$langs->trans('rentalMatrix'),
 				'matrix'
 			);
@@ -132,14 +131,14 @@ class ActionsdoliFleet
 			$arrayresult['searchintovehiculevin'] = array(
 				'position' => $modDolifleet->numero,
 				'text' => img_object('', 'dolifleet@dolifleet') . ' VIN',
-				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?search_by=Listview_dolifleet_search_vin'.$str_search_vin
+				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?search_by=Listview_dolifleet_search_vin' . $str_search_vin
 			);
 
 			$str_search_immat = '&Listview_dolifleet_search_immatriculation=' . urlencode($parameters['search_boxvalue']);
 			$arrayresult['searchintovehiculeimmat'] = array(
 				'position' => $modDolifleet->numero,
 				'text' => img_object('', 'dolifleet@dolifleet') . ' Immat',
-				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?search_by=Listview_dolifleet_search_immatriculation'.$str_search_immat
+				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?search_by=Listview_dolifleet_search_immatriculation' . $str_search_immat
 			);
 
 		}
@@ -155,26 +154,25 @@ class ActionsdoliFleet
 	}
 
 	/**
-	 * @param bool   $parameters
+	 * @param bool $parameters
 	 * @param        $object
 	 * @param string $action
 	 * @return int
 	 */
-	public function moreHtmlRef($parameters=false, &$object, &$action='')
+	public function moreHtmlRef($parameters = false, &$object, &$action = '')
 	{
 		global $conf;
 		global $mc;
 
 		// if global sharings is enabled
-		if (! empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED)
-			&& ! empty($conf->global->MULTICOMPANY_DOLIFLEET_SHARING_ENABLED)
+		if (!empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED)
+			&& !empty($conf->global->MULTICOMPANY_DOLIFLEET_SHARING_ENABLED)
 			&& $object->element == 'dolifleet_vehicule'
-			&& ! empty($conf->dolifleet->enabled)
-			&& ! empty($mc->sharings['dolifleet_vehicule'])
-			&& $object->entity!=$conf->entity)
-		{
+			&& !empty($conf->dolifleet->enabled)
+			&& !empty($mc->sharings['dolifleet_vehicule'])
+			&& $object->entity != $conf->entity) {
 			dol_include_once('/multicompany/class/actions_multicompany.class.php');
-			$actMulticomp= new ActionsMulticompany($this->db);
+			$actMulticomp = new ActionsMulticompany($this->db);
 			$actMulticomp->getInfo($object->entity);
 
 			$this->resprints = "\n" . '<!-- BEGIN DoliFleet moreHtmlRef -->' . "\n";
