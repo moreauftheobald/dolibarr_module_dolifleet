@@ -36,7 +36,7 @@ $fk_soc = GETPOST('fk_soc', 'int');
 $fk_product = GETPOST('fk_product', 'int');
 $or_next = GETPOST('or_next', 'int');
 $search_by=GETPOST('search_by', 'alpha');
-$sall=GETPOST('sall');
+$sall=GETPOST('search_all');
 if (!empty($sall)) {
 	$_GET['Listview_dolifleet_search_sall'] = $sall;
 }
