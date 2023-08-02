@@ -101,6 +101,9 @@ if (!$result > 0) {
 //print ' truic;';
 $user->getrights();
 
+
+exit;
+
 $paramOKid = GETPOST('paramOKid', 'alpha');
 
 if ($paramOKid <> 'dkQQSsopaQSDdddQQQ15QQss') {
