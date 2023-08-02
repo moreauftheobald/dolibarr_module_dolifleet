@@ -1,0 +1,178 @@
+<?php
+/* Copyright (C) 2007-2017 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) ---Put here your own copyright and developer email---
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ *      \file       htdocs/modulebuilder/template/scripts/mymodule.php
+ *        \ingroup    mymodule
+ *      \brief      This file is an example for a command line script for module MyModule
+ */
+
+//if (! defined('NOREQUIREDB'))              define('NOREQUIREDB', '1');				// Do not create database handler $db
+//if (! defined('NOREQUIREUSER'))            define('NOREQUIREUSER', '1');				// Do not load object $user
+//if (! defined('NOREQUIRESOC'))             define('NOREQUIRESOC', '1');				// Do not load object $mysoc
+//if (! defined('NOREQUIRETRAN'))            define('NOREQUIRETRAN', '1');				// Do not load object $langs
+//if (! defined('NOSCANGETFORINJECTION'))    define('NOSCANGETFORINJECTION', '1');		// Do not check injection attack on GET parameters
+//if (! defined('NOSCANPOSTFORINJECTION'))   define('NOSCANPOSTFORINJECTION', '1');		// Do not check injection attack on POST parameters
+//if (! defined('NOCSRFCHECK'))              define('NOCSRFCHECK', '1');				// Do not check CSRF attack (test on referer + on token if option MAIN_SECURITY_CSRF_WITH_TOKEN is on).
+//if (! defined('NOTOKENRENEWAL'))           define('NOTOKENRENEWAL', '1');				// Do not roll the Anti CSRF token (used if MAIN_SECURITY_CSRF_WITH_TOKEN is on)
+//if (! defined('NOSTYLECHECK'))             define('NOSTYLECHECK', '1');				// Do not check style html tag into posted data
+//if (! defined('NOREQUIREMENU'))            define('NOREQUIREMENU', '1');				// If there is no need to load and show top and left menu
+//if (! defined('NOREQUIREHTML'))            define('NOREQUIREHTML', '1');				// If we don't need to load the html.form.class.php
+//if (! defined('NOREQUIREAJAX'))            define('NOREQUIREAJAX', '1');       	  	// Do not load ajax.lib.php library
+//if (! defined("NOLOGIN"))                  define("NOLOGIN", '1');					// If this page is public (can be called outside logged session). This include the NOIPCHECK too.
+//if (! defined('NOIPCHECK'))                define('NOIPCHECK', '1');					// Do not check IP defined into conf $dolibarr_main_restrict_ip
+//if (! defined("MAIN_LANG_DEFAULT"))        define('MAIN_LANG_DEFAULT', 'auto');					// Force lang to a particular value
+//if (! defined("MAIN_AUTHENTICATION_MODE")) define('MAIN_AUTHENTICATION_MODE', 'aloginmodule');	// Force authentication handler
+//if (! defined("NOREDIRECTBYMAINTOLOGIN"))  define('NOREDIRECTBYMAINTOLOGIN', 1);		// The main.inc.php does not make a redirect if not logged, instead show simple error message
+//if (! defined('CSRFCHECK_WITH_TOKEN'))     define('CSRFCHECK_WITH_TOKEN', '1');		// Force use of CSRF protection with tokens even for GET
+//if (! defined('NOBROWSERNOTIF'))     		 define('NOBROWSERNOTIF', '1');				// Disable browser notification
+if (!defined('NOSESSION')) define('NOSESSION', '1');    // On CLI mode, no need to use web sessions
+
+
+// Global variables
+$version = '1.0';
+$error = 0;
+
+//Now the update is OK no way to update data in database
+//exit();
+
+// -------------------- START OF YOUR CODE HERE --------------------
+@set_time_limit(0); // No timeout for this script
+define('EVEN_IF_ONLY_LOGIN_ALLOWED', 1); // Set this define to 0 if you want to lock your script when dolibarr setup is "locked to admin user only".
+
+// Load Dolibarr environment
+$res = 0;
+// Try master.inc.php into web root detected using web root calculated from SCRIPT_FILENAME
+$tmp = empty($_SERVER['SCRIPT_FILENAME']) ? '' : $_SERVER['SCRIPT_FILENAME'];
+$tmp2 = realpath(__FILE__);
+$i = strlen($tmp) - 1;
+$j = strlen($tmp2) - 1;
+while ($i > 0 && $j > 0 && isset($tmp[$i]) && isset($tmp2[$j]) && $tmp[$i] == $tmp2[$j]) {
+	$i--;
+	$j--;
+}
+if (!$res && $i > 0 && file_exists(substr($tmp, 0, ($i + 1)) . "/master.inc.php")) {
+	$res = @include substr($tmp, 0, ($i + 1)) . "/master.inc.php";
+}
+if (!$res && $i > 0 && file_exists(dirname(substr($tmp, 0, ($i + 1))) . "/master.inc.php")) {
+	$res = @include dirname(substr($tmp, 0, ($i + 1))) . "/master.inc.php";
+}
+// Try master.inc.php using relative path
+if (!$res && file_exists("../master.inc.php")) {
+	$res = @include "../master.inc.php";
+}
+if (!$res && file_exists("../../master.inc.php")) {
+	$res = @include "../../master.inc.php";
+}
+if (!$res && file_exists("../../../master.inc.php")) {
+	$res = @include "../../../master.inc.php";
+}
+if (!$res) {
+	print "Include of master fails";
+	exit(-1);
+}
+// After this $db, $mysoc, $langs, $conf and $hookmanager are defined (Opened $db handler to database will be closed at end of file).
+// $user is created but empty.
+
+//$langs->setDefaultLang('en_US'); 	// To change default language of $langs
+$langs->load("main"); // To load language file for default language
+
+// Load user and its permissions
+$result = $user->fetch('', 'admin'); // Load user for login 'admin'. Comment line to run as anonymous user.
+if (!$result > 0) {
+	dol_print_error('', $user->error);
+	exit();
+}
+//print ' truic;';
+$user->getrights();
+
+$paramOKid = GETPOST('paramOKid', 'alpha');
+
+if ($paramOKid <> 'dkQQSsopaQSDdddQQQ15QQss') {
+	print 'Non pas possible';
+	exit();
+}
+
+// Start of transaction
+$db->begin();
+$sql = 'SELECT fk_object,op_np FROM llx_dolifleet_vehicule_extrafields
+                       WHERE op_np IS NOT NULL';
+
+$resql = $db->query($sql);
+if (!$resql) {
+	print 'ERROR:' . $db->lasterror . "\n<BR>";
+	exit();
+} else {
+	dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
+	while ($obj = $db->fetch_object($resql)) {
+
+		$ope_array = explode(':', $obj->op_np);
+		if (!empty($ope_array)) {
+			foreach ($ope_array as $prdId) {
+				$ope = new dolifleetVehiculeOperationNp($db);
+
+				$ope->fk_vehicule = $obj->fk_object;
+				$ope->fk_product = $prdId;
+
+				$ret = $ope->create($user);
+				if ($ret < 0) {
+					$error++;
+					print 'VehId:' . $obj->fk_object . "\n<BR>";
+					print 'operations:' . $obj->op_np . "\n<BR>";
+					print 'ERROR:' . $ope->error . ' ' . implode(' ', $ope->errors) . "\n<BR>";
+				}
+			}
+		}
+	}
+}
+$sql  ='UPDATE llx_dolifleet_vehicule as dest, llx_dolifleet_vehicule_extrafields as src
+	SET dest.atelier=src.atelier,
+	dest.carrosserie=src.carrosserie,
+	dest.dfol=src.dfol,
+	dest.essieu=src.essieu,
+	dest.type_custom=src.type,
+	dest.coutm=src.coutm,
+	dest.date_fin_fin=src.date_fin_fin,
+	dest.type_fin=src.type_fin,
+	dest.com_custom=src.com,
+	dest.date_fin_loc=src.date_fin_loc,
+	dest.exit_data=src.sort,
+	dest.age_veh=src.age,
+	dest.dim_pneu=src.dim_pneu,
+	dest.nb_pneu=src.nb_pneu
+	WHERE src.fk_object=dest.rowid';
+print 'SQL atelier:' . $sql . "\n<BR>";
+$resql = $db->query($sql);
+if (!$resql) {
+	print 'ERROR:'.$db->lasterror."\n<BR>";
+	$error++;
+}
+
+// -------------------- END OF YOUR CODE --------------------
+
+if (!$error) {
+	$db->commit();
+	print '--- end ok' . "\n<BR>";
+} else {
+	print '--- end error code=' . $error . "\n<BR>";
+	$db->rollback();
+}
+
+$db->close(); // Close $db database opened handler
+
+exit($error);

@@ -1,0 +1,1 @@
+ALTER TABLE llx_dolifleet_vehicule_operation_np ADD UNIQUE uk_vehicule_operation_np_veh_prod (fk_vehicule,fk_product);

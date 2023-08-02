@@ -188,6 +188,9 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 	} elseif ($action === 'delOperation' && !empty($user->rights->dolifleet->write)) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
+	} elseif ($action === 'delOperationNp' && !empty($user->rights->dolifleet->write)) {
+		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
+		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&openp_id=' . GETPOST('openp_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperationNp', '', 0, 1);
 	} elseif ($action === 'delMatrixLine' && !empty($user->rights->dolifleet->write)) {
 		$body = $langs->trans('ConfirmDeldoliFleetLineBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . GETPOST('id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delMatrixLine', '', 0, 1);
@@ -418,7 +421,7 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 
 	print load_fiche_titre($title, '', '');
 
-	print '<form id="vehiculeLinkedForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<form id="vehiculeRentalForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 	print '<input type="hidden" name="action" value="addVehiculeRental">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
@@ -527,7 +530,7 @@ function printVehiculeOperations($object)
 		$actionForm='addVehiculeOperation';
 	}
 
-	print '<form id="vehiculeLinkedForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<form id="vehiculeOperationsForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 	print '<input type="hidden" name="action" value="'.$actionForm.'">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
@@ -653,6 +656,70 @@ function printVehiculeOperations($object)
 
 		print '<td align="center" colspan="5">';
 		print '<input class="button quatrevingtpercent" type="submit" name="addOperation" value="' . $langs->trans("Add") . '">';
+		print '</td>';
+
+		print '</tr>';
+	}
+
+	print '</table>';
+
+	print '</form>';
+	?>
+	<script>
+		$("#search_productid").removeClass("minwidth100");
+		$("#search_productid").addClass("quatrevingtpercent");
+	</script>
+	<?php
+}
+
+/**
+ * @param doliFleetVehicule $object
+ */
+function printVehiculeOperationsNp($object)
+{
+	global $langs, $form;
+	dol_include_once('operationorder/class/operationorder.class.php');
+
+	print load_fiche_titre($langs->trans('VehiculeOperationsNp'), '', '');
+
+	print '<form id="vehiculeOperationsNpForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="action" value="addVehiculeOperationNp">';
+	print '<input type="hidden" name="id" value="' . $object->id . '">';
+
+	print '<table class="border" width="100%">' . "\n";
+	print '<tr class="liste_titre">';
+	print '<td align="center">' . $langs->trans('VehiculeOperationNp') . '</td>';
+	print '<td align="center"></td>';
+	print '</tr>';
+
+	$res = $object->getOperationsNp();
+	if ($res < 0) {
+		setEventMessages($object->error, $object->errors, 'errors');
+	}
+	if (empty($object->operations)) {
+		print '<tr><td align="center" colspan="6">' . $langs->trans('NodoliFleet') . '</td></tr>';
+	} else {
+		foreach ($object->operations as $operation) {
+			print '<tr>';
+			print '<td align="left">' . $operation->getName() . '</td>';
+			print '<td align="center">';
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperationNp&openp_id=' . $operation->id . '">' . img_delete() . '</a>';
+			print '</td>';
+			print '</tr>';
+		}
+	}
+
+	if (GETPOST('action', 'alpha') !== 'delOperationNp') {
+		// new line
+		print '<tr>';
+
+		print '<td align="center">';
+		print $form->select_produits(GETPOST('productidnp'), 'productidnp', '', 20, 0, 1, 2, '', 2);
+		print '</td>';
+
+		print '<td align="center" colspan="2">';
+		print '<input class="button quatrevingtpercent" type="submit" name="addOperationNp" value="' . $langs->trans("Add") . '">';
 		print '</td>';
 
 		print '</tr>';

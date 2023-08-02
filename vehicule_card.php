@@ -84,7 +84,9 @@ if (empty($reshook)) {
 		case 'add':
 		case 'update':
 			$object->setValues($_REQUEST); // Set standard attributes
-
+			if (GETPOSTISSET('dim_pneu')) {
+				$object->dim_pneu = implode(',', GETPOST('dim_pneu','array'));
+			}
 			if ($object->isextrafieldmanaged) {
 				$ret = $extrafields->setOptionalsFromPost($extralabels, $object);
 				if ($ret < 0) $error++;
@@ -255,11 +257,11 @@ if (empty($reshook)) {
 			$productid = GETPOST('productid', 'int');
 			$km = GETPOST('km', 'int');
 			$delay = GETPOST('delay', 'int');
-			$date_done=dol_mktime(0, 0, 0,
-			GETPOST('date_donemonth', 'int'),
-			GETPOST('date_doneday', 'int'),
-			GETPOST('date_doneyear', 'int'));
-			$km_done=GETPOST('km_done', 'int');
+			$date_done = dol_mktime(0, 0, 0,
+				GETPOST('date_donemonth', 'int'),
+				GETPOST('date_doneday', 'int'),
+				GETPOST('date_doneyear', 'int'));
+			$km_done = GETPOST('km_done', 'int');
 
 			$ret = $object->addOperation($productid, $km, $delay, $date_done, $km_done);
 			if ($ret < 0) {
@@ -284,15 +286,15 @@ if (empty($reshook)) {
 			}
 
 		case 'updateOperation':
-			$ope_id=GETPOST('ope_id', 'int');
+			$ope_id = GETPOST('ope_id', 'int');
 			$productid = GETPOST('productid', 'int');
 			$km = GETPOST('km', 'int');
 			$delay = GETPOST('delay', 'int');
-			$date_done=dol_mktime(0, 0, 0,
+			$date_done = dol_mktime(0, 0, 0,
 				GETPOST('date_donemonth', 'int'),
 				GETPOST('date_doneday', 'int'),
 				GETPOST('date_doneyear', 'int'));
-			$km_done=GETPOST('km_done', 'int');
+			$km_done = GETPOST('km_done', 'int');
 
 			$ret = $object->updateOperation($ope_id, $productid, $km, $delay, $date_done, $km_done);
 			if ($ret < 0) {
@@ -303,15 +305,40 @@ if (empty($reshook)) {
 				exit;
 			}
 
+		case 'addVehiculeOperationNp':
+			$productid = GETPOST('productidnp', 'int');
+
+			$ret = $object->addOperationNp($productid);
+			if ($ret < 0) {
+				setEventMessages('', $object->errors, "errors");
+				break;
+			} else {
+				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
+				exit;
+			}
+
+		case 'confirm_delOperationNp':
+			$ope_id = GETPOST('openp_id', 'int');
+
+			$ret = $object->delOperationNp($ope_id);
+			if ($ret < 0) {
+				setEventMessages('', $object->errors, "errors");
+				break;
+			} else {
+				setEventMessage($langs->trans('operationNpDeleted'));
+				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
+				exit;
+			}
+
 		case 'updateActivity':
 
-			$act_id=GETPOST('act_id', 'int');
-			$act_type=GETPOST('activityTypes', 'int');
-			$date_start=dol_mktime(0, 0, 0,
+			$act_id = GETPOST('act_id', 'int');
+			$act_type = GETPOST('activityTypes', 'int');
+			$date_start = dol_mktime(0, 0, 0,
 				GETPOST('activityDate_startmonth', 'int'),
 				GETPOST('activityDate_startday', 'int'),
 				GETPOST('activityDate_startyear', 'int'));
-			$date_end=dol_mktime(0, 0, 0,
+			$date_end = dol_mktime(0, 0, 0,
 				GETPOST('activityDate_endmonth', 'int'),
 				GETPOST('activityDate_endday', 'int'),
 				GETPOST('activityDate_endyear', 'int'));
@@ -373,6 +400,16 @@ if ($action == 'create') {
 		$langs->load('errors');
 		print $langs->trans('ErrorRecordNotFound');
 	} else {
+		$object->fields['carrosserie']['visible'] = ($object->fk_vehicule_type == 2) ? 3 : 0;
+		$object->fields['essieu']['visible'] = ($object->fk_vehicule_type == 3) ? 3 : 0;
+		$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+		$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		if (!empty($object->id) && $action === 'edit') {
 			print '<form method="POST" action="' . $_SERVER["PHP_SELF"] . '">';
 			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -387,7 +424,17 @@ if ($action == 'create') {
 			print '<table class="border centpercent">' . "\n";
 
 			// Common attributes
+			$object->fields['dim_pneu']['visible'] = 0;
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_edit.tpl.php';
+
+			print '<tr class="field_dim_pneu" class="valuefieldcreate dolifleet_vehicule_dim_pneu trextrafields_collapse_dim_pneu">';
+			print '<td class="titlefieldcreate wordbreak">';
+			print $langs->trans($object->fields['dim_pneu']['label']);
+			print '</td>';
+			print '<td id="valuefieldcreate" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
+			print $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], explode(',', $object->dim_pneu), '', 0, '', 0, '100%');
+			print '</td>';
+			print '</tr>';
 
 			// Other attributes
 			include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_edit.tpl.php';
@@ -418,17 +465,36 @@ if ($action == 'create') {
 			print '<table class="border tableforfield" width="100%">' . "\n";
 
 			// Common attributes
-			//$keyforbreak='fieldkeytoswithonsecondcolumn';
+			$keyforbreak = 'atelier';
+			$object->fields['dim_pneu']['visible'] = 0;
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
+
+			print '<tr class="trextrafields_collapse_dim_pneu">';
+			print '<td class="titlefield">';
+			print '<table class="nobordernopadding centpercent">';
+			print '<tbody><tr><td class="">' . $langs->trans($object->fields['dim_pneu']['label']) . '</td></tr></tbody>';
+			print '</table>';
+			print '</td>';
+			print '<td id="dolifleet_vehicule_extras_ortocreate_dim_pneu" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
+			print '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
+			$selected = explode(',', $object->dim_pneu);
+			foreach ($selected as $sel) {
+				print  '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">'.
+					$object->fields['dim_pneu']['arrayofkeyval'][$sel].
+				'</li>';
+			}
+			print '</ul></div>';
+			print '</td>';
+			print '</tr>';
 
 			print '<tr class="trextrafields_collapse_operations">';
 			print '<td class="titlefield">';
 			print '<table class="nobordernopadding centpercent">';
-			print '<tbody><tr><td class="">'.$langs->trans("operations").'</td></tr></tbody>';
+			print '<tbody><tr><td class="">' . $langs->trans("operations") . '</td></tr></tbody>';
 			print '</table>';
 			print '</td>';
 			print '<td id="dolifleet_vehicule_extras_ortocreate_operations" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
-			$res=dol_include_once('clitheobald/class/clitheobald.class.php');
+			$res = dol_include_once('clitheobald/class/clitheobald.class.php');
 			$objCli = new CliTheobald($db);
 			print $objCli->printbuttons_vh($object);
 			print '</td>';
@@ -559,6 +625,14 @@ if ($action == 'create') {
 			print '</div>';    // fin fichecenter
 
 			print '<div class="fichecenter">';
+			print '<div class="underbanner clearboth"></div>';
+
+			// Opérations Np
+			printVehiculeOperationsNp($object);
+
+			print '</div>';    // fin fichecenter
+
+			print '<div class="fichecenter">';
 
 			print '<div class="fichehalfleft">';
 			print '<div class="underbanner clearboth"></div>';
@@ -578,8 +652,6 @@ if ($action == 'create') {
 
 			print '</div>';    // fin fichecenter
 			print '<div class="clearboth"></div><br />';
-
-
 
 
 			print '</div></div></div>';

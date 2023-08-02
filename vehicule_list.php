@@ -16,7 +16,7 @@
  */
 
 require 'config.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/html.form.class.php';
 dol_include_once('dolifleet/class/vehicule.class.php');
 dol_include_once('dolifleet/class/dictionaryContractType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
@@ -28,8 +28,8 @@ $langs->load('abricot@abricot');
 $langs->load('dolifleet@dolifleet');
 
 $fk_soc = GETPOST('fk_soc', 'int');
-$search_by=GETPOST('search_by', 'alpha');
-$sall=GETPOST('sall');
+$search_by = GETPOST('search_by', 'alpha');
+$sall = GETPOST('sall');
 if (!empty($sall)) {
 	$_GET['Listview_dolifleet_search_sall'] = $sall;
 }
@@ -56,8 +56,8 @@ if ($object->isextrafieldmanaged) {
  * Actions
  */
 
-$parameters=array();
-$reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
+$parameters = array();
+$reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
@@ -92,10 +92,18 @@ elseif ($reshook > 0) $formconfirm = $hookmanager->resPrint;
 // Print form confirm
 print $formconfirm;
 
+$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
-$fieldList = 't.'.implode(', t.', $keys);
+$fieldList = 't.' . implode(', t.', $keys);
 
 if (!empty($object->isextrafieldmanaged)) {
 	$keys = array_keys($extralabels);
@@ -104,27 +112,35 @@ if (!empty($object->isextrafieldmanaged)) {
 	}
 }
 
-$sql = 'SELECT '.$fieldList;
+$sql = 'SELECT ' . $fieldList;
 
 // Add fields from hooks
-$parameters=array('sql' => $sql);
-$reshook=$hookmanager->executeHooks('printFieldListSelect', $parameters, $object);    // Note that $action and $object may have been modified by hook
-$sql.=$hookmanager->resPrint;
+$parameters = array('sql' => $sql);
+$reshook = $hookmanager->executeHooks('printFieldListSelect', $parameters, $object);    // Note that $action and $object may have been modified by hook
+$sql .= $hookmanager->resPrint;
 
-$sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
+$sql .= ' FROM ' . MAIN_DB_PREFIX . $object->table_element . ' t ';
 
 if (!empty($object->isextrafieldmanaged) && array_keys($extralabels)) {
 	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.$object->table_element.'_extrafields et ON (et.fk_object = t.rowid)';
 }
 
-$sql.= ' WHERE 1=1';
-$sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).')';
+$sql .= ' WHERE 1=1';
+$sql .= ' AND t.entity IN (' . getEntity('dolifleet', 1) . ')';
 //if ($type == 'mine') $sql.= ' AND t.fk_user = '.$user->id;
-if (!empty($fk_soc) && $fk_soc > 0) $sql.= ' AND t.fk_soc = '.$fk_soc;
+if (!empty($fk_soc) && $fk_soc > 0) $sql .= ' AND t.fk_soc = ' . $fk_soc;
+if (GETPOSTISSET('dim_pneu')) {
+	$sql .= ' AND t.dim_pneu IN (' . implode(',', GETPOST('dim_pneu', 'array')) . ')';
+}
+if (GETPOSTISSET('atelier') && GETPOST('atelier','int')>0) {
+	$sql .= ' AND t.atelier = '.GETPOST('atelier','int');
+}
+$sql .= ' AND t.entity IN (' . getEntity('dolifleet', 1) . ')';
+
 // Add where from hooks
-$parameters=array('sql' => $sql);
-$reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
-$sql.=$hookmanager->resPrint;
+$parameters = array('sql' => $sql);
+$reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
+$sql .= $hookmanager->resPrint;
 
 //print $sql;
 
@@ -156,63 +172,60 @@ if (!empty(array_keys($extralabels))) {
 
 $listViewConfig = array(
 	'view_type' => 'list' // default = [list], [raw], [chart]
-	,'allow-fields-select' => true
-	,'limit'=>array(
+, 'allow-fields-select' => true
+, 'limit' => array(
 		'nbLine' => $nbLine
 	)
-	,'list' => array(
+, 'list' => array(
 		'title' => $langs->trans('doliFleetVehiculeList')
-		,'image' => 'title_generic.png'
-		,'picto_precedent' => '<'
-		,'picto_suivant' => '>'
-		,'noheader' => 0
-		,'messageNothing' => $langs->trans('NodoliFleet')
-		,'picto_search' => img_picto('', 'search.png', '', 0)
-		,'massactions'=>array(
-//			'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
+	, 'image' => 'title_generic.png'
+	, 'picto_precedent' => '<'
+	, 'picto_suivant' => '>'
+	, 'noheader' => 0
+	, 'messageNothing' => $langs->trans('NodoliFleet')
+	, 'picto_search' => img_picto('', 'search.png', '', 0)
+	, 'massactions' => array(//			'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
 		)
-		,'param_url' => '&limit='.$nbLine
+	, 'param_url' => '&limit=' . $nbLine
 	)
-	,'subQuery' => array()
-	,'link' => array()
-	,'type' => array(
+, 'subQuery' => array()
+, 'link' => array()
+, 'type' => array(
 		'date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
-		,'tms' => 'date'
-		,'date_immat'=>'date'
-		,'date_customer_exploit'=>'date'
-		,'km_date'=>'date'
-		,'date_end_contract'=>'date'
+	, 'tms' => 'date'
+	, 'date_immat' => 'date'
+	, 'date_customer_exploit' => 'date'
+	, 'km_date' => 'date'
+	, 'date_end_contract' => 'date'
 	)
-	,'search' => array(
-//		'date_creation' => array('search_type' => 'calendars', 'allow_is_null' => true)
-//		,'tms' => array('search_type' => 'calendars', 'allow_is_null' => false)
-//		,'label' => array('search_type' => true, 'table' => array('t', 't'), 'field' => array('label')) // input text de recherche sur plusieurs champs
+, 'search' => array(
 		'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
-		,'fk_vehicule_type' => array('search_type' => $dictVT->getAllActiveArray('label'))
-		,'fk_vehicule_mark' => array('search_type' => $dictVM->getAllActiveArray('label'))
-		,'immatriculation' => array('search_type' => true, 'table' => 't', 'field' => 'immatriculation')
-		,'date_immat' => array('search_type' => 'calendars', 'allow_is_null' => false)
-		,'fk_soc' => array('search_type' => 'override', 'override'=> $form->select_company($fk_soc, 'fk_soc'))
-		,'date_customer_exploit' => array('search_type' => 'calendars', 'allow_is_null' => false)
-		,'km' => array('search_type' => true, 'table' => 't', 'field' => 'km')
-		,'sall' => array('search_type' => true, 'table' => 't', 'field' => array('vin','immatriculation'))
-		,'km_date' => array('search_type' => 'calendars', 'allow_is_null' => false)
-		,'fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'))
-		,'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false)
-		,'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
+	, 'fk_vehicule_type' => array('search_type' => $dictVT->getAllActiveArray('label'))
+	, 'fk_vehicule_mark' => array('search_type' => $dictVM->getAllActiveArray('label'))
+	, 'immatriculation' => array('search_type' => true, 'table' => 't', 'field' => 'immatriculation')
+	, 'date_immat' => array('search_type' => 'calendars', 'allow_is_null' => false)
+	, 'fk_soc' => array('search_type' => 'override', 'override' => $form->select_company($fk_soc, 'fk_soc'))
+	, 'date_customer_exploit' => array('search_type' => 'calendars', 'allow_is_null' => false)
+	, 'km' => array('search_type' => true, 'table' => 't', 'field' => 'km')
+	, 'sall' => array('search_type' => true, 'table' => 't', 'field' => array('vin', 'immatriculation'))
+	, 'km_date' => array('search_type' => 'calendars', 'allow_is_null' => false)
+	, 'fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'))
+	, 'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false)
+	, 'dfol' => array('search_type' => array(1 => 'Oui', 0 => 'Non'))
+	, 'nb_pneu' => array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu')
+	, 'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true)
+	, 'dim_pneu' => array('search_type' => 'override', 'override' => $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], GETPOST('dim_pneu', 'array'), '', 0, '', 0, '100%'))
+	, 'atelier' => array('search_type' => 'override', 'override' => $object->showInputField($object->fields['atelier'],'atelier',GETPOST('atelier','int')))
 	)
-	,'translate' => array()
-	,'hide' => array(
+, 'translate' => array()
+, 'hide' => array(
 		'rowid' // important : rowid doit exister dans la query sql pour les checkbox de massaction
 	)
-	,'title'=>$TTitle
-	,'eval'=>array(
+, 'title' => $TTitle
+, 'eval' => array(
 		'vin' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
-		,'fk_vehicule_type' => '_getValueFromId("@val@", "dictionaryVehiculeType")'
-		,'fk_vehicule_mark' => '_getValueFromId("@val@", "dictionaryVehiculeMark")'
-		,'fk_soc'			=> '_getSocieteNomUrl("@val@")'
-		,'fk_contract_type' => '_getValueFromId("@val@", "dictionaryContractType")'
-		,'status' => 'doliFleetVehicule::LibStatut("@val@", 5)' // Si on a un fk_user dans notre requête
+	, 'status' => 'doliFleetVehicule::LibStatut("@val@", 5)' // Si on a un fk_user dans notre requête
+	, 'dim_pneu' => '_getDimPneu("@val@")' // Si on a un fk_user dans notre requête
 	)
 );
 
@@ -225,21 +238,37 @@ if (!empty($extralabels)) {
 	}
 }
 
-$r = new Listview($db, 'dolifleet');
+if ($user->rights->dolifleet->extended_read) {
+	$listViewConfig['search']['type_custom'] = array('search_type' => true, 'table' => 't', 'field' => 'type');
+	$listViewConfig['search']['coutm'] = array('search_type' => true, 'table' => 't', 'field' => 'coutm');
+	$listViewConfig['search']['date_fin_fin'] = array('search_type' => 'calendars', 'allow_is_null' => false);
+	$listViewConfig['search']['type_fin'] = array('search_type' => true, 'table' => 't', 'field' => 'type_fin');
+	$listViewConfig['search']['com_custom'] = array('search_type' => true, 'table' => 't', 'field' => 'com_custom');
+	$listViewConfig['search']['date_fin_loc'] = array('search_type' => 'calendars', 'allow_is_null' => false);
+	$listViewConfig['search']['exit_data'] = array('search_type' => 'calendars', 'allow_is_null' => false);
+	$listViewConfig['search']['age_veh'] = array('search_type' => true, 'table' => 't', 'field' => 'age_veh');
+}
 
-// Change view from hooks
-$parameters=array(  'listViewConfig' => $listViewConfig);
-$reshook=$hookmanager->executeHooks('listViewConfig', $parameters, $r);    // Note that $action and $object may have been modified by hook
-if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
-if ($reshook>0) {
-	$listViewConfig = $hookmanager->resArray;
+foreach ($object->fields as $key => $field) {
+	if (!isset($listViewConfig['eval'][$key])) {
+		$listViewConfig['eval'][$key] = '_getObjectOutputField(\'' . $key . '\', \'@val@\')';
+	}
 }
 
 
+$r = new Listview($db, 'dolifleet');
+
+// Change view from hooks
+$parameters = array('listViewConfig' => $listViewConfig);
+$reshook = $hookmanager->executeHooks('listViewConfig', $parameters, $r);    // Note that $action and $object may have been modified by hook
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+if ($reshook > 0) {
+	$listViewConfig = $hookmanager->resArray;
+}
 echo $r->render($sql, $listViewConfig);
 
-$parameters=array('sql'=>$sql);
-$reshook=$hookmanager->executeHooks('printFieldListFooter', $parameters, $object);    // Note that $action and $object may have been modified by hook
+$parameters = array('sql' => $sql);
+$reshook = $hookmanager->executeHooks('printFieldListFooter', $parameters, $object);    // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
 
 $formcore->end_form();
@@ -266,31 +295,42 @@ function _getObjectNomUrl($id)
 /**
  * TODO remove if unused
  */
-function _getSocieteNomUrl($fk_soc)
-{
-	global $db;
-
-	$soc = new Societe($db);
-	if ($soc->fetch($fk_soc) > 0) {
-		return $soc->getNomUrl(1);
-	}
-
-	return '';
-}
-
-function _getValueFromId($id, $dictionaryClassname)
-{
-	global $db;
-
-	if (class_exists($dictionaryClassname)) {
-		$dict = new $dictionaryClassname($db);
-		return $dict->getValueFromId($id, 'label');
-	} else return '';
-}
 
 function _evalEF($key, $val, $extrafieldsobjectkey)
 {
 	global $extrafields;
 
 	return $extrafields->showOutputField($key, $val, '', $extrafieldsobjectkey);
+}
+
+function _getObjectOutputField($key, $value)
+{
+	global $db, $user;
+	$object = new doliFleetVehicule($db);
+	$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
+	return $object->showOutputField($object->fields[$key], $key, $value);
+}
+
+function _getDimPneu($value) {
+
+	global $db;
+	$object = new doliFleetVehicule($db);
+
+	$output = '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
+	$selected = explode(',', $value);
+	foreach ($selected as $sel) {
+		$output.=  '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">'.
+			$object->fields['dim_pneu']['arrayofkeyval'][$sel].
+		'</li>';
+	}
+	$output.= '</ul></div>';
+
+	return $output;
 }
