@@ -82,6 +82,24 @@ if (empty($reshook)) {
 
 llxHeader('', $langs->trans('doliFleetVehiculeOperationList'), '', '');
 
+$sql_prod  = 'SELECT op.fk_product, p.label
+		 FROM '. MAIN_DB_PREFIX .'dolifleet_vehicule_operation AS op
+		 INNER JOIN '. MAIN_DB_PREFIX .'product as p on p.rowid = op.fk_product
+		 INNER JOIN '. MAIN_DB_PREFIX .'dolifleet_vehicule as v on v.rowid = op.fk_vehicule
+         WHERE v.status =1 AND p.tosell = 1 AND p.tobuy = 1
+         GROUP BY op.fk_product, p.label';
+
+$prod_array = array();
+$resql_prod = $db->query($sql_prod);
+if ($resql_prod) {
+	$num = $db->num_rows($resql_prod);
+	if ($num) {
+		while ($obj = $db->fetch_object($resql_prod)) {
+			$prod_array[$obj->fk_product] = $obj->label;
+		}
+	}
+}
+
 //$type = GETPOST('type');
 //if (empty($user->rights->dolifleet->all->read)) $type = 'mine';
 
@@ -127,9 +145,12 @@ if ($conf->entity !=1) {
 if ($conf->entity!=1) {
 	$sql .= ' AND t.atelier IN (' . $conf->entity . ')';
 }
-//if ($type == 'mine') $sql.= ' AND t.fk_user = '.$user->id;
+
+if (GETPOSTISSET('o_fk_product')) {
+	$sql .= ' AND o.fk_product IN (' . implode(',', GETPOST('o_fk_product', 'array')) . ')';
+}
+
 if (!empty($fk_soc) && $fk_soc > 0) $sql.= ' AND t.fk_soc = '.$fk_soc;
-if (!empty($fk_product) && $fk_product > 0) $sql.= ' AND o.fk_product = '.$fk_product;
 if (!empty($or_next) && $or_next > 0) $sql.= ' AND o.or_next > 0 AND o.or_next IS NOT NULL';
 
 // Add where from hooks
@@ -209,7 +230,7 @@ $listViewConfig = array(
 		,'t_km_date' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'km_date')
 		,'t_fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'),'table' => 't' ,'field' => 'fk_contract_type')
 		,'t_date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'date_end_contract')
-		,'o_fk_product' =>  array('search_type' => 'override', 'override'=> $form->select_produits($fk_product, 'fk_product', '1', 0, 0, 1, 2, '', 0, array(), 0, '1', 0, '', 1, '', null, 1))
+		,'o_fk_product' => array('search_type' => 'override', 'override' => $form->multiselectarray('o_fk_product', $prod_array, GETPOST('o_fk_product', 'array'), '', 0, '', 0, '100%'))
 		,'p_label' => array('search_type' => true, 'table' => 'p', 'field' => 'label')
 		,'o_km' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km')
 		,'o_delai_from_last_op' =>  array('search_type' => true, 'table' => 'o', 'field' => 'delai_from_last_op')
