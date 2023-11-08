@@ -74,7 +74,7 @@ if ($id > 0 || !empty($ref)) $upload_dir = $conf->dolifleet->multidir_output[$ob
 //if ($user->socid > 0) $socid = $user->socid;
 //$result = restrictedArea($user, $object->element, $id, $object->table_element.'&'.$object->element);
 
-$permissiontoadd = $user->rights->dolifleet->write; // Used by the include of actions_addupdatedelete.inc.php
+$permissiontoadd = $user->rights->dolifleet->read; // Used by the include of actions_addupdatedelete.inc.php
 
 $object->fetch($id, true, $ref);
 
