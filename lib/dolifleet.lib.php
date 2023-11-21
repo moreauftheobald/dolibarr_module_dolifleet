@@ -564,7 +564,7 @@ function printVehiculeOperations($object)
 			if (GETPOST('action', 'alpha') == 'editOperation'
 				&& $operation->id == GETPOST('ope_id', 'int')) {
 				print '<td align="center">';
-				print $form->select_produits($operation->fk_product, 'productid', '', 20, 0, 1, 2, '', 2);
+				print $form->select_produits(GETPOST('productid'), 'productid', 1, 0, 0, 1, 2, '', 0);
 				print '</td>';
 				print '<td align="center">';
 				print '<input class="quatrevingtpercent" type="number" name="km" id="km" step="1" value="' . $operation->km . '">';
@@ -635,7 +635,7 @@ function printVehiculeOperations($object)
 		print '<tr>';
 
 		print '<td align="center">';
-		print $form->select_produits(GETPOST('productid'), 'productid', '', 20, 0, 1, 2, '', 2);
+		print $form->select_produits(GETPOST('productid'), 'productid', 1, 0, 0, 1, 2, '', 0);
 		print '</td>';
 
 		print '<td align="center">';
@@ -715,7 +715,7 @@ function printVehiculeOperationsNp($object)
 		print '<tr>';
 
 		print '<td align="center">';
-		print $form->select_produits(GETPOST('productidnp'), 'productidnp', '', 20, 0, 1, 2, '', 2);
+		print $form->select_produits(GETPOST('productid'), 'productid', 1, 0, 0, 1, 2, '', 0);
 		print '</td>';
 
 		print '<td align="center" colspan="2">';
