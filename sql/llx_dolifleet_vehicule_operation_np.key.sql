@@ -1,1 +1,4 @@
 ALTER TABLE llx_dolifleet_vehicule_operation_np ADD UNIQUE uk_vehicule_operation_np_veh_prod (fk_vehicule,fk_product);
+
+ALTER TABLE llx_dolifleet_vehicule_operation_np ADD CONSTRAINT fk_dolifleet_vehicule_np_operation_vehicule FOREIGN KEY (fk_vehicule) REFERENCES llx_dolifleet_vehicule (rowid);
+ALTER TABLE llx_dolifleet_vehicule_operation_np ADD CONSTRAINT fk_dolifleet_vehicule_np_operation_product FOREIGN KEY (fk_product) REFERENCES llx_procduct (rowid);
