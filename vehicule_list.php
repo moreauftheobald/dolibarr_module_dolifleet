@@ -92,15 +92,6 @@ elseif ($reshook > 0) $formconfirm = $hookmanager->resPrint;
 // Print form confirm
 print $formconfirm;
 
-$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
 $fieldList = 't.' . implode(', t.', $keys);
@@ -234,17 +225,6 @@ if (!empty($extralabels)) {
 	}
 }
 
-if ($user->rights->dolifleet->extended_read) {
-	$listViewConfig['search']['type_custom'] = array('search_type' => true, 'table' => 't', 'field' => 'type');
-	$listViewConfig['search']['coutm'] = array('search_type' => true, 'table' => 't', 'field' => 'coutm');
-	$listViewConfig['search']['date_fin_fin'] = array('search_type' => 'calendars', 'allow_is_null' => false);
-	$listViewConfig['search']['type_fin'] = array('search_type' => true, 'table' => 't', 'field' => 'type_fin');
-	$listViewConfig['search']['com_custom'] = array('search_type' => true, 'table' => 't', 'field' => 'com_custom');
-	$listViewConfig['search']['date_fin_loc'] = array('search_type' => 'calendars', 'allow_is_null' => false);
-	$listViewConfig['search']['exit_data'] = array('search_type' => 'calendars', 'allow_is_null' => false);
-	$listViewConfig['search']['age_veh'] = array('search_type' => true, 'table' => 't', 'field' => 'age_veh');
-}
-
 foreach ($object->fields as $key => $field) {
 	if (!isset($listViewConfig['eval'][$key])) {
 		$listViewConfig['eval'][$key] = '_getObjectOutputField(\'' . $key . '\', \'@val@\')';
@@ -303,14 +283,6 @@ function _getObjectOutputField($key, $value)
 {
 	global $db, $user;
 	$object = new doliFleetVehicule($db);
-	$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-	$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-	$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-	$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-	$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-	$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-	$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-	$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 	return $object->showOutputField($object->fields[$key], $key, $value);
 }
 
