@@ -128,22 +128,6 @@ class moddoliFleet extends DolibarrModules
 		$dateCronOpe = $dateCronJob->format('Y-m-d H:i');
 		$this->cronjobs = array(
 			0 => array(
-				'label' => $langs->trans('2lTrucksCRONGetKmVehicles'),
-				'jobtype' => 'method',
-				'class' => '/dolifleet/cron/cron.php',
-				'objectname' => 'cron_dolifleet',
-				'method' => 'getKmVehicles',
-				'parameters' => '',
-				'comment' => '',
-				'frequency' => 1,
-				'unitfrequency' => 86400,
-				'test' => '$conf->dolifleet->enabled',
-				'priority' => 50,
-				'entity' => 1,
-				'datestart' => $dateCronKM,
-				'status' => 1,
-			),
-			1 => array(
 				'label' => $langs->trans('2lTrucksCRONCreateEventOperationOrder'),
 				'jobtype' => 'method',
 				'class' => '/dolifleet/cron/cron.php',
@@ -203,73 +187,67 @@ class moddoliFleet extends DolibarrModules
 				MAIN_DB_PREFIX . "c_dolifleet_contract_type",
 				MAIN_DB_PREFIX . "c_dolifleet_vehicule_type",
 				MAIN_DB_PREFIX . "c_dolifleet_vehicule_mark",
-				MAIN_DB_PREFIX . "c_dolifleet_vehicule_activity_type"
+				MAIN_DB_PREFIX . "c_dolifleet_vehicule_activity_type",
+				MAIN_DB_PREFIX . "c_dolifleet_vehicule_dimpneu"
 			),
 			'tablib' => array(
 				"c_dolifleet_contract_type",
 				"c_dolifleet_vehicule_type",
 				"c_dolifleet_vehicule_mark",
-				"c_dolifleet_vehicule_activity_type"
+				"c_dolifleet_vehicule_activity_type",
+				"c_dolifleet_vehicule_dimpneu"
 			),
 			'tabsql' => array(
 				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_contract_type as f',
 				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_type as f',
 				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_mark as f',
-				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_activity_type as f'
+				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_activity_type as f',
+				'SELECT f.rowid as rowid, f.code, f.label, f.active FROM ' . MAIN_DB_PREFIX . 'c_dolifleet_vehicule_dimpneu as f'
 			),
 			'tabsqlsort' => array(
 				"label ASC",
 				"label ASC",
 				"label ASC",
-				"label ASC"
+				"label ASC",
+				"label ASC",
 			),
 			'tabfield' => array(
 				"code,label",
 				"code,label",
 				"code,label",
-				"code,label"
+				"code,label",
+				"code,label",
 			),
 			'tabfieldvalue' => array(
 				"code,label",
 				"code,label",
 				"code,label",
-				"code,label"
+				"code,label",
+				"code,label",
 			),                                                                                // List of fields (list of fields to edit a record)
 			'tabfieldinsert' => array(
 				"code,label",
 				"code,label",
 				"code,label",
-				"code,label"
+				"code,label",
+				"code,label",
 			),                                                                            // List of fields (list of fields for insert)
 			'tabrowid' => array(
 				"rowid",
 				"rowid",
 				"rowid",
-				"rowid"
+				"rowid",
+				"rowid",
 			),                                                                                                    // Name of columns with primary key (try to always name it 'rowid')
 			'tabcond' => array(
 				$conf->dolifleet->enabled,
 				$conf->dolifleet->enabled,
 				$conf->dolifleet->enabled,
-				$conf->dolifleet->enabled
+				$conf->dolifleet->enabled,
+				$conf->dolifleet->enabled,
 			)
 
 		);
-		/* Example:
-		if (! isset($conf->dolifleet->enabled)) $conf->dolifleet->enabled=0;	// This is to avoid warnings
-		$this->dictionaries=array(
-			'langs'=>'dolifleet@dolifleet',
-			'tabname'=>array(MAIN_DB_PREFIX."table1",MAIN_DB_PREFIX."table2",MAIN_DB_PREFIX."table3"),		// List of tables we want to see into dictonnary editor
-			'tablib'=>array("Table1","Table2","Table3"),													// Label of tables
-			'tabsql'=>array('SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table1 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table2 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table3 as f'),	// Request to select fields
-			'tabsqlsort'=>array("label ASC","label ASC","label ASC"),																					// Sort order
-			'tabfield'=>array("code,label","code,label","code,label"),																					// List of fields (result of select to show dictionary)
-			'tabfieldvalue'=>array("code,label","code,label","code,label"),																				// List of fields (list of fields to edit a record)
-			'tabfieldinsert'=>array("code,label","code,label","code,label"),																			// List of fields (list of fields for insert)
-			'tabrowid'=>array("rowid","rowid","rowid"),																									// Name of columns with primary key (try to always name it 'rowid')
-			'tabcond'=>array($conf->dolifleet->enabled,$conf->dolifleet->enabled,$conf->dolifleet->enabled)												// Condition to show each dictionary
-		);
-		*/
 
 		// Boxes
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.

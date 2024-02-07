@@ -201,7 +201,7 @@ class doliFleetVehicule extends SeedObject
 		),
 
 		'fk_contract_type' => array(
-			'type' => 'sellist:c_dolifleet_contract_type:label:rowid::active=1',
+			'type' => 'sellist:c_dolifleet_contract_type:label:rowid::(active=1)',
 			'label' => 'contractType',
 			'visible' => 1,
 			'enabled' => 1,
@@ -226,12 +226,11 @@ class doliFleetVehicule extends SeedObject
 		),
 
 		'dim_pneu' => array(
-			'type' => 'varchar(255)',
+			'type' => 'chkbxlst:c_dolifleet_vehicule_dimpneu:label:rowid::(active=1)',
 			'label' => 'DimensionsPneumatiques',
 			'enabled' => 1,
 			'visible' => '1',
 			'position' => 240,
-			'arrayofkeyval'=> array(1=>'315/80-R22.5',2=>'385/55-R22.5',3=>'315/60-R22.5',4=>'315/70-R22.5',5=>'245/70-R19.5',6=>'255/60-R22.5',7=>'275/70-R22.5',8=>'295/55 R22.5')
 		),
 		'nb_pneu' => array(
 			'type' => 'int',
@@ -267,23 +266,12 @@ class doliFleetVehicule extends SeedObject
 	public $immatriculation;
 	public $date_immat;
 	public $fk_soc;
-	public $date_customer_exploit;
 	public $km;
 	public $km_date;
 	public $fk_contract_type;
 	public $date_end_contract;
-	public $atelier;
 	public $carrosserie;
-	public $dfol;
-	public $essieu;
-	public $type_custom;
-	public $coutm;
-	public $date_fin_fin;
-	public $type_fin;
-	public $com_custom;
-	public $date_fin_loc;
-	public $exit_data;
-	public $age_veh;
+
 	public $dim_pneu;
 	public $nb_pneu;
 

@@ -19,3 +19,12 @@ INSERT INTO llx_c_dolifleet_vehicule_mark (rowid, date_creation, tms, code, enti
 INSERT INTO llx_c_dolifleet_vehicule_mark (rowid, date_creation, tms, code, entity, active, label) VALUES(13, NULL, '2023-10-19 19:05:44', 'AUDI', 1, 1, 'AUDI');
 INSERT INTO llx_c_dolifleet_vehicule_mark (rowid, date_creation, tms, code, entity, active, label) VALUES(14, NULL, '2023-10-19 19:06:30', 'CITROEN', 1, 1, 'CITROEN');
 INSERT INTO llx_c_dolifleet_vehicule_mark (rowid, date_creation, tms, code, entity, active, label) VALUES(15, NULL, '2023-10-19 19:06:41', 'DS', 1, 1, 'DS');
+
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(1, NULL, '2023-10-19 19:06:41', '315/80-R22.5', 1, 1, '315/80-R22.5');
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(2, NULL, '2023-10-19 19:06:41', '385/55-R22.5', 1, 1, '385/55-R22.5');
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(3, NULL, '2023-10-19 19:06:41', '315/60-R22.5', 1, 1, '315/60-R22.5');
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(4, NULL, '2023-10-19 19:06:41', '315/70-R22.5', 1, 1, '315/70-R22.5');
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(5, NULL, '2023-10-19 19:06:41', '245/70-R19.5', 1, 1, '245/70-R19.5');
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(6, NULL, '2023-10-19 19:06:41', '255/60-R22.5', 1, 1, '255/60-R22.5');
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(7, NULL, '2023-10-19 19:06:41', '275/70-R22.5', 1, 1, '275/70-R22.5');
+INSERT INTO llx_c_dolifleet_vehicule_dimpneu (rowid, date_creation, tms, code, entity, active, label) VALUES(8, NULL, '2023-10-19 19:06:41', '295/55 R22.5', 1, 1, '295/55 R22.5');

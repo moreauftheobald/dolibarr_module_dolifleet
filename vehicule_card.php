@@ -50,13 +50,6 @@ if ($object->isextrafieldmanaged) {
 	$search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 }
 
-// Initialize array of search criterias
-//$search_all=trim(GETPOST("search_all",'alpha'));
-//$search=array();
-//foreach($object->fields as $key => $val)
-//{
-//    if (GETPOST('search_'.$key,'alpha')) $search[$key]=GETPOST('search_'.$key,'alpha');
-//}
 
 /*
  * Actions
@@ -363,6 +356,8 @@ if (empty($reshook)) {
  */
 $form = new Form($db);
 
+$keyforbreak = 'fk_soc';
+
 $title = $langs->trans('doliFleet');
 llxHeader('', $title);
 
@@ -374,7 +369,7 @@ if ($action == 'create') {
 	print '<input type="hidden" name="action" value="add">';
 	print '<input type="hidden" name="backtopage" value="' . $backtopage . '">';
 
-	dol_fiche_head(array(), '');
+	print dol_get_fiche_head(array(), '');
 
 	print '<table class="border centpercent">' . "\n";
 
@@ -386,7 +381,7 @@ if ($action == 'create') {
 
 	print '</table>' . "\n";
 
-	dol_fiche_end();
+	print dol_get_fiche_end();
 
 	print '<div class="center">';
 	print '<input type="submit" class="button" name="add" value="' . dol_escape_htmltag($langs->trans('Create')) . '">';
@@ -400,16 +395,6 @@ if ($action == 'create') {
 		$langs->load('errors');
 		print $langs->trans('ErrorRecordNotFound');
 	} else {
-		$object->fields['carrosserie']['visible'] = ($object->fk_vehicule_type == 2) ? 3 : 0;
-		$object->fields['essieu']['visible'] = ($object->fk_vehicule_type == 3) ? 3 : 0;
-		$object->fields['type_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['coutm']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['date_fin_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['type_fin']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['com_custom']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['date_fin_loc']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['exit_data']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
-		$object->fields['age_veh']['visible'] = $user->rights->dolifleet->extended_read ? 1 : 0;
 		if (!empty($object->id) && $action === 'edit') {
 			print '<form method="POST" action="' . $_SERVER["PHP_SELF"] . '">';
 			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -419,29 +404,19 @@ if ($action == 'create') {
 
 			$head = vehicule_prepare_head($object);
 			$picto = 'dolifleet@dolifleet';
-			dol_fiche_head($head, 'card', $langs->trans('doliFleet'), 0, $picto);
+			print dol_get_fiche_head($head, 'card', $langs->trans('doliFleet'), 0, $picto);
 
 			print '<table class="border centpercent">' . "\n";
 
 			// Common attributes
-			$object->fields['dim_pneu']['visible'] = 0;
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_edit.tpl.php';
-
-			print '<tr class="field_dim_pneu" class="valuefieldcreate dolifleet_vehicule_dim_pneu trextrafields_collapse_dim_pneu">';
-			print '<td class="titlefieldcreate wordbreak">';
-			print $langs->trans($object->fields['dim_pneu']['label']);
-			print '</td>';
-			print '<td id="valuefieldcreate" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
-			print $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], explode(',', $object->dim_pneu), '', 0, '', 0, '100%');
-			print '</td>';
-			print '</tr>';
 
 			// Other attributes
 			include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_edit.tpl.php';
 
 			print '</table>';
 
-			dol_fiche_end();
+			print dol_get_fiche_end();
 
 			print '<div class="center"><input type="submit" class="button" name="save" value="' . $langs->trans('Save') . '">';
 			print ' &nbsp; <input type="submit" class="button" name="cancel" value="' . $langs->trans('Cancel') . '">';
@@ -451,7 +426,7 @@ if ($action == 'create') {
 		} elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create'))) {
 			$head = vehicule_prepare_head($object);
 			$picto = 'dolifleet@dolifleet';
-			dol_fiche_head($head, 'card', $langs->trans('doliFleet'), -1, $picto);
+			print dol_get_fiche_head($head, 'card', $langs->trans('doliFleet'), -1, $picto);
 
 			$formconfirm = getFormConfirmdoliFleetVehicule($form, $object, $action);
 			if (!empty($formconfirm)) print $formconfirm;
@@ -465,40 +440,7 @@ if ($action == 'create') {
 			print '<table class="border tableforfield" width="100%">' . "\n";
 
 			// Common attributes
-			$keyforbreak = 'atelier';
-			$object->fields['dim_pneu']['visible'] = 0;
 			include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
-
-			print '<tr class="trextrafields_collapse_dim_pneu">';
-			print '<td class="titlefield">';
-			print '<table class="nobordernopadding centpercent">';
-			print '<tbody><tr><td class="">' . $langs->trans($object->fields['dim_pneu']['label']) . '</td></tr></tbody>';
-			print '</table>';
-			print '</td>';
-			print '<td id="dolifleet_vehicule_extras_ortocreate_dim_pneu" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
-			print '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
-			$selected = explode(',', $object->dim_pneu);
-			foreach ($selected as $sel) {
-				print  '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">'.
-					$object->fields['dim_pneu']['arrayofkeyval'][$sel].
-				'</li>';
-			}
-			print '</ul></div>';
-			print '</td>';
-			print '</tr>';
-
-			print '<tr class="trextrafields_collapse_operations">';
-			print '<td class="titlefield">';
-			print '<table class="nobordernopadding centpercent">';
-			print '<tbody><tr><td class="">' . $langs->trans("operations") . '</td></tr></tbody>';
-			print '</table>';
-			print '</td>';
-			print '<td id="dolifleet_vehicule_extras_ortocreate_operations" class="valuefield dolifleet_vehicule_extras_ortocreate wordbreak">';
-			$res = dol_include_once('clitheobald/class/clitheobald.class.php');
-			$objCli = new CliTheobald($db);
-			print $objCli->printbuttons_vh($object);
-			print '</td>';
-			print '</tr>';
 
 			// Other attributes
 			include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
@@ -518,48 +460,6 @@ if ($action == 'create') {
 				if ($object->status == 1) {
 					print '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/operationorder/operationorder_card.php', 1) . '?action=create&mainmenu=commercial&fk_soc=' . $object->fk_soc . '&fk_vehicule=' . $object->id . '">' . $langs->trans("cliCreateOperationOrderFromVehicule") . '</a></div>' . "\n";
 					print '<input type="hidden" name="ordercreatedid" id="ordercreatedid" />';
-
-					?>
-					<script type="text/javascript">
-						function elementtoplan() {
-							$div = $('<div id="elementtoplan"  title="<?php print $langs->trans('OperationOrderToCreate'); ?>"><iframe width="100%" height="100%" frameborder="0" src="<?php print dol_buildpath('/clitheobald/tpl/ordertoplan.php?vhid=' . $object->id, 1); ?>&origin=vehicule"></iframe></div>');
-							$div.dialog({
-								modal: true
-								, width: "1200px"
-								, height: $(window).height() - 200
-								, close: function () {
-									if ($('#ordercreatedid').val() > 0) {
-										document.location.href = '<?php echo dol_buildpath('operationorder/operationorder_card.php', 2) . '?id=';?>' + $('#ordercreatedid').val();
-									} else {
-										document.location.reload(true);
-									}
-								}
-							});
-						};
-
-						function nonplanned() {
-							$div = $('<div id="nonplanned" title="<?php print $langs->trans('operationnonplanifiees'); ?>"><iframe width="100%" height="100%" frameborder="0" src="<?php print dol_buildpath('/clitheobald/tpl/nonplanned.php?vhid=' . $object->id, 1) ?>&origin=vehicule"></iframe></div>');
-							$div.dialog({
-								modal: true
-								, width: "1200px"
-								, height: $(window).height() - 200
-								, close: function () {
-									if ($('#ordercreatedid').val() > 0) {
-										document.location.href = '<?php echo dol_buildpath('operationorder/operationorder_card.php', 2) . '?id=';?>' + $('#ordercreatedid').val();
-									} else {
-										document.location.reload(true);
-									}
-								}
-							});
-						}
-					</script>
-					<?php
-				} else {
-					?>
-					<script type="text/javascript">
-						$('.dolifleet_vehicule_extras_ortocreate').children().hide();
-					</script>
-					<?php
 				}
 				// Modify
 				if (!empty($user->rights->dolifleet->write)) {
@@ -656,7 +556,7 @@ if ($action == 'create') {
 
 			print '</div></div></div>';
 
-			dol_fiche_end(-1);
+			print dol_get_fiche_end(-1);
 		}
 	}
 }

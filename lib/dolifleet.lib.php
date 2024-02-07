@@ -759,13 +759,7 @@ function printBannerVehicleCard($vehicle)
 	// client
 	$vehicle->fetch_thirdparty();
 	$morehtmlref .= '<br>' . $langs->trans('ThirdParty') . ' : ' . $vehicle->thirdparty->getNomUrl(1, 'customer');
-	/*
-	// Ref bis
-	$morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->dolifleet->write, 'string', '', 0, 1);
-	$morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->dolifleet->write, 'string', '', null, null, '', 1);
-	// Thirdparty
-	$morehtmlref.='<br>'.$langs->trans('ThirdParty') . ' : ' . $soc->getNomUrl(1);
-	*/
+
 	$morehtmlref .= '</div>';
 
 	$vehicle->ref = $vehicle->vin;
