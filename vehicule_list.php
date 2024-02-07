@@ -122,7 +122,7 @@ $sql .= $hookmanager->resPrint;
 $sql .= ' FROM ' . MAIN_DB_PREFIX . $object->table_element . ' t ';
 
 if (!empty($object->isextrafieldmanaged) && array_keys($extralabels)) {
-	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.$object->table_element.'_extrafields et ON (et.fk_object = t.rowid)';
+	$sql .= ' LEFT JOIN ' . MAIN_DB_PREFIX . $object->table_element . '_extrafields et ON (et.fk_object = t.rowid)';
 }
 
 $sql .= ' WHERE 1=1';
@@ -132,8 +132,8 @@ if (!empty($fk_soc) && $fk_soc > 0) $sql .= ' AND t.fk_soc = ' . $fk_soc;
 if (GETPOSTISSET('dim_pneu')) {
 	$sql .= ' AND t.dim_pneu IN (' . implode(',', GETPOST('dim_pneu', 'array')) . ')';
 }
-if (GETPOSTISSET('atelier') && GETPOST('atelier','int')>0) {
-	$sql .= ' AND t.atelier = '.GETPOST('atelier','int');
+if (GETPOSTISSET('atelier') && GETPOST('atelier', 'int') > 0) {
+	$sql .= ' AND t.atelier = ' . GETPOST('atelier', 'int');
 }
 $sql .= ' AND t.entity IN (' . getEntity('dolifleet', 1) . ')';
 
@@ -164,7 +164,7 @@ $TTitle['status'] = $langs->trans('Status');
 if (!empty(array_keys($extralabels))) {
 	foreach ($extralabels as $k => $v) {
 		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k], 1);
-		if (in_array(abs($permit), array(1,2,4)) && !empty(abs($permit))) {
+		if (in_array(abs($permit), array(1, 2, 4)) && !empty(abs($permit))) {
 			$TTitle[$k] = $v;
 		}
 	}
@@ -215,7 +215,7 @@ $listViewConfig = array(
 	, 'nb_pneu' => array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu')
 	, 'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true)
 	, 'dim_pneu' => array('search_type' => 'override', 'override' => $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], GETPOST('dim_pneu', 'array'), '', 0, '', 0, '100%'))
-	, 'atelier' => array('search_type' => 'override', 'override' => $object->showInputField($object->fields['atelier'],'atelier',GETPOST('atelier','int')))
+	//, 'atelier' => array('search_type' => 'override', 'override' => $object->showInputField($object->fields['atelier'], 'atelier', GETPOST('atelier', 'int')))
 	)
 , 'translate' => array()
 , 'hide' => array(
@@ -232,8 +232,8 @@ $listViewConfig = array(
 if (!empty($extralabels)) {
 	foreach ($extralabels as $k => $v) {
 		$permit = dol_eval($extrafields->attributes[$object->table_element]['list'][$k], 1);
-		if (in_array(abs($permit), array(1,2,4)) && !empty(abs($permit))) {
-			$listViewConfig['eval'][$k] = '_evalEF("' . $k . '", "@val@", "'.$object->table_element.'")';
+		if (in_array(abs($permit), array(1, 2, 4)) && !empty(abs($permit))) {
+			$listViewConfig['eval'][$k] = '_evalEF("' . $k . '", "@val@", "' . $object->table_element . '")';
 		}
 	}
 }
@@ -318,7 +318,8 @@ function _getObjectOutputField($key, $value)
 	return $object->showOutputField($object->fields[$key], $key, $value);
 }
 
-function _getDimPneu($value) {
+function _getDimPneu($value)
+{
 
 	global $db;
 	$object = new doliFleetVehicule($db);
@@ -326,11 +327,11 @@ function _getDimPneu($value) {
 	$output = '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
 	$selected = explode(',', $value);
 	foreach ($selected as $sel) {
-		$output.=  '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">'.
-			$object->fields['dim_pneu']['arrayofkeyval'][$sel].
-		'</li>';
+		$output .= '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">' .
+			$object->fields['dim_pneu']['arrayofkeyval'][$sel] .
+			'</li>';
 	}
-	$output.= '</ul></div>';
+	$output .= '</ul></div>';
 
 	return $output;
 }

@@ -44,37 +44,38 @@ if(!empty($moduleSharingEnabledValue)){
 }
 
 $action = GETPOST("action");
-if ($action == 'save_multicompany_shared_conf')
-{
-	$multicompanypriceshare = GETPOST('multicompany-dolifleet', 'array');
+if ($action == 'save_multicompany_shared_conf') {
+	$multicompanyfleeteshare = GETPOST('multicompany-dolifleet', 'array');
 	$dao = new DaoMulticompany($db);
 	$dao->getEntities();
 
-	foreach ($dao->entities as $entity)
-	{
+	if ($conf->entity == 1) {
+		foreach ($dao->entities as $entity) {
 		$entity->options['sharings'][$element] = $entity->options['sharings'][$elementConvertion] = $entity->options['sharings'][$elementConvertionAnotherOne] = array();
 		$entity->update($entity->id, $user);
 	}
 
-	if (!empty($multicompanypriceshare))
-	{
+	} else {
+		$dao->fetch($conf->entity);
+		if ($dao->id > 0) {
+			$dao->options['sharings'][$element] = $dao->options['sharings'][$elementConvertion] = $dao->options['sharings'][$elementConvertionAnotherOne] = array();
+			$dao->update($dao->id, $user);
+		}
+	}
 
-		foreach ($multicompanypriceshare as $entityId => $shared)
-		{
+	if (!empty($multicompanyfleeteshare)) {
+		foreach ($multicompanyfleeteshare as $entityId => $shared) {
 
 			//'MULTICOMPANY_'.strtoupper($element).'_SHARING_ENABLED
-			if (is_array($shared))
-			{
+			if (is_array($shared)) {
 				$shared = array_map('intval', $shared);
 
-				if ($dao->fetch($entityId) > 0)
-				{
+				if ($dao->fetch($entityId) > 0) {
 					$dao->options['sharings'][$element] = $dao->options['sharings'][$elementConvertion] = $dao->options['sharings'][$elementConvertionAnotherOne] = $shared;
 					$dao->options['sharings'][$elementConvertion] = $dao->options['sharings'][$element];
 					$dao->options['sharings'][$elementConvertionAnotherOne] = $dao->options['sharings'][$element];
 
-					if ($dao->update($entityId, $user) < 1)
-					{
+					if ($dao->update($entityId, $user) < 1) {
 						setEventMessage('Error');
 					}
 				}
@@ -85,8 +86,7 @@ if ($action == 'save_multicompany_shared_conf')
 
 
 $extrajs = $extracss = array();
-if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED))
-{
+if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED)) {
 	$extrajs = array(
 		'/multicompany/inc/multiselect/js/ui.multiselect.js',
 	);
@@ -108,8 +108,7 @@ dol_fiche_head($head, 'multicompanySharing', $langs->trans("Module104087Name"), 
 
 
 
-if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED))
-{
+if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED)) {
 
 	print '<br><br>';
 
@@ -147,14 +146,11 @@ if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_S
 	$dao = new DaoMulticompany($db);
 	$dao->getEntities();
 
-	if (is_array($dao->entities))
-	{
+	if (is_array($dao->entities)) {
 
-		foreach ($dao->entities as $entitie)
-		{
+		foreach ($dao->entities as $entitie) {
 
-			if (intval($conf->entity) === 1 || intval($conf->entity) === intval($entitie->id))
-			{
+			if (intval($conf->entity) === 1 || intval($conf->entity) === intval($entitie->id)) {
 
 				print '<tr class="oddeven" >';
 				print '<td align="left" >';
@@ -219,22 +215,17 @@ function _multiselect_entities($htmlname, $current, $option = '', $sharingElemen
 	$sharingElement = !empty($sharingElement) ? $sharingElement : $htmlname;
 
 	$return = '<select id="'.$htmlname.'" class="multiselect" multiple="multiple" name="'.$htmlname.'[]" '.$option.' style="overflow: auto;">';
-	if (is_array($dao->entities))
-	{
+	if (is_array($dao->entities)) {
 		$return.='<option></option>';
-		foreach ($dao->entities as $entity)
-		{
-			if (is_object($current) && $current->id != $entity->id && $entity->active == 1)
-			{
+		foreach ($dao->entities as $entity) {
+			if (is_object($current) && $current->id != $entity->id && $entity->active == 1) {
 				$return .= '<option value="'.$entity->id.'" ';
-				if (is_array($current->options['sharings'][$sharingElement]) && in_array($entity->id, $current->options['sharings'][$sharingElement]))
-				{
+				if (is_array($current->options['sharings'][$sharingElement]) && in_array($entity->id, $current->options['sharings'][$sharingElement])) {
 					$return .= 'selected="selected"';
 				}
 				$return .= '>';
 				$return .= $entity->label;
-				if (empty($entity->visible))
-				{
+				if (empty($entity->visible)) {
 					$return .= ' ('.$langs->trans('Hidden').')';
 				}
 				$return .= '</option>';
