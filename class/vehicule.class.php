@@ -137,6 +137,16 @@ class doliFleetVehicule extends SeedObject
 			'index' => 1,
 		),
 
+		'modele' => array(
+			'type' => 'varchar(255)',
+			'label' => 'modele',
+			'enabled' => 1,
+			'visible' => 1,
+			'notnull' => 0,
+			'index' => 0,
+			'position' => 55
+		),
+
 		'immatriculation' => array(
 			'type' => 'varchar(20)',
 			'label' => 'immatriculation',
@@ -170,16 +180,6 @@ class doliFleetVehicule extends SeedObject
 			'position' => 80,
 			'index' => 1,
 			'help' => 'LinkToThirparty'
-		),
-
-		'date_customer_exploit' => array(
-			'type' => 'date',
-			'label' => 'date_customer_exploit',
-			'visible' => 1,
-			'enabled' => 1,
-			'position' => 90,
-			'index' => 1,
-			'help' => 'date_customer_exploit_help'
 		),
 
 		'km' => array(
@@ -217,103 +217,14 @@ class doliFleetVehicule extends SeedObject
 			'position' => 130
 		),
 
-		'atelier' => array(
-			'type' => 'sellist:entity:label:rowid::visible=1',
-			'label' => 'AtelierPrincipal',
-			'visible' => 1,
-			'enabled' => 1,
-			'position' => 140
-		),
-
 		'carrosserie' => array(
 			'type' => 'text', // or html for WYSWYG
-			'label' => 'SNCarrosserie',
+			'label' => 'Carrosserie',
 			'enabled' => 1,
-			'visible' => '0',
+			'visible' => '1',
 			'position' => 150
 		),
 
-		'dfol' => array(
-			'type' => 'integer',
-			'label' => 'DFolVC',
-			'enabled' => 1,
-			'visible' => 1,
-			'notnull' => 1,
-			'default' => 0,
-			'position' => 160,
-			'arrayofkeyval' => array(
-				0 => 'Non'
-			, 1 => 'Oui'
-			)
-		),
-
-		'essieu' => array(
-			'type' => 'varchar(255)',
-			'label' => 'SNEssieu',
-			'enabled' => 1,
-			'visible' => '0',
-			'position' => 170
-		),
-
-		'type_custom' => array(
-			'type' => 'int',
-			'label' => 'Type',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 170
-		),
-
-		'coutm' => array(
-			'type' => 'price',
-			'label' => 'CoutMensuel',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 170
-		),
-
-		'date_fin_fin' => array(
-			'type' => 'date',
-			'label' => 'DateFinFinancement',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 180
-		),
-
-		'type_fin' => array(
-			'type' => 'varchar(255)',
-			'label' => 'TypeFinancement',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 190
-		),
-		'com_custom' => array(
-			'type' => 'varchar(255)',
-			'label' => 'Comment',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 200
-		),
-		'date_fin_loc' => array(
-			'type' => 'date',
-			'label' => 'DateEndLocation',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 210
-		),
-		'exit_data' => array(
-			'type' => 'int',
-			'label' => 'SortiePrevue',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 220
-		),
-		'age_veh' => array(
-			'type' => 'int',
-			'label' => 'AgeVeh',
-			'enabled' => 1,
-			'visible' => 0,
-			'position' => 230
-		),
 		'dim_pneu' => array(
 			'type' => 'varchar(255)',
 			'label' => 'DimensionsPneumatiques',
