@@ -194,7 +194,6 @@ $listViewConfig = array(
 		'date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
 	, 'tms' => 'date'
 	, 'date_immat' => 'date'
-	, 'date_customer_exploit' => 'date'
 	, 'km_date' => 'date'
 	, 'date_end_contract' => 'date'
 	)
@@ -205,17 +204,14 @@ $listViewConfig = array(
 	, 'immatriculation' => array('search_type' => true, 'table' => 't', 'field' => 'immatriculation')
 	, 'date_immat' => array('search_type' => 'calendars', 'allow_is_null' => false)
 	, 'fk_soc' => array('search_type' => 'override', 'override' => $form->select_company($fk_soc, 'fk_soc'))
-	, 'date_customer_exploit' => array('search_type' => 'calendars', 'allow_is_null' => false)
 	, 'km' => array('search_type' => true, 'table' => 't', 'field' => 'km')
 	, 'sall' => array('search_type' => true, 'table' => 't', 'field' => array('vin', 'immatriculation'))
 	, 'km_date' => array('search_type' => 'calendars', 'allow_is_null' => false)
 	, 'fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'))
 	, 'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false)
-	, 'dfol' => array('search_type' => array(1 => 'Oui', 0 => 'Non'))
 	, 'nb_pneu' => array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu')
 	, 'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true)
 	, 'dim_pneu' => array('search_type' => 'override', 'override' => $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], GETPOST('dim_pneu', 'array'), '', 0, '', 0, '100%'))
-	//, 'atelier' => array('search_type' => 'override', 'override' => $object->showInputField($object->fields['atelier'], 'atelier', GETPOST('atelier', 'int')))
 	)
 , 'translate' => array()
 , 'hide' => array(
