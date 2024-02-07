@@ -302,8 +302,6 @@ class doliFleetVehicule extends SeedObject
 
 		$this->status = self::STATUS_DRAFT;
 		$this->entity = $conf->entity;
-		$this->fields['atelier']['enabled'] = isModEnabled('MultiCompany');
-		$this->fields['atelier']['visible'] = isModEnabled('MultiCompany');
 	}
 
 	/**
