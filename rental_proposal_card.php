@@ -247,7 +247,7 @@ if ($action == 'create')
 	print '<input type="hidden" name="action" value="add">';
 	print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
 
-	dol_fiche_head(array(), '');
+	print dol_get_fiche_head(array(), '');
 
 	print '<table class="border centpercent">'."\n";
 
@@ -259,7 +259,7 @@ if ($action == 'create')
 
 	print '</table>'."\n";
 
-	dol_fiche_end();
+	print dol_get_fiche_end();
 
 	print '<div class="center">';
 	print '<input type="submit" class="button" name="add" value="'.dol_escape_htmltag($langs->trans('Create')).'">';
@@ -288,7 +288,7 @@ else
 
 			$head = rental_proposal_prepare_head($object);
 			$picto = 'dolifleet@dolifleet';
-			dol_fiche_head($head, 'card', $langs->trans('dolifleetRentalProposal'), 0, $picto);
+			print dol_get_fiche_head($head, 'card', $langs->trans('dolifleetRentalProposal'), 0, $picto);
 
 			print '<table class="border centpercent">'."\n";
 
@@ -300,7 +300,7 @@ else
 
 			print '</table>';
 
-			dol_fiche_end();
+			print dol_get_fiche_end();
 
 			print '<div class="center"><input type="submit" class="button" name="save" value="'.$langs->trans('Save').'">';
 			print ' &nbsp; <input type="submit" class="button" name="cancel" value="'.$langs->trans('Cancel').'">';
@@ -312,7 +312,7 @@ else
 		{
 			$head = rental_proposal_prepare_head($object);
 			$picto = 'dolifleet@dolifleet';
-			dol_fiche_head($head, 'card', $langs->trans('dolifleetRentalProposal'), -1, $picto);
+			print dol_get_fiche_head($head, 'card', $langs->trans('dolifleetRentalProposal'), -1, $picto);
 
 			$formconfirm = getFormConfirmdoliFleetVehicule($form, $object, $action);
 			if (!empty($formconfirm)) print $formconfirm;
@@ -558,7 +558,7 @@ else
 
 			print '</div></div></div>';
 
-			dol_fiche_end(-1);
+			print dol_get_fiche_end(-1);
 		}
 	}
 }

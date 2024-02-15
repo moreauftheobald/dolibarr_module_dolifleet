@@ -125,7 +125,7 @@ print load_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = dolifleetAdminPrepareHead();
-dol_fiche_head(
+print dol_get_fiche_head(
     $head,
     'settings',
     $langs->trans("Module104087Name"),
@@ -340,7 +340,7 @@ foreach ($dirmodels as $reldir)
 }
 print '</table>';
 
-dol_fiche_end(-1);
+print dol_get_fiche_end(-1);
 
 llxFooter();
 

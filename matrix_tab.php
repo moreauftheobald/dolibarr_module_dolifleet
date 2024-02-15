@@ -139,7 +139,7 @@ llxHeader('', $title, $help_url);
 
 $head = societe_prepare_head($object);
 
-dol_fiche_head($head, 'matrix', $langs->trans("ThirdParty"), 0, 'company');
+print dol_get_fiche_head($head, 'matrix', $langs->trans("ThirdParty"), 0, 'company');
 
 //$formconfirm = getFormConfirmdoliFleetVehicule($form, $matrix, $action);
 
@@ -155,7 +155,7 @@ $linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php?restore_lastsearch_value
 
 dol_banner_tab($object, 'socid', $linkback, ($user->socid ? 0 : 1), 'rowid', 'nom', '', '', 0, '', '', 'arearefnobottom');
 
-dol_fiche_end();
+print dol_get_fiche_end();
 
 print '<br>';
 

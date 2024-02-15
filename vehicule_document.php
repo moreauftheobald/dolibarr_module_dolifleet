@@ -104,7 +104,7 @@ if ($object->id)
 	$head = vehicule_prepare_head($object);
 	$picto = 'dolifleet@dolifleet';
 
-	dol_fiche_head($head, 'document', $langs->trans("doliFleet"), -1, $picto);
+	print dol_get_fiche_head($head, 'document', $langs->trans("doliFleet"), -1, $picto);
 
 	// Build file list
 	$filearray = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', $sortfield, (strtolower($sortorder) == 'desc' ?SORT_DESC:SORT_ASC), 1);
@@ -135,7 +135,7 @@ if ($object->id)
 
 	print '</div>';
 
-	dol_fiche_end();
+	print dol_get_fiche_end();
 
 	$modulepart = 'dolifleet';
 	//$permission = $user->rights->operationorder->operationorder->write;

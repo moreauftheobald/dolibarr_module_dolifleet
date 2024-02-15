@@ -104,7 +104,7 @@ print_fiche_titre($langs->trans("multicompanySharing"), $linkback, 'setup');
 
 // Configuration header
 $head = dolifleetAdminPrepareHead();
-dol_fiche_head($head, 'multicompanySharing', $langs->trans("Module104087Name"), 0, "dolifleet@dolifleet");
+print dol_get_fiche_head($head, 'multicompanySharing', $langs->trans("Module104087Name"), 0, "dolifleet@dolifleet");
 
 
 
