@@ -96,16 +96,7 @@ class ActionsdoliFleet
 	{
 		global $langs;
 
-		if (!empty($parameters['object']) && is_object($parameters['object']) && get_class($parameters['object']) == "Societe" && $parameters['mode'] == 'add') {
-			$this->results = $parameters['head'];
-			$this->results[] = array(
-				dol_buildpath('dolifleet/matrix_tab.php?socid=' . $parameters['object']->id, 1),
-				$langs->trans('rentalMatrix'),
-				'matrix'
-			);
-
-			return 1;
-		}
+		return 0;
 	}
 
 	/**
