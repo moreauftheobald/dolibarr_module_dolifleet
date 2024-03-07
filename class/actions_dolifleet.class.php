@@ -124,7 +124,6 @@ class ActionsdoliFleet
 				'text' => img_object('', 'dolifleet@dolifleet') . ' Vehicule',
 				'url' => dol_buildpath('/dolifleet/vehicule_list.php', 1) . '?' . $str_search
 			);
-
 		}
 
 		$this->results = $arrayresult;
@@ -134,7 +133,7 @@ class ActionsdoliFleet
 
 	public function formBuilddocOptions($parameters, &$object, &$action, $hookmanager)
 	{
-//		var_dump($parameters);
+		//      var_dump($parameters);
 	}
 
 	/**
