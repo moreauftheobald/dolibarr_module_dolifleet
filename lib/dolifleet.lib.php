@@ -456,7 +456,6 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 		foreach ($object->rentals as $rent) {
 			print '<tr>';
 			if ($external) {
-				//print '<td align="center">' . $rent->fk_soc . '</td>';
 				print '<td align="center">' . $rent->showOutputField($rent->fields['fk_soc'], 'fk_soc', $rent->fk_soc) . '</td>';
 			}
 			print '<td align="center">';

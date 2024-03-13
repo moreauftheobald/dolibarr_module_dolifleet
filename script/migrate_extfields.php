@@ -49,7 +49,6 @@ $version = '1.0';
 $error = 0;
 
 //Now the update is OK no way to update data in database
-//exit();
 
 // -------------------- START OF YOUR CODE HERE --------------------
 @set_time_limit(0); // No timeout for this script
@@ -98,7 +97,6 @@ if (!$result > 0) {
 	dol_print_error('', $user->error);
 	exit();
 }
-//print ' truic;';
 $user->getrights();
 
 

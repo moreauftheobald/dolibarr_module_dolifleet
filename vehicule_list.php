@@ -133,8 +133,6 @@ $parameters = array('sql' => $sql);
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
 $sql .= $hookmanager->resPrint;
 
-//print $sql;
-
 $formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_dolifleet', 'GET');
 print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 $form = new Form($db);
