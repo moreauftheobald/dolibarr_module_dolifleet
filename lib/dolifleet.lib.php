@@ -829,9 +829,7 @@ function callAPI($method, $url, $data = false, $header = false)
 		curl_close($curl);
 		return $TVehicleStatus;
 	} else {
-		//var_dump(curl_getinfo($curl));
 		curl_close($curl);
-		//exit;
 		return -1;
 	}
 }
