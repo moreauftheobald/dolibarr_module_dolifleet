@@ -356,4 +356,15 @@ class dolifleetVehiculeOperation extends SeedObject
 			$this->on_time=0;
 		}
 	}
+
+	public function operationNeedUpdate($object)
+	{
+		//Si on a une ligne avec le même produit alors on met à jour l'opération
+		$sql = "SELECT rowid FROM " . MAIN_DB_PREFIX . $object->table_element_line . " WHERE fk_operation_order=" . $object->id . " AND fk_product=" . $this->fk_product;
+		$resql = $this->db->query($sql);
+		if (!empty($resql) && $this->db->num_rows($resql) > 0) {
+			return true;
+		}
+		return false;
+	}
 }
