@@ -58,7 +58,7 @@ class cron_dolifleet
 		}
 
 		$operationOrderStatus = new OperationOrderStatus($this->db);
-		$resultStatus = $operationOrderStatus->fetchAll(0,0,array('display_on_planning'=>1));
+		$resultStatus = $operationOrderStatus->fetchAll(0, 0, array('display_on_planning'=>1));
 		if (!is_array($resultStatus) && $resultStatus<0) {
 			$this->output .= "Erreur Update:" . $operationOrderStatus->error . implode(',', $operationOrderStatus->errors);
 			return $resultStatus;
@@ -83,9 +83,9 @@ class cron_dolifleet
 					return $resultFetch;
 				}
 
-				if(!empty($operation->delai_from_last_op) && $operation->delai_from_last_op > 0){
-					$operation->date_next = dol_time_plus_duree($operation->date_done, (int)$operation->delai_from_last_op, 'm');
-					$operation->date_due = dol_time_plus_duree($operation->date_done, (int)$operation->delai_from_last_op, 'm');
+				if (!empty($operation->delai_from_last_op) && $operation->delai_from_last_op > 0) {
+					$operation->date_next = dol_time_plus_duree($operation->date_done, (int) $operation->delai_from_last_op, 'm');
+					$operation->date_due = dol_time_plus_duree($operation->date_done, (int) $operation->delai_from_last_op, 'm');
 				}
 
 				if (!empty($operation->km)) {
@@ -98,23 +98,22 @@ class cron_dolifleet
 						if (array_key_exists($operation->fk_vehicule, $TKmAvg) && !empty($TKmAvg[$operation->fk_vehicule])) {
 							$nbDays = $diffKm / $TKmAvg[$operation->fk_vehicule];
 						}
-						$dt = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
+						$dt = dol_time_plus_duree(dol_now(), (int) $nbDays, 'd');
 
 						if ($dt<$operation->date_next || empty($operation->delai_from_last_op)) {
 							$operation->date_next = $dt;
 							$operation->date_due = $dt;
 						}
-
 					} else {
 						if (array_key_exists($operation->fk_vehicule, $TKmAvg) && !empty($TKmAvg[$operation->fk_vehicule])) {
 							$nbDays = $diffKm / $TKmAvg[$operation->fk_vehicule];
 						}
-						$dt2 = dol_time_plus_duree(dol_now(), (int)$nbDays, 'd');
-						if(empty($operation->date_due)){
+						$dt2 = dol_time_plus_duree(dol_now(), (int) $nbDays, 'd');
+						if (empty($operation->date_due)) {
 							$operation->date_due = $dt2;
 						}
 						$operation->date_next = dol_now();
-						if($operation->date_due > dol_now()){
+						if ($operation->date_due > dol_now()) {
 							$operation->date_due = dol_now();
 						}
 					}
@@ -124,15 +123,15 @@ class cron_dolifleet
 				$stToTest=array();
 				$operation->or_next=null;
 				if (!empty($resultStatus)) {
-					foreach($resultStatus as $dStatus) {
+					foreach ($resultStatus as $dStatus) {
 						$stToTest[]=$dStatus->id;
 					}
 
 					$sql = "SELECT ordp.rowid";
 					$sql .= " FROM ".MAIN_DB_PREFIX."operationorder as ordp INNER JOIN ".MAIN_DB_PREFIX."operationorderdet as ord";
 					$sql .= " ON ordp.rowid=ord.fk_operation_order";
-					$sql .= " WHERE ordp.fk_vehicule=".(int)$operation->fk_vehicule." AND ord.fk_product=".(int)$operation->fk_product;
-					$sql .= " AND ordp.status IN (".implode(',',$stToTest).")";
+					$sql .= " WHERE ordp.fk_vehicule=".(int) $operation->fk_vehicule." AND ord.fk_product=".(int) $operation->fk_product;
+					$sql .= " AND ordp.status IN (".implode(',', $stToTest).")";
 					$sql .= " AND ordp.planned_date >= '".$this->db->idate($operation->date_done)."'";
 					$sql .= " ORDER BY planned_date";
 					$sql .= " LIMIT 1";
@@ -149,7 +148,7 @@ class cron_dolifleet
 						}
 					}
 				}
-				if($operation->date_next < dol_now()){
+				if ($operation->date_next < dol_now()) {
 					$operation->date_next = dol_now();
 				}
 				$resultUpd = $operation->update($user);
@@ -172,7 +171,6 @@ class cron_dolifleet
 		if (!empty($error)) $this->sendResultByMail($this->langs->transnoentities('createEventOperationOrderError'));
 
 		return empty($error) ? 0 : 1;
-
 	}
 
 	/**
@@ -213,5 +211,4 @@ class cron_dolifleet
 			}
 		}
 	}
-
 }

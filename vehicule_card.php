@@ -78,7 +78,7 @@ if (empty($reshook)) {
 		case 'update':
 			$object->setValues($_REQUEST); // Set standard attributes
 			if (GETPOSTISSET('dim_pneu')) {
-				$object->dim_pneu = implode(',', GETPOST('dim_pneu','array'));
+				$object->dim_pneu = implode(',', GETPOST('dim_pneu', 'array'));
 			}
 			if ($object->isextrafieldmanaged) {
 				$ret = $extrafields->setOptionalsFromPost($extralabels, $object);

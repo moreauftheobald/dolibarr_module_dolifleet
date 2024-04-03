@@ -5,9 +5,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-$res = @include ("../../main.inc.php"); // For root directory
+$res = @include "../../main.inc.php"; // For root directory
 if (!$res)
-	$res = @include ("../../../main.inc.php"); // For "custom" directory
+	$res = @include "../../../main.inc.php"; // For "custom" directory
 if (!$res)
 	die("Include of main fails");
 
@@ -29,18 +29,18 @@ $elementConvertionAnotherOne = 'dolifleet_vehicule'; // voir selectForFormsList 
 $moduleSharingEnabled = 'MULTICOMPANY_'.strtoupper($moduleKey).'_SHARING_ENABLED';
 $moduleSharingEnabledValue = $conf->global->{$moduleSharingEnabled};
 
-dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertion).'_SHARING_ENABLED' , $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
-dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertionAnotherOne).'_SHARING_ENABLED' , $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
+dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertion).'_SHARING_ENABLED', $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
+dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertionAnotherOne).'_SHARING_ENABLED', $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
 
 $externalmodules = array();
 if (! empty($conf->global->MULTICOMPANY_EXTERNAL_MODULES_SHARING)) {
 	$externalmodules = json_decode($conf->global->MULTICOMPANY_EXTERNAL_MODULES_SHARING, true);
 }
 
-if(!empty($moduleSharingEnabledValue)){
+if (!empty($moduleSharingEnabledValue)) {
 	$externalmodules[$moduleKey]['sharingmodulename'][$elementConvertion] = 'dolifleet';
 	$externalmodules[$moduleKey]['sharingmodulename'][$elementConvertionAnotherOne] = 'dolifleet';
-	dolibarr_set_const($db, 'MULTICOMPANY_EXTERNAL_MODULES_SHARING' , json_encode($externalmodules), 'chaine', 0, '', 0);
+	dolibarr_set_const($db, 'MULTICOMPANY_EXTERNAL_MODULES_SHARING', json_encode($externalmodules), 'chaine', 0, '', 0);
 }
 
 $action = GETPOST("action");
@@ -51,10 +51,9 @@ if ($action == 'save_multicompany_shared_conf') {
 
 	if ($conf->entity == 1) {
 		foreach ($dao->entities as $entity) {
-		$entity->options['sharings'][$element] = $entity->options['sharings'][$elementConvertion] = $entity->options['sharings'][$elementConvertionAnotherOne] = array();
-		$entity->update($entity->id, $user);
-	}
-
+			$entity->options['sharings'][$element] = $entity->options['sharings'][$elementConvertion] = $entity->options['sharings'][$elementConvertionAnotherOne] = array();
+			$entity->update($entity->id, $user);
+		}
 	} else {
 		$dao->fetch($conf->entity);
 		if ($dao->id > 0) {
@@ -65,7 +64,6 @@ if ($action == 'save_multicompany_shared_conf') {
 
 	if (!empty($multicompanyfleeteshare)) {
 		foreach ($multicompanyfleeteshare as $entityId => $shared) {
-
 			//'MULTICOMPANY_'.strtoupper($element).'_SHARING_ENABLED
 			if (is_array($shared)) {
 				$shared = array_map('intval', $shared);
@@ -109,7 +107,6 @@ print dol_get_fiche_head($head, 'multicompanySharing', $langs->trans("Module1040
 
 
 if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED)) {
-
 	print '<br><br>';
 
 	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
@@ -146,11 +143,8 @@ if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_S
 	$dao->getEntities();
 
 	if (is_array($dao->entities)) {
-
 		foreach ($dao->entities as $entitie) {
-
 			if (intval($conf->entity) === 1 || intval($conf->entity) === intval($entitie->id)) {
-
 				print '<tr class="oddeven" >';
 				print '<td align="left" >';
 				print $entitie->name.' <em>('.$entitie->label.')</em> ';

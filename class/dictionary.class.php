@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('SeedObject'))
-{
+if (!class_exists('SeedObject')) {
 	/**
 	 * Needed if $form->showLinkedObjectBlock() is call or for session timeout on our module page
 	 */
@@ -145,16 +144,12 @@ abstract class dictionary extends SeedObject
 		$sql.= ' AND entity IN ('.getEntity('dolifleet').')';
 
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			while ($obj = $this->db->fetch_object($resql))
-			{
+		if ($resql) {
+			while ($obj = $this->db->fetch_object($resql)) {
 				$Tab[$obj->rowid] = empty($field) ? $obj->rowid : $obj->{$field};
 			}
 			return $Tab;
-		}
-		else
-		{
+		} else {
 			return -1;
 		}
 	}
@@ -165,8 +160,7 @@ abstract class dictionary extends SeedObject
 
 		$dict = new static($this->db);
 		$ret = $dict->fetch($id);
-		if ($ret > 0 && isset($dict->{$field}))
-		{
+		if ($ret > 0 && isset($dict->{$field})) {
 			return $dict->{$field};
 		}
 

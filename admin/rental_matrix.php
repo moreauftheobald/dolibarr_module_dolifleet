@@ -24,7 +24,7 @@
 // Dolibarr environment
 $res = @include '../../main.inc.php'; // From htdocs directory
 if (! $res) {
-    $res = @include '../../../main.inc.php'; // From "custom" directory
+	$res = @include '../../../main.inc.php'; // From "custom" directory
 }
 
 // Libraries
@@ -35,8 +35,7 @@ dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
 dol_include_once('/dolifleet/class/dictionaryVehiculeMark.class.php');
 
 $action = GETPOST('action');
-if (!GETPOST('cancel'))
-{
+if (!GETPOST('cancel')) {
 	$type = GETPOST('fk_c_type_vh');
 	$mark = GETPOST('fk_c_mark_vh');
 	$delay = GETPOST('delay');
@@ -47,8 +46,7 @@ if (!GETPOST('cancel'))
 $search_type = GETPOST('search_fk_c_type_vh');
 $search_mark = GETPOST('search_fk_c_mark_vh');
 
-if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter_x', 'alpha'))
-{
+if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter_x', 'alpha')) {
 	$search_type = '';
 	$search_mark = '';
 }
@@ -63,7 +61,7 @@ $userCanDelete = $user->rights->dolifleet->matrix->delete;
 
 // Access control
 if (! $user->admin || ! $userCanRead) {
-    accessforbidden();
+	accessforbidden();
 }
 
 $object = new doliFleetVehiculeRentalMatrix($db);
@@ -71,27 +69,21 @@ $object = new doliFleetVehiculeRentalMatrix($db);
 /*
  * Actions
  */
-if ($action == 'addMatrixLine' || $action == 'editMatrixLine')
-{
-	if (!GETPOST('cancel'))
-	{
+if ($action == 'addMatrixLine' || $action == 'editMatrixLine') {
+	if (!GETPOST('cancel')) {
 		$object->setValues($_REQUEST);
 		$ret = $object->create($user);
-		if ($ret < 0 || !empty($object->errors))
-		{
+		if ($ret < 0 || !empty($object->errors)) {
 			setEventMessages('', $object->errors, "errors");
 			if ($action == 'editMatrixLine') $action = 'edit';
-		}
-		else
-		{
+		} else {
 			setEventMessage('RecordSaved');
 			header('Location: '.$_SERVER['PHP_SELF']);
 			exit;
 		}
 	}
 }
-if ($action == 'confirm_delMatrixLine')
-{
+if ($action == 'confirm_delMatrixLine') {
 	$object->id = $id;
 	$ret = $object->delete($user);
 }
@@ -121,17 +113,17 @@ llxHeader('', $langs->trans($page_name));
 
 // Subheader
 $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
-    . $langs->trans('BackToModuleList') . '</a>';
+	. $langs->trans('BackToModuleList') . '</a>';
 print load_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = dolifleetAdminPrepareHead();
 print dol_get_fiche_head(
-    $head,
-    'matrix',
-    $langs->trans('Module104087Name'),
-    -1,
-    'dolifleet@dolifleet'
+	$head,
+	'matrix',
+	$langs->trans('Module104087Name'),
+	-1,
+	'dolifleet@dolifleet'
 );
 
 $formconfirm = getFormConfirmdoliFleetVehicule($form, $object, $action);
@@ -139,15 +131,14 @@ if (!empty($formconfirm)) print $formconfirm;
 
 print '<div class="div-table-responsive">';
 
-if ($userCanCreate)
-{
+if ($userCanCreate) {
 	print '<form id="NewRentalMatrixForm" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<input type="hidden" name="action" value="addMatrixLine">';
 
 	print '<table class="border liste"  width="100%">';
 
-// table header
+	// table header
 	print '<tr class="liste_titre">';
 	print '<td align="center">';
 	print $langs->trans('vehiculeType');
@@ -164,15 +155,15 @@ if ($userCanCreate)
 	print '<td align="center"></td>';
 	print '</tr>';
 
-// new line
+	// new line
 	print '<tr class="oddeven">'
 	;
 	print '<td align="center">';
-	print $form->selectarray('fk_c_type_vh', $TType, $type,1, 0, 0, '', 0, 0, 0, '', '', 1);
+	print $form->selectarray('fk_c_type_vh', $TType, $type, 1, 0, 0, '', 0, 0, 0, '', '', 1);
 	print '</td>';
 
 	print '<td align="center">';
-	print $form->selectarray('fk_c_mark_vh', $TMark, $mark,1, 0, 0, '', 0, 0, 0, '', '', 1);
+	print $form->selectarray('fk_c_mark_vh', $TMark, $mark, 1, 0, 0, '', 0, 0, 0, '', '', 1);
 	print '</td>';
 
 	print '<td align="center">';
@@ -205,10 +196,10 @@ print '<table class="border liste"  width="100%">';
 // table filters
 print '<tr class="liste_titre_filter">';
 print '<td class="liste_titre">';
-print $form->selectarray('search_fk_c_type_vh', $TType, $search_type,1, 0, 0, '', 0, 0, 0, '', '', 1);
+print $form->selectarray('search_fk_c_type_vh', $TType, $search_type, 1, 0, 0, '', 0, 0, 0, '', '', 1);
 print '</td>';
 print '<td class="liste_titre">';
-print $form->selectarray('search_fk_c_mark_vh', $TMark, $search_mark,1, 0, 0, '', 0, 0, 0, '', '', 1);
+print $form->selectarray('search_fk_c_mark_vh', $TMark, $search_mark, 1, 0, 0, '', 0, 0, 0, '', '', 1);
 print '</td>';
 print '<td class="liste_titre">';
 print '</td>';
@@ -237,31 +228,26 @@ print '</td>';
 print '<td align="center"></td>';
 print '</tr>';
 
-if (empty($num))
-{
+if (empty($num)) {
 	print '<tr class="oddeven">';
 	print '<td align="center" colspan="5">';
 	print $langs->trans('NodoliFleet');
 	print '</td>';
 	print '<tr>';
-}
-else
-{
-	while ($obj = $db->fetch_object($resql))
-	{
+} else {
+	while ($obj = $db->fetch_object($resql)) {
 		$matrixline = new doliFleetVehiculeRentalMatrix($db);
 		$matrixline->fetch($obj->rowid);
 
-		if ($action == "edit" && $id == $matrixline->id && $userCanCreate)
-		{
+		if ($action == "edit" && $id == $matrixline->id && $userCanCreate) {
 			print '<tr class="oddeven">';
 			print '<td>';
 			print '<input type="hidden" name="id" value="'.$matrixline->id.'">';
 			print '<input type="hidden" name="action" value="editMatrixLine">';
-			print $form->selectarray('fk_c_type_vh', $TType, $matrixline->fk_c_type_vh,1, 0, 0, '', 0, 0, 0, '', '', 1);
+			print $form->selectarray('fk_c_type_vh', $TType, $matrixline->fk_c_type_vh, 1, 0, 0, '', 0, 0, 0, '', '', 1);
 			print '</td>';
 			print '<td>';
-			print $form->selectarray('fk_c_mark_vh', $TMark, $matrixline->fk_c_mark_vh,1, 0, 0, '', 0, 0, 0, '', '', 1);
+			print $form->selectarray('fk_c_mark_vh', $TMark, $matrixline->fk_c_mark_vh, 1, 0, 0, '', 0, 0, 0, '', '', 1);
 			print '</td>';
 			print '<td>';
 			print '<input type="number" name="delay" id="delay" step="1" value="'.$matrixline->delay.'">&nbsp;'.$langs->trans('Months');
@@ -275,9 +261,7 @@ else
 			print '<input class="button" type="submit" name="cancel" value="'.$langs->trans("Cancel").'">';
 			print '</td>';
 			print '</tr>';
-		}
-		else
-		{
+		} else {
 			print '<tr class="oddeven">';
 			print '<td>';
 			print $dictType->getValueFromId($matrixline->fk_c_type_vh);
@@ -298,8 +282,6 @@ else
 			print '</td>';
 			print '</tr>';
 		}
-
-
 	}
 }
 

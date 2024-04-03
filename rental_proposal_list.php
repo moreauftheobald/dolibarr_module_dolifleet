@@ -19,7 +19,7 @@ require 'config.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 dol_include_once('dolifleet/class/rentalProposal.class.php');
 
-if(empty($user->rights->dolifleet->rentalproposal->read)) accessforbidden();
+if (empty($user->rights->dolifleet->rentalproposal->read)) accessforbidden();
 
 $langs->load('abricot@abricot');
 $langs->load('dolifleet@dolifleet');
@@ -33,8 +33,7 @@ $object = new dolifleetRentalProposal($db);
 
 $hookmanager->initHooks(array('dolifleetrentalproposallist'));
 
-if ($object->isextrafieldmanaged)
-{
+if ($object->isextrafieldmanaged) {
 	$extrafields = new ExtraFields($db);
 	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
 }
@@ -47,18 +46,15 @@ $parameters=array();
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend')
-{
+if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
-if (GETPOST('button_removefilter_x','alpha') || GETPOST('button_removefilter.x','alpha') || GETPOST('button_removefilter','alpha'))
-{
+if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
 	unset($_GET['Listview_dolifleetrentalproposal_search_fk_soc']);
 }
 
-if (empty($reshook))
-{
+if (empty($reshook)) {
 	// do action from GETPOST ...
 }
 
@@ -75,10 +71,9 @@ llxHeader('', $langs->trans('dolifleetRentalProposalList'), '', '');
 // TODO ajouter les champs de son objet que l'on souhaite afficher
 $keys = array_keys($object->fields);
 $fieldList = 't.'.implode(', t.', $keys);
-if (!empty($object->isextrafieldmanaged))
-{
+if (!empty($object->isextrafieldmanaged)) {
 	$keys = array_keys($extralabels);
-	if(!empty($keys)) {
+	if (!empty($keys)) {
 		$fieldList .= ', et.' . implode(', et.', $keys);
 	}
 }
@@ -92,8 +87,7 @@ $sql.=$hookmanager->resPrint;
 
 $sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
 
-if (!empty($object->isextrafieldmanaged))
-{
+if (!empty($object->isextrafieldmanaged)) {
 	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.$object->table_element.'_extrafields et ON (et.fk_object = t.rowid)';
 }
 
@@ -145,7 +139,7 @@ $listViewConfig = array(
 		,'status' => array('search_type' => dolifleetRentalProposal::$TStatus, 'to_translate' => true) // select html, la clé = le status de l'objet, 'to_translate' à true si nécessaire
 		,'month' => array('search_type' => monthArray($langs))
 		,'year' => array('search_type' => true, 'table' => 't', 'field', 'year')
-		,'fk_soc' => array('search_type' => 'override', 'override' => $object->showInputField($object->fields['fk_soc'], 'fk_soc', GETPOST('Listview_dolifleetrentalproposal_search_fk_soc'),'','','Listview_dolifleetrentalproposal_search_'))
+		,'fk_soc' => array('search_type' => 'override', 'override' => $object->showInputField($object->fields['fk_soc'], 'fk_soc', GETPOST('Listview_dolifleetrentalproposal_search_fk_soc'), '', '', 'Listview_dolifleetrentalproposal_search_'))
 	)
 	,'translate' => array()
 	,'hide' => array(
@@ -175,10 +169,9 @@ $r = new Listview($db, 'dolifleetrentalproposal');
 
 // Change view from hooks
 $parameters=array(  'listViewConfig' => $listViewConfig);
-$reshook=$hookmanager->executeHooks('listViewConfig',$parameters,$r);    // Note that $action and $object may have been modified by hook
+$reshook=$hookmanager->executeHooks('listViewConfig', $parameters, $r);    // Note that $action and $object may have been modified by hook
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
-if ($reshook>0)
-{
+if ($reshook>0) {
 	$listViewConfig = $hookmanager->resArray;
 }
 
@@ -206,8 +199,7 @@ function _getObjectNomUrl($id, $classname = 'dolifleetRentalProposal')
 	$o = new $classname($db);
 	if ($classname == 'dolifleetRentalProposal') $res = $o->fetch($id, false, '');
 	else $res = $o->fetch($id);
-	if ($res > 0)
-	{
+	if ($res > 0) {
 		return $o->getNomUrl(1);
 	}
 
@@ -228,7 +220,6 @@ function _displayMonth($monthNumber)
 	if (empty($TMonth)) $TMonth = monthArray($langs);
 
 	return $TMonth[$monthNumber];
-
 }
 
 /**
@@ -239,8 +230,7 @@ function _getUserNomUrl($fk_user)
 	global $db;
 
 	$u = new User($db);
-	if ($u->fetch($fk_user) > 0)
-	{
+	if ($u->fetch($fk_user) > 0) {
 		return $u->getNomUrl(1);
 	}
 

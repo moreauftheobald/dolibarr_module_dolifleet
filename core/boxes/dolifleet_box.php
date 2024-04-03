@@ -29,59 +29,59 @@ include_once DOL_DOCUMENT_ROOT . "/core/boxes/modules_boxes.php";
 class dolifleetbox extends ModeleBoxes
 {
 
-    public $boxcode = "mybox";
-    public $boximg = "dolifleet@dolifleet";
-    public $boxlabel;
-    public $depends = array("dolifleet");
-    public $db;
-    public $param;
-    public $info_box_head = array();
-    public $info_box_contents = array();
+	public $boxcode = "mybox";
+	public $boximg = "dolifleet@dolifleet";
+	public $boxlabel;
+	public $depends = array("dolifleet");
+	public $db;
+	public $param;
+	public $info_box_head = array();
+	public $info_box_contents = array();
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        global $langs;
-        $langs->load("boxes");
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		global $langs;
+		$langs->load("boxes");
 
-        $this->boxlabel = $langs->transnoentitiesnoconv("MyBox");
-    }
+		$this->boxlabel = $langs->transnoentitiesnoconv("MyBox");
+	}
 
-    /**
-     * Load data into info_box_contents array to show array later.
-     *
-     * 	@param		int		$max		Maximum number of records to load
-     * 	@return		void
-     */
-    public function loadBox($max = 5)
-    {
-        global $conf, $user, $langs, $db;
+	/**
+	 * Load data into info_box_contents array to show array later.
+	 *
+	 * 	@param		int		$max		Maximum number of records to load
+	 * 	@return		void
+	 */
+	public function loadBox($max = 5)
+	{
+		global $conf, $user, $langs, $db;
 
-        $this->max = $max;
+		$this->max = $max;
 
-        // dol_include_once('/dolifleet/class/dolifleet.class.php');
+		// dol_include_once('/dolifleet/class/dolifleet.class.php');
 
-        $text = $langs->trans("MyBoxDescription", $max);
-        $this->info_box_head = array(
-            'text' => $text,
-            'limit' => dol_strlen($text)
-        );
+		$text = $langs->trans("MyBoxDescription", $max);
+		$this->info_box_head = array(
+			'text' => $text,
+			'limit' => dol_strlen($text)
+		);
 
-        $this->info_box_contents[0][0] = array('td' => 'align="left"',
-            'text' => $langs->trans("MyBoxContent"));
-    }
+		$this->info_box_contents[0][0] = array('td' => 'align="left"',
+			'text' => $langs->trans("MyBoxContent"));
+	}
 
-    /**
-     * 	Method to show box
-     *
-     * 	@param	array	$head       Array with properties of box title
-     * 	@param  array	$contents   Array with properties of box lines
-     * 	@return	void
-     */
-    public function showBox($head = null, $contents = null)
-    {
-        parent::showBox($this->info_box_head, $this->info_box_contents);
-    }
+	/**
+	 * 	Method to show box
+	 *
+	 * 	@param	array	$head       Array with properties of box title
+	 * 	@param  array	$contents   Array with properties of box lines
+	 * 	@return	void
+	 */
+	public function showBox($head = null, $contents = null)
+	{
+		parent::showBox($this->info_box_head, $this->info_box_contents);
+	}
 }

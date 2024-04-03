@@ -24,7 +24,7 @@
 // Dolibarr environment
 $res = @include '../../main.inc.php'; // From htdocs directory
 if (! $res) {
-    $res = @include '../../../main.inc.php'; // From "custom" directory
+	$res = @include '../../../main.inc.php'; // From "custom" directory
 }
 
 // Libraries
@@ -37,7 +37,7 @@ $langs->loadLangs(array('dolifleet@dolifleet', 'admin', 'other'));
 
 // Access control
 if (! $user->admin) {
-    accessforbidden();
+	accessforbidden();
 }
 
 // Parameters
@@ -49,56 +49,39 @@ $scandir = GETPOST('scan_dir', 'alpha');
 /*
  * Actions
  */
-if (preg_match('/set_(.*)/', $action, $reg))
-{
+if (preg_match('/set_(.*)/', $action, $reg)) {
 	$code=$reg[1];
-	if ($code == "DOLIFLEET_MOTRICE_TYPES")
-	{
-		if (dolibarr_set_const($db, $code, serialize(GETPOST($code)), 'chaine', 0, '', $conf->entity) > 0)
-		{
+	if ($code == "DOLIFLEET_MOTRICE_TYPES") {
+		if (dolibarr_set_const($db, $code, serialize(GETPOST($code)), 'chaine', 0, '', $conf->entity) > 0) {
 			header("Location: ".$_SERVER["PHP_SELF"]);
 			exit;
-		}
-		else
-		{
+		} else {
 			dol_print_error($db);
 		}
-	}
-	elseif (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0)
-	{
+	} elseif (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
-	}
-	else
-	{
+	} else {
 		dol_print_error($db);
 	}
 }
 
-if (preg_match('/del_(.*)/', $action, $reg))
-{
+if (preg_match('/del_(.*)/', $action, $reg)) {
 	$code=$reg[1];
-	if (dolibarr_del_const($db, $code, 0) > 0)
-	{
+	if (dolibarr_del_const($db, $code, 0) > 0) {
 		Header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
-	}
-	else
-	{
+	} else {
 		dol_print_error($db);
 	}
 }
 
-if ($action == 'set')
-{
+if ($action == 'set') {
 	$ret = addDocumentModel($value, 'rentalproposal', $label, $scandir);
 }
 
-if ($action == 'setdoc')
-{
-
-	if (dolibarr_set_const($db, "DOLIFLEET_RENTALPROPOSAL_ADDON_PDF", $value, 'chaine', 0, '', $conf->entity))
-	{
+if ($action == 'setdoc') {
+	if (dolibarr_set_const($db, "DOLIFLEET_RENTALPROPOSAL_ADDON_PDF", $value, 'chaine', 0, '', $conf->entity)) {
 		// La constante qui a ete lue en avant du nouveau set
 		// on passe donc par une variable pour avoir un affichage coherent
 		$conf->global->DOLIFLEET_RENTALPROPOSAL_ADDON_PDF = $value;
@@ -106,8 +89,7 @@ if ($action == 'setdoc')
 
 	// On active le modele
 	$ret = delDocumentModel($value, 'rentalproposal');
-	if ($ret > 0)
-	{
+	if ($ret > 0) {
 		$ret = addDocumentModel($value, 'rentalproposal', $label, $scandir);
 	}
 }
@@ -120,17 +102,17 @@ llxHeader('', $langs->trans($page_name));
 
 // Subheader
 $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
-    . $langs->trans("BackToModuleList") . '</a>';
+	. $langs->trans("BackToModuleList") . '</a>';
 print load_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = dolifleetAdminPrepareHead();
 print dol_get_fiche_head(
-    $head,
-    'settings',
-    $langs->trans("Module104087Name"),
-    -1,
-    "dolifleet@dolifleet"
+	$head,
+	'settings',
+	$langs->trans("Module104087Name"),
+	-1,
+	"dolifleet@dolifleet"
 );
 
 // Setup page goes here
@@ -139,9 +121,9 @@ $var=false;
 print '<table class="noborder" width="100%">';
 
 
-if(!function_exists('setup_print_title')){
-    print '<div class="error" >'.$langs->trans('AbricotNeedUpdate').' : <a href="http://wiki.atm-consulting.fr/index.php/Accueil#Abricot" target="_blank"><i class="fa fa-info"></i> Wiki</a></div>';
-    exit;
+if (!function_exists('setup_print_title')) {
+	print '<div class="error" >'.$langs->trans('AbricotNeedUpdate').' : <a href="http://wiki.atm-consulting.fr/index.php/Accueil#Abricot" target="_blank"><i class="fa fa-info"></i> Wiki</a></div>';
+	exit;
 }
 
 setup_print_title("Parameters");
@@ -161,8 +143,7 @@ print '</tr>';
 
 setup_print_input_form_part('DOLIFLEET_DEFAULT_RENTAL_AMOUNT', $langs->trans('DOLIFLEET_DEFAULT_RENTAL_AMOUNT'));
 
-if (empty($conf->global->DOLIFLEET_DELAY_SEARCH_OPERATIONS))
-{
+if (empty($conf->global->DOLIFLEET_DELAY_SEARCH_OPERATIONS)) {
 	dolibarr_set_const($db, 'DOLIFLEET_DELAY_SEARCH_OPERATIONS', 12, 'chaine', 0, '', $conf->entity);
 }
 setup_print_input_form_part('DOLIFLEET_DELAY_SEARCH_OPERATIONS');
@@ -199,19 +180,15 @@ $sql.= " FROM ".MAIN_DB_PREFIX."document_model";
 $sql.= " WHERE type = 'rentalproposal'";
 $sql.= " AND entity = ".$conf->entity;
 $resql=$db->query($sql);
-if ($resql)
-{
+if ($resql) {
 	$i = 0;
 	$num_rows=$db->num_rows($resql);
-	while ($i < $num_rows)
-	{
+	while ($i < $num_rows) {
 		$array = $db->fetch_array($resql);
 		array_push($def, $array[0]);
 		$i++;
 	}
-}
-else
-{
+} else {
 	dol_print_error($db);
 }
 
@@ -229,30 +206,22 @@ clearstatcache();
 $dirmodels=array_merge(array('/'), (array) $conf->modules_parts['models']);
 $activatedModels = array();
 
-foreach ($dirmodels as $reldir)
-{
-	foreach (array('','/doc') as $valdir)
-	{
+foreach ($dirmodels as $reldir) {
+	foreach (array('','/doc') as $valdir) {
 		$dir = dol_buildpath($reldir."core/modules/dolifleet".$valdir);
 
-		if (is_dir($dir))
-		{
+		if (is_dir($dir)) {
 			$handle=opendir($dir);
-			if (is_resource($handle))
-			{
-				while (($file = readdir($handle))!==false)
-				{
+			if (is_resource($handle)) {
+				while (($file = readdir($handle))!==false) {
 					$filelist[]=$file;
 				}
 				closedir($handle);
 				arsort($filelist);
 
-				foreach($filelist as $file)
-				{
-					if (preg_match('/\.modules\.php$/i', $file) && preg_match('/^(pdf_|doc_)/', $file))
-					{
-						if (file_exists($dir.'/'.$file))
-						{
+				foreach ($filelist as $file) {
+					if (preg_match('/\.modules\.php$/i', $file) && preg_match('/^(pdf_|doc_)/', $file)) {
+						if (file_exists($dir.'/'.$file)) {
 							$name = substr($file, 4, dol_strlen($file) -16);
 							$classname = substr($file, 0, dol_strlen($file) -12);
 
@@ -263,8 +232,7 @@ foreach ($dirmodels as $reldir)
 							if ($module->version == 'development'  && $conf->global->MAIN_FEATURES_LEVEL < 2) $modulequalified=0;
 							if ($module->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1) $modulequalified=0;
 
-							if ($modulequalified)
-							{
+							if ($modulequalified) {
 								print '<tr class="oddeven"><td width="100">';
 								print (empty($module->name)?$name:$module->name);
 								print "</td><td>\n";
@@ -273,16 +241,13 @@ foreach ($dirmodels as $reldir)
 								print '</td>';
 
 								// Active
-								if (in_array($name, $def))
-								{
+								if (in_array($name, $def)) {
 									print '<td class="center">'."\n";
 									print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&value='.$name.'">';
 									print img_picto($langs->trans("Enabled"), 'switch_on');
 									print '</a>';
 									print '</td>';
-								}
-								else
-								{
+								} else {
 									print '<td class="center">'."\n";
 									print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&value='.$name.'&scan_dir='.$module->scandir.'&label='.urlencode($module->name).'">'.img_picto($langs->trans("SetAsDefault"), 'switch_off').'</a>';
 									print "</td>";
@@ -290,12 +255,9 @@ foreach ($dirmodels as $reldir)
 
 								// Defaut
 								print '<td class="center">';
-								if ($conf->global->DOLIFLEET_RENTALPROPOSAL_ADDON_PDF == $name)
-								{
+								if ($conf->global->DOLIFLEET_RENTALPROPOSAL_ADDON_PDF == $name) {
 									print img_picto($langs->trans("Default"), 'on');
-								}
-								else
-								{
+								} else {
 									print '<a href="'.$_SERVER["PHP_SELF"].'?action=setdoc&value='.$name.'&scan_dir='.$module->scandir.'&label='.urlencode($module->name).'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("SetAsDefault"), 'off').'</a>';
 								}
 								print '</td>';
@@ -303,8 +265,7 @@ foreach ($dirmodels as $reldir)
 								// Info
 								$htmltooltip =    ''.$langs->trans("Name").': '.$module->name;
 								$htmltooltip.='<br>'.$langs->trans("Type").': '.($module->type?$module->type:$langs->trans("Unknown"));
-								if ($module->type == 'pdf')
-								{
+								if ($module->type == 'pdf') {
 									$htmltooltip.='<br>'.$langs->trans("Width").'/'.$langs->trans("Height").': '.$module->page_largeur.'/'.$module->page_hauteur;
 								}
 								$htmltooltip.='<br><br><u>'.$langs->trans("FeaturesSupported").':</u>';
@@ -319,12 +280,9 @@ foreach ($dirmodels as $reldir)
 
 								// Preview
 								print '<td class="center">';
-								if ($module->type == 'pdf')
-								{
+								if ($module->type == 'pdf') {
 									print '<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"), 'bill').'</a>';
-								}
-								else
-								{
+								} else {
 									print img_object($langs->trans("PreviewNotAvailable"), 'generic');
 								}
 								print '</td>';

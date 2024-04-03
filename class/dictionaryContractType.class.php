@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('SeedObject'))
-{
+if (!class_exists('SeedObject')) {
 	/**
 	 * Needed if $form->showLinkedObjectBlock() is call or for session timeout on our module page
 	 */
@@ -33,5 +32,4 @@ class dictionaryContractType extends dictionary
 
 	/** @var string $element Name of the element (tip for better integration in Dolibarr: this value should be the reflection of the class name with ucfirst() function) */
 	public $element = 'dolifleetContractType';
-
 }

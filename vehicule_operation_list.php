@@ -178,7 +178,7 @@ $TTitle['t_status'] = $langs->trans('Status');
 foreach ($operation->fields as $fieldKey => $infos) {
 	if (isset($infos['label']) && $infos['visible'] > 0) {
 		$TTitle['o_'.$fieldKey] = $langs->trans($infos['label']);
-		if($infos['label']=='VehiculeOperation'){
+		if ($infos['label']=='VehiculeOperation') {
 			$TTitle['p_label'] = $langs->trans('libelle');
 		}
 	}

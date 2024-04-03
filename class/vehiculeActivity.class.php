@@ -15,8 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('SeedObject'))
-{
+if (!class_exists('SeedObject')) {
 	/**
 	 * Needed if $form->showLinkedObjectBlock() is call or for session timeout on our module page
 	 */
@@ -114,8 +113,7 @@ class doliFleetVehiculeActivity extends SeedObject
 		dol_include_once('/dolifleet/class/dictionaryVehiculeActivityType.class.php');
 		$dict = new dictionaryVehiculeActivityType($this->db);
 
-		if (!empty($this->fk_type))
-		{
+		if (!empty($this->fk_type)) {
 			return $dict->getValueFromId($this->fk_type);
 		}
 
@@ -131,14 +129,12 @@ class doliFleetVehiculeActivity extends SeedObject
 		if (!empty($this->date_start)) $sql.= " AND date_end > '" . $this->db->idate($this->date_start) ."'";
 		if (!empty($this->date_end)) $sql.= " AND date_start < '" . $this->db->idate($this->date_end) . "'";
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
+		if ($resql) {
 			$obj = $this->db->fetch_object($resql);
 
 			if (empty($obj->nb)) return true;
 			else $this->error = $langs->trans('ErrAlreadyInActivity');
-		}
-		else $this->error = $this->db->lasterror();
+		} else $this->error = $this->db->lasterror();
 
 		return false;
 	}
@@ -153,14 +149,12 @@ class doliFleetVehiculeActivity extends SeedObject
 		$sql.= " AND ((date_start < '" . $this->db->idate($this->date_start) ."' AND date_end > '" . $this->db->idate($this->date_start) . "')";
 		$sql.= " OR (date_start < '" . $this->db->idate($this->date_end) ."' AND date_end > '" . $this->db->idate($this->date_end) . "'))";
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
+		if ($resql) {
 			$obj = $this->db->fetch_object($resql);
 
 			if (empty($obj->nb)) return true;
 			else $this->error = $langs->trans('ErrAlreadyInActivity');
-		}
-		else $this->error = $this->db->lasterror();
+		} else $this->error = $this->db->lasterror();
 
 		return false;
 	}
@@ -169,5 +163,4 @@ class doliFleetVehiculeActivity extends SeedObject
 	{
 		return parent::update($user, $notrigger);
 	}
-
 }

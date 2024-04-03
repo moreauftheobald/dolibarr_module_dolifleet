@@ -65,7 +65,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 	 *
 	 *	@param	DoliDB	$db		Database handler
 	 */
-	function __construct($db=0)
+	function __construct($db = 0)
 	{
 		global $conf,$langs,$mysoc;
 
@@ -87,14 +87,13 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 
 		// Get source company
 		$this->emetteur=$mysoc;
-		if (! $this->emetteur->country_code) $this->emetteur->country_code=substr($langs->defaultlang,-2);    // By default if not defined
+		if (! $this->emetteur->country_code) $this->emetteur->country_code=substr($langs->defaultlang, -2);    // By default if not defined
 
 
 		$this->tabTitleHeight = 5; // default height
 
 		$this->dictTypeAct = new dictionaryVehiculeActivityType($db);
 		$this->dictTypeVeh = new dictionaryVehiculeType($db);
-
 	}
 
 	/**
@@ -108,7 +107,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 	 *  @param		int			$hideref			Do not show ref
 	 *  @return     int         	    			1=OK, 0=KO
 	 */
-	function write_file($object,$outputlangs,$srctemplatepath='',$hidedetails=0,$hidedesc=0,$hideref=0)
+	function write_file($object, $outputlangs, $srctemplatepath = '', $hidedetails = 0, $hidedesc = 0, $hideref = 0)
 	{
 		global $user,$conf,$langs,$hookmanager;
 
@@ -125,46 +124,38 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		// Translations
 		$this->outputlangs->loadLangs(array("main", "bills", "products", "dict", "companies", "propal", "deliveries", "sendings", "productbatch"));
 
-		if ($upload_dir)
-		{
+		if ($upload_dir) {
 			// Definition de $dir et $file
-			if ($object->specimen)
-			{
+			if ($object->specimen) {
 				$dir = $upload_dir."/sending";
 				$file = $dir . "/SPECIMEN.pdf";
-			}
-			else
-			{
+			} else {
 				$expref = dol_sanitizeFileName($object->ref);
 				$dir = $upload_dir."/" . $expref;
 				$file = $dir . "/" . $expref . ".pdf";
 			}
 
-			if (! file_exists($dir))
-			{
-				if (dol_mkdir($dir) < 0)
-				{
-					$this->error=$langs->transnoentities("ErrorCanNotCreateDir",$dir);
+			if (! file_exists($dir)) {
+				if (dol_mkdir($dir) < 0) {
+					$this->error=$langs->transnoentities("ErrorCanNotCreateDir", $dir);
 					return 0;
 				}
 			}
 
-			if (file_exists($dir))
-			{
+			if (file_exists($dir)) {
 				// Add pdfgeneration hook
-				if (! is_object($hookmanager))
-				{
+				if (! is_object($hookmanager)) {
 					include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 					$hookmanager=new HookManager($this->db);
 				}
 				$hookmanager->initHooks(array('pdfgeneration'));
 				$parameters=array('file'=>$file,'object'=>$object,'outputlangs'=>$this->outputlangs);
 				global $action;
-				$reshook=$hookmanager->executeHooks('beforePDFCreation',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+				$reshook=$hookmanager->executeHooks('beforePDFCreation', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
 
 				// Set nblignes with the new object lines content after hook
 				$nblignes = 0 ;
-				if(!empty($object->lines)){
+				if (!empty($object->lines)) {
 					$nblignes = count($object->lines);
 				}
 
@@ -174,26 +165,24 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				$heightforfreetext= (isset($conf->global->MAIN_PDF_FREETEXT_HEIGHT)?$conf->global->MAIN_PDF_FREETEXT_HEIGHT:5);	// Height reserved to output the free text on last page
 				$heightforfooter = $this->marge_basse + 20;	// Height reserved to output the footer (value include bottom margin)
 				if ($conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS >0) $heightforfooter+= 6;
-				$this->pdf->SetAutoPageBreak(1,0);
+				$this->pdf->SetAutoPageBreak(1, 0);
 
-				if (class_exists('TCPDF'))
-				{
+				if (class_exists('TCPDF')) {
 					$this->pdf->setPrintHeader(false);
 					$this->pdf->setPrintFooter(false);
 				}
 				$this->pdf->SetFont(pdf_getPDFFont($this->outputlangs));
 				// Set path to the background PDF File
-				if (! empty($conf->global->MAIN_ADD_PDF_BACKGROUND))
-				{
+				if (! empty($conf->global->MAIN_ADD_PDF_BACKGROUND)) {
 					$pagecount = $this->pdf->setSourceFile($conf->mycompany->dir_output.'/'.$conf->global->MAIN_ADD_PDF_BACKGROUND);
 					$tplidx = $this->pdf->importPage(1);
 				}
 
 				$this->pdf->Open();
 				$pagenb=0;
-				$this->pdf->SetDrawColor(128,128,128);
+				$this->pdf->SetDrawColor(128, 128, 128);
 
-				if (method_exists($this->pdf,'AliasNbPages')) $this->pdf->AliasNbPages();
+				if (method_exists($this->pdf, 'AliasNbPages')) $this->pdf->AliasNbPages();
 
 				$this->pdf->SetTitle($this->outputlangs->convToOutputCharset($object->ref));
 				$this->pdf->SetSubject($this->outputlangs->transnoentities("Processrules"));
@@ -212,8 +201,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				$this->subtotals = array();
 
 				// Loop on each  procedure
-				if(!empty($object->lines)){
-
+				if (!empty($object->lines)) {
 					foreach ($object->lines as $l) {
 						$this->total_ht+= $l->total_ht;
 						$this->subtotals[$l->activity_type]['total'] += $l->total_ht;
@@ -221,22 +209,21 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 					}
 
 					$this->printProposalLines($object->lines);
-
 				}
 
 
 				// Pied de page
-				if (method_exists($this->pdf,'AliasNbPages')) $this->pdf->AliasNbPages();
+				if (method_exists($this->pdf, 'AliasNbPages')) $this->pdf->AliasNbPages();
 
 				$this->pdf->Close();
 
-				$this->pdf->Output($file,'F');
+				$this->pdf->Output($file, 'F');
 
 				// Add pdfgeneration hook
 				$hookmanager->initHooks(array('pdfgeneration'));
 				$parameters=array('file'=>$file,'object'=>$object,'outputlangs'=>$this->outputlangs);
 				global $action;
-				$reshook=$hookmanager->executeHooks('afterPDFCreation',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+				$reshook=$hookmanager->executeHooks('afterPDFCreation', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
 
 				if (! empty($conf->global->MAIN_UMASK))
 					@chmod($file, octdec($conf->global->MAIN_UMASK));
@@ -244,16 +231,12 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				$this->result = array('fullpath'=>$file);
 
 				return 1;	// No error
-			}
-			else
-			{
-				$this->error=$langs->transnoentities("ErrorCanNotCreateDir",$dir);
+			} else {
+				$this->error=$langs->transnoentities("ErrorCanNotCreateDir", $dir);
 				return 0;
 			}
-		}
-		else
-		{
-			$this->error=$langs->transnoentities("ErrorConstantNotDefined","EXP_OUTPUTDIR");
+		} else {
+			$this->error=$langs->transnoentities("ErrorConstantNotDefined", "EXP_OUTPUTDIR");
 			return 0;
 		}
 	}
@@ -263,19 +246,15 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$typeAct = $typeVeh = $index = 0;
 		$this->nbLines = count($lines);
 
-		foreach ($lines as $line)
-		{
-
-			if ($typeAct !== $line->activity_type)
-			{
+		foreach ($lines as $line) {
+			if ($typeAct !== $line->activity_type) {
 				$this->printActivity($line->activity_type);
 
 				$typeAct = $line->activity_type;
 				$typeVeh = 0;
 			}
 
-			if ($typeVeh !== $line->fk_vehicule_type)
-			{
+			if ($typeVeh !== $line->fk_vehicule_type) {
 				$this->printVehiculeType($typeAct, $line->fk_vehicule_type);
 
 				$typeVeh = $line->fk_vehicule_type;
@@ -288,17 +267,14 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 
 			$posYafter = $this->pdf->GetY();
 
-			if ($posYafter > $this->page_hauteur - $this->heightForFooter - $this->marge_basse)
-			{
+			if ($posYafter > $this->page_hauteur - $this->heightForFooter - $this->marge_basse) {
 				$this->pdf = $this->pdf->rollbackTransaction();
 				$this->pdf->Line($this->marge_gauche, $posYbefore, $this->page_largeur - $this->marge_gauche, $posYbefore);
 
 				$this->pdf->AddPage();
 				$this->prepareNewPage($this->pdf, true);
 				$this->printProposalLine($line, $isLast);
-			}
-			else
-			{
+			} else {
 				$this->pdf->commitTransaction();
 			}
 
@@ -362,7 +338,6 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 
 		$this->pdf->SetXY($posx, $posy);
 		$this->pdf->MultiCell($this->widthForTotalHT, $this->h_ligne, price($this->subtotals[$activityId]['total']), '1', 'R');
-
 	}
 
 	function printVehiculeType($activityId, $typeId)
@@ -408,8 +383,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		pdf_pagehead($this->pdf, $outputlangs, $this->page_hauteur);
 
 		// Show Draft Watermark
-		if($object->statut==0 && (! empty($conf->global->COMMANDE_DRAFT_WATERMARK)) )
-		{
+		if ($object->statut==0 && (! empty($conf->global->COMMANDE_DRAFT_WATERMARK)) ) {
 			pdf_watermark($this->pdf, $outputlangs, $this->page_hauteur, $this->page_largeur, 'mm', $conf->global->COMMANDE_DRAFT_WATERMARK);
 		}
 
@@ -422,34 +396,25 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$this->pdf->SetXY($this->marge_gauche, $posy);
 
 		// Logo
-		if (empty($conf->global->PDF_DISABLE_MYCOMPANY_LOGO))
-		{
-			if ($this->emetteur->logo)
-			{
+		if (empty($conf->global->PDF_DISABLE_MYCOMPANY_LOGO)) {
+			if ($this->emetteur->logo) {
 				$logodir = $conf->mycompany->dir_output;
 				if (! empty($conf->mycompany->multidir_output[$object->entity])) $logodir = $conf->mycompany->multidir_output[$object->entity];
-				if (empty($conf->global->MAIN_PDF_USE_LARGE_LOGO))
-				{
+				if (empty($conf->global->MAIN_PDF_USE_LARGE_LOGO)) {
 					$logo = $logodir.'/logos/thumbs/'.$this->emetteur->logo_small;
-				}
-				else {
+				} else {
 					$logo = $logodir.'/logos/'.$this->emetteur->logo;
 				}
-				if (is_readable($logo))
-				{
+				if (is_readable($logo)) {
 					$height=pdf_getHeightForLogo($logo);
 					$this->pdf->Image($logo, $this->marge_gauche, $posy, 0, $height);	// width=0 (auto)
-				}
-				else
-				{
+				} else {
 					$this->pdf->SetTextColor(200, 0, 0);
 					$this->pdf->SetFont('', 'B', $default_font_size -2);
 					$this->pdf->MultiCell(100, 3, $outputlangs->transnoentities("ErrorLogoFileNotFound", $logo), 0, 'L');
 					$this->pdf->MultiCell(100, 3, $outputlangs->transnoentities("ErrorGoToGlobalSetup"), 0, 'L');
 				}
-			}
-			else
-			{
+			} else {
 				$text=$this->emetteur->name;
 				$this->pdf->MultiCell(100, 4, $outputlangs->convToOutputCharset($text), 0, 'L');
 			}
@@ -471,8 +436,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$posy+=1;
 		$this->pdf->SetFont('', '', $default_font_size - 1);
 
-		if ($object->ref_client)
-		{
+		if ($object->ref_client) {
 			$posy+=5;
 			$this->pdf->SetXY($posx, $posy);
 			$this->pdf->SetTextColor(0, 0, 60);
@@ -485,8 +449,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$montharray = monthArray($outputlangs, 1);
 		$this->pdf->MultiCell(100, 3, $outputlangs->transnoentities("Period")." : " . $montharray[$object->month] . " " . $object->year, '', 'R');
 
-		if (!empty($conf->global->DOC_SHOW_CUSTOMER_CODE) && ! empty($object->thirdparty->code_client))
-		{
+		if (!empty($conf->global->DOC_SHOW_CUSTOMER_CODE) && ! empty($object->thirdparty->code_client)) {
 			$posy+=4;
 			$this->pdf->SetXY($posx, $posy);
 			$this->pdf->SetTextColor(0, 0, 60);
@@ -494,11 +457,9 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		}
 
 		// Get contact
-		if (!empty($conf->global->DOC_SHOW_FIRST_SALES_REP))
-		{
+		if (!empty($conf->global->DOC_SHOW_FIRST_SALES_REP)) {
 			$arrayidcontact=$object->getIdContact('internal', 'SALESREPFOLL');
-			if (count($arrayidcontact) > 0)
-			{
+			if (count($arrayidcontact) > 0) {
 				$usertmp=new User($this->db);
 				$usertmp->fetch($arrayidcontact[0]);
 				$posy+=4;
@@ -514,19 +475,16 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		// Show list of linked objects
 		$current_y = $this->pdf->getY();
 		$posy = pdf_writeLinkedObjects($this->pdf, $object, $outputlangs, $posx, $posy, 100, 3, 'R', $default_font_size);
-		if ($current_y < $this->pdf->getY())
-		{
+		if ($current_y < $this->pdf->getY()) {
 			$top_shift = $this->pdf->getY() - $current_y;
 		}
 
-		if ($showaddress)
-		{
+		if ($showaddress) {
 			// Sender properties
 			$carac_emetteur='';
 			// Add internal contact of proposal if defined
 			$arrayidcontact=$object->getIdContact('internal', 'SALESREPFOLL');
-			if (count($arrayidcontact) > 0)
-			{
+			if (count($arrayidcontact) > 0) {
 				$object->fetch_user($arrayidcontact[0]);
 				$labelbeforecontactname=($outputlangs->transnoentities("FromContactName")!='FromContactName'?$outputlangs->transnoentities("FromContactName"):$outputlangs->transnoentities("Name"));
 				$carac_emetteur .= ($carac_emetteur ? "\n" : '' ).$labelbeforecontactname." ".$outputlangs->convToOutputCharset($object->user->getFullName($outputlangs))."\n";
@@ -568,8 +526,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 			// If CUSTOMER contact defined on order, we use it
 			$usecontact=false;
 			$arrayidcontact=$object->getIdContact('external', 'CUSTOMER');
-			if (count($arrayidcontact) > 0)
-			{
+			if (count($arrayidcontact) > 0) {
 				$usecontact=true;
 				$result=$object->fetch_contact($arrayidcontact[0]);
 			}
@@ -627,11 +584,11 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 	 *      @param	int			$hidefreetext		1=Hide free text
 	 *      @return	int								Return height of bottom margin including footer text
 	 */
-	function _pagefoot(&$pdf,$object,$outputlangs,$hidefreetext=0)
+	function _pagefoot(&$pdf, $object, $outputlangs, $hidefreetext = 0)
 	{
 		global $conf;
 		$showdetails=$conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS;
-		return pdf_pagefoot($this->pdf,$outputlangs,'SHIPPING_FREE_TEXT',$this->emetteur,$this->marge_basse,$this->marge_gauche,$this->page_hauteur,$object,$showdetails,$hidefreetext);
+		return pdf_pagefoot($this->pdf, $outputlangs, 'SHIPPING_FREE_TEXT', $this->emetteur, $this->marge_basse, $this->marge_gauche, $this->page_hauteur, $object, $showdetails, $hidefreetext);
 	}
 
 	/**
@@ -649,8 +606,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 
 		$posY = $posYBefore = $pdf->GetY();
 
-		if (is_callable($callback))
-		{
+		if (is_callable($callback)) {
 			$pdf->startTransaction();
 			$pageposBefore=$pdf->getPage();
 
@@ -660,8 +616,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 			$posY = $posYAfter = $pdf->GetY();
 			// END FIRST TRY
 
-			if($autoPageBreak && $pageposAfter > $pageposBefore )
-			{
+			if ($autoPageBreak && $pageposAfter > $pageposBefore ) {
 				$pagenb = $pageposBefore;
 				$pdf->rollbackTransaction(true);
 				$posY = $posYBefore;
@@ -676,8 +631,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				$pdf->SetY($posYBefore);
 				// RESTART DISPLAY BLOCK - without auto page break
 				$posY = $this->pdfPrintCallback($pdf, $callback, false, $param);
-			}
-			else // No pagebreak
+			} else // No pagebreak
 			{
 				$pdf->commitTransaction();
 			}
@@ -696,8 +650,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		global $conf, $outputlangs;
 
 		// Set path to the background PDF File
-		if (! empty($conf->global->MAIN_ADD_PDF_BACKGROUND))
-		{
+		if (! empty($conf->global->MAIN_ADD_PDF_BACKGROUND)) {
 			$pagecount = $pdf->setSourceFile($conf->mycompany->dir_output.'/'.$conf->global->MAIN_ADD_PDF_BACKGROUND);
 			$tplidx = $pdf->importPage(1);
 		}
@@ -711,7 +664,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$pdf->SetMargins($this->marge_gauche, $topY, $this->marge_droite); // Left, Top, Right
 
 		$pdf->SetAutoPageBreak(0, 0); // to prevent footer creating page
-		$this->heightForFooter = $this->_pagefoot($pdf,$this->object, $outputlangs);
+		$this->heightForFooter = $this->_pagefoot($pdf, $this->object, $outputlangs);
 		$pdf->SetAutoPageBreak(1, $this->heightForFooter);
 
 		// The only function to edit the bottom margin of current page to set it.
@@ -747,8 +700,5 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$this->pdf->SetXY($this->marge_gauche + $this->withForImmat + $this->widthForDateExploit + $this->widthForDesc, $posy);
 		$this->pdf->SetFont('', '', $default_font_size - 1);
 		$this->pdf->MultiCell($this->widthForTotalHT, $this->h_ligne, $outputlangs->trans("TotalHT"), 1, 'R');
-
 	}
-
 }
-

@@ -121,7 +121,6 @@ if (!$resql) {
 } else {
 	dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
 	while ($obj = $db->fetch_object($resql)) {
-
 		$ope_array = explode(':', $obj->op_np);
 		if (!empty($ope_array)) {
 			foreach ($ope_array as $prdId) {

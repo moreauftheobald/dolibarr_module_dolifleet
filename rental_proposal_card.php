@@ -25,7 +25,7 @@ dol_include_once('dolifleet/class/dictionaryVehiculeActivityType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
 dol_include_once('dolifleet/lib/dolifleet.lib.php');
 
-if(empty($user->rights->dolifleet->rentalproposal->read)) accessforbidden();
+if (empty($user->rights->dolifleet->rentalproposal->read)) accessforbidden();
 
 $langs->load('dolifleet@dolifleet');
 
@@ -44,8 +44,7 @@ if (!empty($id) || !empty($ref)) $object->fetch($id, true, $ref);
 $hookmanager->initHooks(array('dolifleetrentalproposalcard', 'globalcard'));
 
 
-if ($object->isextrafieldmanaged)
-{
+if ($object->isextrafieldmanaged) {
 	$extrafields = new ExtraFields($db);
 
 	$extralabels = $extrafields->fetch_name_optionals_label($object->table_element);
@@ -72,13 +71,9 @@ $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 // Si vide alors le comportement n'est pas remplacé
-if (empty($reshook))
-{
-
-	if ($cancel)
-	{
-		if (! empty($backtopage))
-		{
+if (empty($reshook)) {
+	if ($cancel) {
+		if (! empty($backtopage)) {
 			header("Location: ".$backtopage);
 			exit;
 		}
@@ -103,27 +98,22 @@ if (empty($reshook))
 		case 'update':
 			$object->setValues($_REQUEST); // Set standard attributes
 
-			if ($object->isextrafieldmanaged)
-			{
+			if ($object->isextrafieldmanaged) {
 				$ret = $extrafields->setOptionalsFromPost($extralabels, $object);
 				if ($ret < 0) $error++;
 			}
 
-			if ($error > 0)
-			{
+			if ($error > 0) {
 				$action = 'edit';
 				break;
 			}
 
 			$res = $object->save($user);
-			if ($res <= 0)
-			{
+			if ($res <= 0) {
 				setEventMessages('', $object->errors, 'errors');
 				if (empty($object->id)) $action = 'create';
 				else $action = 'edit';
-			}
-			else
-			{
+			} else {
 				header('Location: '.dol_buildpath('/dolifleet/rental_proposal_card.php', 1).'?id='.$object->id);
 				exit;
 			}
@@ -135,19 +125,16 @@ if (empty($reshook))
 			$ret = $extrafields->setOptionalsFromPost($extralabels, $object, GETPOST('attribute', 'none'));
 			if ($ret < 0) $error++;
 
-			if (! $error)
-			{
+			if (! $error) {
 				$result = $object->insertExtraFields('DOLIFLEETRENTALPROPOSAL_MODIFY');
-				if ($result < 0)
-				{
+				if ($result < 0) {
 					setEventMessages($object->error, $object->errors, 'errors');
 					$error++;
 				}
 			}
 
 			if ($error) $action = 'edit_extras';
-			else
-			{
+			else {
 				header('Location: '.dol_buildpath('/dolifleet/rental_proposal_card.php', 1).'?id='.$object->id);
 				exit;
 			}
@@ -201,8 +188,7 @@ if (empty($reshook))
 			exit;
 
 		case 'updateLine':
-			if (!GETPOST('cancel'))
-			{
+			if (!GETPOST('cancel')) {
 				$line = new dolifleetRentalProposalDet($db);
 				$line->fetch($lineid);
 
@@ -210,19 +196,15 @@ if (empty($reshook))
 				$line->id = $lineid;
 
 				$ret = $line->create($user);
-				if ($ret < 0)
-				{
+				if ($ret < 0) {
 					setEventMessages('', array_merge($line->errors, array($line->error)), 'errors');
 					$action = 'editline';
-				}
-				else
-				{
+				} else {
 					header('Location: '.dol_buildpath('/dolifleet/rental_proposal_card.php', 1).'?id='.$object->id);
 					exit;
 				}
 			}
 			break;
-
 	}
 }
 
@@ -238,8 +220,7 @@ $dictTypeVeh = new dictionaryVehiculeType($db);
 $title=$langs->trans('dolifleetRentalProposal');
 llxHeader('', $title);
 
-if ($action == 'create')
-{
+if ($action == 'create') {
 	print load_fiche_titre($langs->trans('NewdolifleetRentalProposal'), '', 'dolifleet@dolifleet');
 
 	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
@@ -268,18 +249,12 @@ if ($action == 'create')
 	print '</div>';
 
 	print '</form>';
-}
-else
-{
-	if (empty($object->id))
-	{
+} else {
+	if (empty($object->id)) {
 		$langs->load('errors');
 		print $langs->trans('ErrorRecordNotFound');
-	}
-	else
-	{
-		if (!empty($object->id) && $action === 'edit')
-		{
+	} else {
+		if (!empty($object->id) && $action === 'edit') {
 			print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 			print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 			print '<input type="hidden" name="action" value="update">';
@@ -307,9 +282,7 @@ else
 			print '</div>';
 
 			print '</form>';
-		}
-		elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create')))
-		{
+		} elseif ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'create'))) {
 			$head = rental_proposal_prepare_head($object);
 			$picto = 'dolifleet@dolifleet';
 			print dol_get_fiche_head($head, 'card', $langs->trans('dolifleetRentalProposal'), -1, $picto);
@@ -358,8 +331,7 @@ else
 			$total_ht = 0;
 			$subtotals = array();
 
-			if (!empty($object->lines))
-			{
+			if (!empty($object->lines)) {
 				foreach ($object->lines as $l) {
 					$total_ht+= $l->total_ht;
 					$subtotals[$l->activity_type]['total'] += $l->total_ht;
@@ -377,14 +349,12 @@ else
 
 			print '<div class="clearboth"></div><br />';
 
-			if (!empty($object->lines))
-			{
+			if (!empty($object->lines)) {
 				print '<div class="fichecenter">';
 
 				print '<div class="div-table-responsive-no-min">';
 
-				if ($action == "editline" && $object->status == dolifleetRentalProposal::STATUS_DRAFT)
-				{
+				if ($action == "editline" && $object->status == dolifleetRentalProposal::STATUS_DRAFT) {
 					print '<form id="editRentalLines" action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'">';
 					print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 					print '<input type="hidden" name="action" value="updateLine">';
@@ -404,13 +374,10 @@ else
 
 				$typeAct = $typeVeh = 0;
 
-				foreach ($object->lines as $line)
-				{
-
+				foreach ($object->lines as $line) {
 					$modeEdit = ($action == 'editline' && $lineid == $line->id);
 
-					if ($typeAct !== $line->activity_type)
-					{
+					if ($typeAct !== $line->activity_type) {
 						$activityLabel = $dictTypeAct->getValueFromId($line->activity_type);
 						print '<tr>';
 						print '<td colspan="3" align="center" style="background-color: #adadad">';
@@ -423,8 +390,7 @@ else
 						$typeVeh = 0;
 					}
 
-					if ($typeVeh !== $line->fk_vehicule_type)
-					{
+					if ($typeVeh !== $line->fk_vehicule_type) {
 						$VtypeLabel = $dictTypeVeh->getValueFromId($line->fk_vehicule_type);
 						print '<tr><td colspan="3" align="center" style="background-color: #d4d4d4">';
 						print $VtypeLabel;
@@ -445,13 +411,10 @@ else
 					print '<td class="linecoldescription">'.(!$modeEdit ? $line->showOutputField($line->fields['description'], 'description', $line->description) : $line->showInputField($line->fields['description'], 'description', $line->description)).'</td>';
 					print '<td class="linecolht right">'.(!$modeEdit ? price($line->total_ht) : $line->showInputField($line->fields['total_ht'], 'total_ht', $line->total_ht)).'</td>';
 					print '<td class="linecoledit">';
-					if ($modeEdit && $object->status == dolifleetRentalProposal::STATUS_DRAFT)
-					{
+					if ($modeEdit && $object->status == dolifleetRentalProposal::STATUS_DRAFT) {
 						print '<input class="button" type="submit" name="save" value="'.$langs->trans('Save').'">';
 						print '<input class="button" type="submit" name="cancel" value="'.$langs->trans('Cancel').'">';
-					}
-					else
-					{
+					} else {
 						if ($object->status == dolifleetRentalProposal::STATUS_DRAFT) print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&action=editline&lineid='.$line->id.'">'.img_edit().'</a>';
 					}
 					print '</td>';
@@ -474,19 +437,16 @@ else
 			$reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
 			if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
-			if (empty($reshook))
-			{
+			if (empty($reshook)) {
 				// Send
 				//        print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
 
 				// Modify
-				if (!empty($user->rights->dolifleet->rentalproposal->validate))
-				{
+				if (!empty($user->rights->dolifleet->rentalproposal->validate)) {
 					// Valid
 					if ($object->status === dolifleetRentalProposal::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=validate">'.$langs->trans('doliFleetValid').'</a></div>'."\n";
 
-					if ($object->status === dolifleetRentalProposal::STATUS_INPROGRESS )
-					{
+					if ($object->status === dolifleetRentalProposal::STATUS_INPROGRESS ) {
 						// Reopen
 						if ($object->fk_first_valid == $user->id) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=reopen">'.$langs->trans('doliFleetReopen').'</a></div>'."\n";
 						else print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("OnlyUserWhoValidatedCanReopen")).'">'.$langs->trans('doliFleetReopen').'</a></div>'."\n";
@@ -498,9 +458,7 @@ else
 
 					// Close
 					if ($object->status === dolifleetRentalProposal::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=close">'.$langs->trans('doliFleetClose').'</a></div>'."\n";
-				}
-				else
-				{
+				} else {
 					// Valid
 					if ($object->status === dolifleetRentalProposal::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans('doliFleetValid').'</a></div>'."\n";
 
@@ -515,22 +473,15 @@ else
 					if ($object->status === dolifleetRentalProposal::STATUS_VALIDATED) print '<div class="inline-block divButAction"><a class="butAction" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">'.$langs->trans('doliFleetClose').'</a></div>'."\n";
 				}
 
-				if ($object->status != dolifleetRentalProposal::STATUS_CLOSED)
-				{
-					if (!empty($user->rights->dolifleet->rentalproposal->delete))
-					{
+				if ($object->status != dolifleetRentalProposal::STATUS_CLOSED) {
+					if (!empty($user->rights->dolifleet->rentalproposal->delete)) {
 						print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=deleteRental">'.$langs->trans("doliFleetDelete").'</a></div>'."\n";
-					}
-					else
-					{
+					} else {
 						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("doliFleetDelete").'</a></div>'."\n";
 					}
-				}
-				else
-				{
+				} else {
 					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("CanNotDeleteClosedProposal")).'">'.$langs->trans("doliFleetDelete").'</a></div>'."\n";
 				}
-
 			}
 			print '</div>'."\n";
 
