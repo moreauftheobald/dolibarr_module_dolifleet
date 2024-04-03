@@ -102,7 +102,7 @@ function vehicule_prepare_head(doliFleetVehicule $object)
 	$h++;
 	$nbOperationOrder = getNbORVehicle($object->id);
 	$head[$h][0] = dol_buildpath('operationorder/list.php?&origin=vehicule&originid=' . $object->id, 1);
-	$head[$h][1] = $langs->trans('CliTheobaldORList') . '<span class="badge marginleftonlyshort">' . ($nbOperationOrder >= 0 ? $nbOperationOrder : 0) . '</span>';
+	$head[$h][1] = $langs->trans('ORListHisto') . '<span class="badge marginleftonlyshort">' . ($nbOperationOrder >= 0 ? $nbOperationOrder : 0) . '</span>';
 	$head[$h][2] = 'list';
 
 

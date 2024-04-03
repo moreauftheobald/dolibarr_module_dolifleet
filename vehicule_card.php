@@ -458,7 +458,7 @@ if ($action == 'create') {
 
 			if (empty($reshook)) {
 				if ($object->status == 1) {
-					print '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/operationorder/operationorder_card.php', 1) . '?action=create&mainmenu=commercial&fk_soc=' . $object->fk_soc . '&fk_vehicule=' . $object->id . '">' . $langs->trans("cliCreateOperationOrderFromVehicule") . '</a></div>' . "\n";
+					print '<div class="inline-block divButAction"><a class="butAction" href="' . dol_buildpath('/operationorder/operationorder_card.php', 1) . '?action=create&mainmenu=commercial&fk_soc=' . $object->fk_soc . '&fk_vehicule=' . $object->id . '">' . $langs->trans("CreateOperationOrderFromVehicule") . '</a></div>' . "\n";
 					print '<input type="hidden" name="ordercreatedid" id="ordercreatedid" />';
 				}
 				// Modify
