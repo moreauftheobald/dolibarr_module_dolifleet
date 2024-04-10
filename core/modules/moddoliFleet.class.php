@@ -55,7 +55,7 @@ class moddoliFleet extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
 		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
-		$this->description = "Description of module doliFleet";
+		$this->description = "ModDoliFleetDescription";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = '4.0.0';
 		// Key used in llx_const table to save module status enabled/disabled (where DOLIFLEET is value of property name of module in uppercase)
@@ -137,7 +137,7 @@ class moddoliFleet extends DolibarrModules
 				'comment' => '',
 				'frequency' => 1,
 				'unitfrequency' => 86400,
-				'test' => '$conf->dolifleet->enabled',
+				'test' => "isModEnabled('dolifleet')",
 				'priority' => 50,
 				'entity' => 1,
 				'datestart' => $dateCronOpe,
@@ -385,7 +385,7 @@ class moddoliFleet extends DolibarrModules
 		//							'url'=>'/dolifleet/pagetop.php',
 		//							'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'$conf->dolifleet->enabled',	// Define condition to show or hide menu entry. Use '$conf->dolifleet->enabled' if entry must be visible if module is enabled.
+		//							'enabled'=>"isModEnabled('dolifleet')",	// Define condition to show or hide menu entry. Use "isModEnabled('dolifleet')" if entry must be visible if module is enabled.
 		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->dolifleet->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
 		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
@@ -400,7 +400,7 @@ class moddoliFleet extends DolibarrModules
 		//							'url'=>'/dolifleet/pagelevel2.php',
 		//							'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->dolifleet->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+		//							'enabled'=>"isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use "isModEnabled('dolifleet')" if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
 		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->dolifleet->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
 		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
@@ -416,7 +416,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
 			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
@@ -432,7 +432,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
 			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
@@ -448,7 +448,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_card.php?action=create',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'enabled' => "isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
 			'perms' => '$user->rights->dolifleet->write',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
@@ -465,7 +465,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'enabled' => "isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
 			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
@@ -481,7 +481,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/rental_proposal_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
 			'perms' => '$user->rights->dolifleet->rentalproposal->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
@@ -497,7 +497,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/rental_proposal_card.php?action=create',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
 			'perms' => '$user->rights->dolifleet->rentalproposal->write',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
@@ -514,7 +514,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/rental_proposal_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
 			'perms' => '$user->rights->dolifleet->rentalproposal->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
@@ -530,7 +530,7 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_operation_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => '$conf->dolifleet->enabled',    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
 			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0

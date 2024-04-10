@@ -11,6 +11,7 @@ c_dolifleet_vehicule_type=DoliFleet - Types de véhicule
 c_dolifleet_vehicule_mark=DoliFleet - Marques de véhicule
 c_dolifleet_vehicule_activity_type=DoliFleet - Type d'activité véhicule
 c_dolifleet_vehicule_dimpneu=DoliFleet - Dimension pneumatique
+ModDoliFleetDescription=Module de gestion de véhicules
 
 # DROITS
 vehicule_read=Voir les véhicules
@@ -47,6 +48,7 @@ MulticompanyConfiguration=Configuration des partages entre entités
 ShareWith=Reprend les données dans
 multicompanySharing=Partage entre entités
 RentalproposalPDFModules=Modèles PDF Proposition de loyer
+DOLIFLEET_USE_RENTAL_FEATURE=Utiliser la gestion des loyers
 
 # MENU
 TopMenudoliFleet=Vehicule
