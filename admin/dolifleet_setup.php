@@ -148,7 +148,7 @@ if (empty($conf->global->DOLIFLEET_DELAY_SEARCH_OPERATIONS)) {
 }
 setup_print_input_form_part('DOLIFLEET_DELAY_SEARCH_OPERATIONS');
 
-setup_print_on_off('DOLIFLEET_USE_RENTAL_FEATURE',false,'',false,300,true);
+setup_print_on_off('DOLIFLEET_USE_RENTAL_FEATURE', false, '', false, 300, true);
 
 // Example with a yes / no select
 //setup_print_on_off('CONSTNAME', $langs->trans('ParamLabel'), 'ParamDesc');
@@ -176,7 +176,7 @@ if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
 	print '<br>';
 	print load_fiche_titre($langs->trans("RentalproposalPDFModules"), '', '');
 
-// Load array def with activated templates
+	// Load array def with activated templates
 	$def = array();
 	$sql = "SELECT nom";
 	$sql .= " FROM " . MAIN_DB_PREFIX . "document_model";
@@ -206,7 +206,7 @@ if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
 	print "</tr>\n";
 
 	clearstatcache();
-	$dirmodels = array_merge(array('/'), (array)$conf->modules_parts['models']);
+	$dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);
 	$activatedModels = array();
 
 	foreach ($dirmodels as $reldir) {
