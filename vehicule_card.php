@@ -536,8 +536,9 @@ if ($action == 'create') {
 
 			print '<div class="fichehalfleft">';
 			print '<div class="underbanner clearboth"></div>';
-
-			printVehiculeRental($object, false, true);
+			if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
+				printVehiculeRental($object, false, true);
+			}
 
 			print '</div>'; // fin fichehalfleft
 
