@@ -141,7 +141,6 @@ print '<input class="butAction" type="submit" value="'.$langs->trans('Save').'">
 print '</form></td>';
 print '</tr>';
 
-setup_print_input_form_part('DOLIFLEET_DEFAULT_RENTAL_AMOUNT', $langs->trans('DOLIFLEET_DEFAULT_RENTAL_AMOUNT'));
 
 if (empty($conf->global->DOLIFLEET_DELAY_SEARCH_OPERATIONS)) {
 	dolibarr_set_const($db, 'DOLIFLEET_DELAY_SEARCH_OPERATIONS', 12, 'chaine', 0, '', $conf->entity);
@@ -149,6 +148,10 @@ if (empty($conf->global->DOLIFLEET_DELAY_SEARCH_OPERATIONS)) {
 setup_print_input_form_part('DOLIFLEET_DELAY_SEARCH_OPERATIONS');
 
 setup_print_on_off('DOLIFLEET_USE_RENTAL_FEATURE', false, '', false, 300, true);
+
+if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
+	setup_print_input_form_part('DOLIFLEET_DEFAULT_RENTAL_AMOUNT', $langs->trans('DOLIFLEET_DEFAULT_RENTAL_AMOUNT'));
+}
 
 // Example with a yes / no select
 //setup_print_on_off('CONSTNAME', $langs->trans('ParamLabel'), 'ParamDesc');
