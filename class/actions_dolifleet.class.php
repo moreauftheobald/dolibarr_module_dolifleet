@@ -171,7 +171,8 @@ class ActionsdoliFleet
 	 * @param object $hookmanager class instance
 	 * @return int
 	 **/
-	public function addmoduletoeamailcollectorjoinpiece($parameters, $object, &$action, $hookmanager){
+	public function addmoduletoeamailcollectorjoinpiece($parameters, $object, &$action, $hookmanager)
+	{
 		$arrayobject = array();
 		$arrayobject = $parameters['arrayobject'];
 		$arrayobject['doliFleetVehicule'] =  array('table' => 'dolifleet_vehicule','fields' => array('immatriculation'),'class' => 'dolifleet/class/vehicule.class.php','object' => 'doliFleetVehicule');
