@@ -92,6 +92,7 @@ class moddoliFleet extends DolibarrModules
 				'searchform',
 				'formfile',
 				'vehiculecard',
+				'emailcolector',
 			),
 			'models' => 1,
 		);

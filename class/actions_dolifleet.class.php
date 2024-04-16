@@ -163,4 +163,19 @@ class ActionsdoliFleet
 		}
 		return 0;
 	}
+
+	/**
+	 * @param array $parameters parameters
+	 * @param Object $object Object to use hooks on
+	 * @param string $action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	 * @param object $hookmanager class instance
+	 * @return int
+	 **/
+	public function addmoduletoeamailcollectorjoinpiece($parameters, $object, &$action, $hookmanager){
+		$arrayobject = array();
+		$arrayobject = $parameters['arrayobject'];
+		$arrayobject['doliFleetVehicule'] =  array('table' => 'dolifleet_vehicule','fields' => array('immatriculation'),'class' => 'dolifleet/class/vehicule.class.php','object' => 'doliFleetVehicule');
+		$this->results = $arrayobject;
+		return 1;
+	}
 }
