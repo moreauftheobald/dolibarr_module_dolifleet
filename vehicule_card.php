@@ -496,10 +496,10 @@ if ($action == 'create') {
 			}
 			print '</div>' . "\n";
 
-			print '<div class="fichecenter">';
+			//print '<div class="fichecenter">';
 
-			print '<div class="fichehalfleft">';
-			print '<div class="underbanner clearboth"></div>';
+			//print '<div class="fichehalfleft">';
+			//print '<div class="underbanner clearboth"></div>';
 
 			// Activités véhicule
 			//printVehiculeActivities($object/*, true*/);
@@ -516,8 +516,8 @@ if ($action == 'create') {
 			//print '</div>';    // fin fichecenter
 			//print '<div class="clearboth"></div><br />';
 
-			//print '<div class="fichecenter">';
-			//print '<div class="underbanner clearboth"></div>';
+			print '<div class="fichecenter">';
+			print '<div class="underbanner clearboth"></div>';
 
 			// Opérations
 			printVehiculeOperations($object);
@@ -532,18 +532,18 @@ if ($action == 'create') {
 
 			print '</div>';    // fin fichecenter
 
-			print '<div class="fichecenter">';
+			//print '<div class="fichecenter">';
 
-			print '<div class="fichehalfleft">';
-			print '<div class="underbanner clearboth"></div>';
-			if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
-				printVehiculeRental($object, false, true);
-			}
+			//print '<div class="fichehalfleft">';
+			//print '<div class="underbanner clearboth"></div>';
+			//if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
+			//	printVehiculeRental($object, false, true);
+			//}
 
-			print '</div>'; // fin fichehalfleft
+			//print '</div>'; // fin fichehalfleft
 
-			print '<div class="fichehalfright">';
-			print '<div class="underbanner clearboth"></div>';
+			//print '<div class="fichehalfright">';
+			//print '<div class="underbanner clearboth"></div>';
 
 			// Loyers
 			//printVehiculeRental($object/*, true*/);
