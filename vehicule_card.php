@@ -502,22 +502,22 @@ if ($action == 'create') {
 			print '<div class="underbanner clearboth"></div>';
 
 			// Activités véhicule
-			printVehiculeActivities($object/*, true*/);
+			//printVehiculeActivities($object/*, true*/);
 
-			print '</div>'; // fin fichehalfleft
+			//print '</div>'; // fin fichehalfleft
 
-			print '<div class="fichehalfright">';
-			print '<div class="underbanner clearboth"></div>';
+			//print '<div class="fichehalfright">';
+			//print '<div class="underbanner clearboth"></div>';
 
 			// véhicules liés
-			printLinkedVehicules($object/*, true*/);
+			//printLinkedVehicules($object/*, true*/);
 
-			print '</div>'; // fin fichehalfright
-			print '</div>';    // fin fichecenter
-			print '<div class="clearboth"></div><br />';
+			//print '</div>'; // fin fichehalfright
+			//print '</div>';    // fin fichecenter
+			//print '<div class="clearboth"></div><br />';
 
-			print '<div class="fichecenter">';
-			print '<div class="underbanner clearboth"></div>';
+			//print '<div class="fichecenter">';
+			//print '<div class="underbanner clearboth"></div>';
 
 			// Opérations
 			printVehiculeOperations($object);
@@ -546,16 +546,16 @@ if ($action == 'create') {
 			print '<div class="underbanner clearboth"></div>';
 
 			// Loyers
-			printVehiculeRental($object/*, true*/);
+			//printVehiculeRental($object/*, true*/);
 
-			print '</div>'; // fin fichehalfright
-
-
-			print '</div>';    // fin fichecenter
-			print '<div class="clearboth"></div><br />';
+			//print '</div>'; // fin fichehalfright
 
 
-			print '</div></div></div>';
+			//print '</div>';    // fin fichecenter
+			//print '<div class="clearboth"></div><br />';
+
+
+			//print '</div></div></div>';
 
 			print dol_get_fiche_end(-1);
 		}
