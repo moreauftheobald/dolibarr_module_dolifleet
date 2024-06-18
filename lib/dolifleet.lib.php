@@ -834,3 +834,43 @@ function callAPI($method, $url, $data = false, $header = false)
 		return -1;
 	}
 }
+
+/**
+ * Prepare array of tabs for Vehicule Setup screen
+ * @return    array                    Array of tabs
+ */
+function VhSetupPrepareHead(): array
+{
+	global $langs, $conf;
+
+	$langs->load("operationorder@operationorder");
+
+	$h = 0;
+	$head = array();
+
+	$head[$h][0] = dol_buildpath("/dolifleet/param/vh_setup_marque.php", 1);
+	$head[$h][1] = $langs->trans("DolifleetSetupMarque");
+	$head[$h][2] = 'marque';
+	$h++;
+
+	$head[$h][0] = dol_buildpath("/dolifleet/param/vh_setup_type.php", 1);
+	$head[$h][1] = $langs->trans("DolifleetSetupType");
+	$head[$h][2] = 'type';
+	$h++;
+
+	$head[$h][0] = dol_buildpath("/dolifleet/param/vh_setup_typect.php", 1);
+	$head[$h][1] = $langs->trans("DolifleetSetupTypeCt");
+	$head[$h][2] = 'typect';
+	$h++;
+
+	$head[$h][0] = dol_buildpath("/dolifleet/param/vh_setup_pneu.php", 1);
+	$head[$h][1] = $langs->trans("DolifleetSetupPneu");
+	$head[$h][2] = 'pneu';
+	$h++;
+
+	complete_head_from_modules($conf, $langs,null, $head, $h, 'operationordersetup@operationorder');
+
+	complete_head_from_modules($conf, $langs, null, $head, $h, 'operationordersetup@operationorder', 'remove');
+
+	return $head;
+}

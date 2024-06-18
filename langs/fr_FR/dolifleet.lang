@@ -58,6 +58,7 @@ LeftMenudoliFleetVehiculeList=Liste de véhicule
 MenudolifleetRentalProposal=Proposition de loyer
 LeftMenudoliFleetRentalProposalCreate=Nouvelle proposition
 LeftMenudoliFleetRentalProposalList=Liste propositions
+MenudoliFleetVehiculeSetup=Parametres
 
 # STATUS
 doliFleetVehiculeStatusDraft=Inactif
@@ -222,3 +223,43 @@ ErrInvalidSocid=Tiers invalide
 
 ORListHisto=Historique véhicule
 CreateOperationOrderFromVehicule=Créer OR
+
+#Setup Screen
+
+Missinglabel=Label manquant
+CreateErrors=Erreur de création
+UpdateErrors=Erreur de mise a jour
+DeleteErrors=Erreur de supression
+CreateSucces=Création réussie
+UpdateSucces=Mise a jour réussie
+DeleteSucces=Supression réussie
+MissingCode=Code Manquant
+
+DolifleetSetupMarque=Parametrage de marques
+DeleteMarque=Supprimer une Marque
+DeleteMarqueQuestion=Etes vous sur de vouloir supprimer une marque ?
+NewMarque=Créer une marque
+EditMarque=Editer une marque
+Missingmarquelabel=nom de marque manquant
+marquelabel=Nom de la marque
+
+DolifleetSetupType=Parametrage des types de véhicules
+DeleteType=Supprimer un type de véhicule
+DeleteTypeQuestion=Etes vous sur de vouloir supprimer un type de véhiucle ?
+NewType=Créer un type de véhicule
+EditType=Editer un type de véhicule
+typelabel=Nom du type de véhicule
+
+DolifleetSetupTypeCt=Parametrage des types de contrats
+DeleteTypect=Supprimer un type de contrat
+DeleteTypectQuestion=Etes vous sur de vouloir supprimer un type de contrat ?
+NewTypect=Créer un type de contrat
+EditTypect=Editer un type de contrat
+typectlabel=Nom du type de contrat
+
+DolifleetSetupPneu=Parametrage des types de pneu
+DeletePneu=Supprimer un type de pneu
+DeletePneuQuestion=Etes vous sur de vouloir supprimer un type de pneu ?
+NewPneu=Créer un type de pneu
+EditPneu=Editer un type de pneu
+pneulabel=Nom du type de pneu

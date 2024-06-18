@@ -531,6 +531,21 @@ class moddoliFleet extends DolibarrModules
 		);
 		$r++;
 
+		$this->menu[$r] = array(
+			'fk_menu' => 'fk_mainmenu=dolifleet',                            // Put 0 if this is a top menu
+			'type' => 'left',                            // This is a Top menu entry
+			'titre' => $langs->trans('MenudoliFleetVehiculeSetup'),
+			'mainmenu' => 'dolifleet',
+			'leftmenu' => 'dolifleet_left_setup',
+			'url' => '/dolifleet/param/vh_setup_marque.php',
+			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'position' => 100 + $r,
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
+			'perms' => '$user->rights->dolifleet->write',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'target' => '',
+			'user' => 0
+		);
+		$r++;
 
 		// Exports
 		$r = 1;
