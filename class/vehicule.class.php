@@ -1318,11 +1318,14 @@ class doliFleetVehicule extends SeedObject
 		$sql .= 'WHERE (fk_source = ' . $this->id . ' OR fk_target = ' . $this->id . ') ORDER BY date_start DESC';
 		$resql = $this->db->query($sql);
 		if ($resql) {
-			$obj = $this->db->fetch_object($resql);
-			$vh = new doliFleetVehicule($this->db);
-			$ret = $vh->fetch($obj->linked);
-			if ($ret > 0) {
-				$out = $vh->getNomUrl(1);
+			$num=$this->db->num_rows($resql);
+			if ($num > 0) {
+				$obj = $this->db->fetch_object($resql);
+				$vh = new doliFleetVehicule($this->db);
+				$ret = $vh->fetch($obj->linked);
+				if ($ret > 0) {
+					$out = $vh->getNomUrl(1);
+				}
 			}
 		}
 		return $out;
