@@ -306,4 +306,3 @@ if (empty($reshook)) {
 // End of page
 llxFooter();
 $db->close();
-

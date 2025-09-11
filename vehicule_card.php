@@ -23,7 +23,7 @@ dol_include_once('dolifleet/class/vehiculeLink.class.php');
 dol_include_once('/dolifleet/class/dictionaryVehiculeActivityType.class.php');
 dol_include_once('dolifleet/lib/dolifleet.lib.php');
 
-if (empty($user->hasRight("dolifleet","read"))) accessforbidden();
+if (empty($user->hasRight("dolifleet", "read"))) accessforbidden();
 
 $langs->load('dolifleet@dolifleet');
 
@@ -131,17 +131,17 @@ if (empty($reshook)) {
 
 		case 'confirm_modif':
 		case 'confirm_reopen':
-			if (!empty($user->hasRight("dolifleet","write"))) $object->setDraft($user);
+			if (!empty($user->hasRight("dolifleet", "write"))) $object->setDraft($user);
 
 			break;
 		case 'confirm_validate':
-			if (!empty($user->hasRight("dolifleet","write"))) $object->setValid($user);
+			if (!empty($user->hasRight("dolifleet", "write"))) $object->setValid($user);
 
 			header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
 			exit;
 
 		case 'confirm_delete':
-			if (!empty($user->hasRight("dolifleet","delete"))) $object->delete($user);
+			if (!empty($user->hasRight("dolifleet", "delete"))) $object->delete($user);
 
 			header('Location: ' . dol_buildpath('/dolifleet/vehicule_list.php', 1));
 			exit;
@@ -462,7 +462,7 @@ if ($action == 'create') {
 					print '<input type="hidden" name="ordercreatedid" id="ordercreatedid" />';
 				}
 				// Modify
-				if (!empty($user->hasRight("dolifleet","write"))) {
+				if (!empty($user->hasRight("dolifleet", "write"))) {
 					// Modify
 					print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("doliFleetModify") . '</a></div>' . "\n";
 
@@ -488,7 +488,7 @@ if ($action == 'create') {
 					if ($object->status === doliFleetVehicule::STATUS_ACTIVE) print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans('doliFleetUnactivate') . '</a></div>' . "\n";
 				}
 
-				if (!empty($user->hasRight("dolifleet","delete"))) {
+				if (!empty($user->hasRight("dolifleet", "delete"))) {
 					print '<div class="inline-block divButAction"><a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete">' . $langs->trans("doliFleetDelete") . '</a></div>' . "\n";
 				} else {
 					print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("doliFleetDelete") . '</a></div>' . "\n";

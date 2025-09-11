@@ -22,7 +22,7 @@ dol_include_once('dolifleet/class/dictionaryContractType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeMark.class.php');
 
-if (empty($user->hasRight("dolifleet","read"))) accessforbidden();
+if (empty($user->hasRight("dolifleet", "read"))) accessforbidden();
 
 $langs->load('abricot@abricot');
 $langs->load('dolifleet@dolifleet');
@@ -138,7 +138,7 @@ print '<input type="hidden" name="formfilteraction" id="formfilteraction" value=
 $form = new Form($db);
 
 $nbLine = GETPOST('limit');
-if (empty($nbLine)) $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : getDolGlobalInt("MAIN_SIZE_LISTE_LIMIT") ;
+if (empty($nbLine)) $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : getDolGlobalInt("MAIN_SIZE_LISTE_LIMIT");
 
 // configuration listView
 

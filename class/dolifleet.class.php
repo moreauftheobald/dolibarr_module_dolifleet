@@ -272,7 +272,7 @@ class doliFleet extends SeedObject
 
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
-		$mask = !empty(getDolGlobalString("DOLIFLEET_REF_MASK") ) ? getDolGlobalString("DOLIFLEET_REF_MASK")  : 'MM{yy}{mm}-{0000}';
+		$mask = !empty(getDolGlobalString("DOLIFLEET_REF_MASK")) ? getDolGlobalString("DOLIFLEET_REF_MASK")  : 'MM{yy}{mm}-{0000}';
 		$ref = get_next_value($db, $mask, 'dolifleet', 'ref');
 
 		return $ref;

@@ -136,13 +136,13 @@ print '<input type="hidden" name="action" value="set_DOLIFLEET_MOTRICE_TYPES">';
 dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
 $dict = new dictionaryVehiculeType($db);
 $TType = $dict->getAllActiveArray('label');
-print $form->multiselectarray('DOLIFLEET_MOTRICE_TYPES', $TType, unserialize(getDolGlobalString("DOLIFLEET_MOTRICE_TYPES") ));
+print $form->multiselectarray('DOLIFLEET_MOTRICE_TYPES', $TType, unserialize(getDolGlobalString("DOLIFLEET_MOTRICE_TYPES")));
 print '<input class="butAction" type="submit" value="'.$langs->trans('Save').'">';
 print '</form></td>';
 print '</tr>';
 
 
-if (empty(getDolGlobalString("DOLIFLEET_DELAY_SEARCH_OPERATIONS") )) {
+if (empty(getDolGlobalString("DOLIFLEET_DELAY_SEARCH_OPERATIONS"))) {
 	dolibarr_set_const($db, 'DOLIFLEET_DELAY_SEARCH_OPERATIONS', 12, 'chaine', 0, '', $conf->entity);
 }
 setup_print_input_form_part('DOLIFLEET_DELAY_SEARCH_OPERATIONS');

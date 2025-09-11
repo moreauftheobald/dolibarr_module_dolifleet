@@ -117,7 +117,7 @@ class ActionsdoliFleet
 		$modDolifleet = new moddoliFleet($db);
 
 		$arrayresult = array();
-		if (empty(getDolGlobalString("DOLIFLEET_HIDE_QUICK_SEARCH") ) && $user->hasRight("dolifleet","read")) {
+		if (empty(getDolGlobalString("DOLIFLEET_HIDE_QUICK_SEARCH")) && $user->hasRight("dolifleet", "read")) {
 			$str_search = '&Listview_dolifleet_search_sall=' . urlencode($parameters['search_boxvalue']);
 			$arrayresult['searchintovehicule'] = array(
 				'position' => $modDolifleet->numero,
@@ -143,8 +143,8 @@ class ActionsdoliFleet
 		global $mc;
 
 		// if global sharings is enabled
-		if (!empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED") )
-			&& !empty(getDolGlobalString("MULTICOMPANY_DOLIFLEET_SHARING_ENABLED") )
+		if (!empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED"))
+			&& !empty(getDolGlobalString("MULTICOMPANY_DOLIFLEET_SHARING_ENABLED"))
 			&& $object->element == 'dolifleet_vehicule'
 			&& !empty(isModEnabled("dolifleet"))
 			&& !empty($mc->sharings['dolifleet_vehicule'])

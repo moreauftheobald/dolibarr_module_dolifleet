@@ -179,10 +179,10 @@ class cron_dolifleet
 	private function sendResultByMail($subject = '')
 	{
 		global $conf, $user, $db, $langs;
-		if (!empty(getDolGlobalString("MAIN_MAIL_ERRORS_TO") ) && !empty(getDolGlobalString("MAIN_MAIL_EMAIL_FROM") )) {
+		if (!empty(getDolGlobalString("MAIN_MAIL_ERRORS_TO")) && !empty(getDolGlobalString("MAIN_MAIL_EMAIL_FROM"))) {
 			require_once DOL_DOCUMENT_ROOT . '/core/class/CMailFile.class.php';
-			$sendto = getDolGlobalString("MAIN_MAIL_ERRORS_TO") ;
-			$from = dol_string_nospecial(getDolGlobalString("MAIN_MAIL_EMAIL_FROM") , ' ', array(",")) . ' <' . getDolGlobalString("MAIN_MAIL_EMAIL_FROM")  . '>';
+			$sendto = getDolGlobalString("MAIN_MAIL_ERRORS_TO");
+			$from = dol_string_nospecial(getDolGlobalString("MAIN_MAIL_EMAIL_FROM"), ' ', array(",")) . ' <' . getDolGlobalString("MAIN_MAIL_EMAIL_FROM")  . '>';
 			$message = $this->output;
 			$mailfile = new CMailFile($subject, $sendto, $from, $message, array(), array(), array(), '', '', 0, 1, '', '', '', '', 'standard');
 			if ($mailfile->error) {
