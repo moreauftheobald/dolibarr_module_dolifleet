@@ -19,7 +19,6 @@ require 'config.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-dol_include_once('dolifleet/class/rentalProposal.class.php');
 dol_include_once('dolifleet/class/vehicule.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeActivityType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
