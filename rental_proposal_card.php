@@ -25,7 +25,7 @@ dol_include_once('dolifleet/class/dictionaryVehiculeActivityType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
 dol_include_once('dolifleet/lib/dolifleet.lib.php');
 
-if (empty($user->rights->dolifleet->rentalproposal->read)) accessforbidden();
+if (empty($user->hasRight('dolifleet','rentalproposal','read'))) accessforbidden();
 
 $langs->load('dolifleet@dolifleet');
 
@@ -51,7 +51,7 @@ if ($object->isextrafieldmanaged) {
 	$search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 }
 
-$permissiontoadd = $user->rights->dolifleet->rentalproposal->write;
+$permissiontoadd = $user->hasRight('dolifleet','rentalproposal','write');
 $upload_dir = $conf->dolifleet->multidir_output[$conf->entity];
 
 // Initialize array of search criterias

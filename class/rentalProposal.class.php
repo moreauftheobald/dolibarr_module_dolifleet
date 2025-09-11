@@ -280,7 +280,7 @@ class dolifleetRentalProposal extends SeedObject
 	 */
 	public function setDraft($user)
 	{
-		if ($this->status === self::STATUS_INPROGRESS && $user->rights->dolifleet->rentalproposal->validate) {
+		if ($this->status === self::STATUS_INPROGRESS && $user->hasRight('dolifleet','rentalproposal','validate')) {
 			$this->status = self::STATUS_DRAFT;
 			$this->withChild = false;
 			$this->fk_first_valid = null;
@@ -298,7 +298,7 @@ class dolifleetRentalProposal extends SeedObject
 	 */
 	public function setValid($user)
 	{
-		if ($this->status === self::STATUS_DRAFT && $user->rights->dolifleet->rentalproposal->validate) {
+		if ($this->status === self::STATUS_DRAFT && $user->hasRight('dolifleet','rentalproposal','validate')) {
 			// TODO determinate if auto generate
 			$this->ref = $this->getRef();
 			//            $this->fk_user_valid = $user->id;
@@ -320,7 +320,7 @@ class dolifleetRentalProposal extends SeedObject
 	 */
 	public function setAccepted($user)
 	{
-		if ($this->status === self::STATUS_INPROGRESS && $user->rights->dolifleet->rentalproposal->validate) {
+		if ($this->status === self::STATUS_INPROGRESS && $user->hasRight('dolifleet','rentalproposal','validate')) {
 			$this->status = self::STATUS_VALIDATED;
 			$this->withChild = false;
 			$this->fk_second_valid = $user->id;
