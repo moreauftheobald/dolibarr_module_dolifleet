@@ -55,9 +55,9 @@ if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 
 // Translations
 $langs->load('dolifleet@dolifleet');
 
-$userCanRead = $user->hasRight('dolifleet','matrix','read');
-$userCanCreate = $user->hasRight('dolifleet','matrix','write');
-$userCanDelete = $user->hasRight('dolifleet','matrix','delete');
+$userCanRead = $user->hasRight('dolifleet', 'matrix', 'read');
+$userCanCreate = $user->hasRight('dolifleet', 'matrix', 'write');
+$userCanDelete = $user->hasRight('dolifleet', 'matrix', 'delete');
 
 // Access control
 if (! $user->admin || ! $userCanRead) {
