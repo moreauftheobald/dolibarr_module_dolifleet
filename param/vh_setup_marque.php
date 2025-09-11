@@ -76,7 +76,7 @@ if (!$user->hasRight('dolifleet', 'write')) {
 	accessforbidden();
 }
 
-if (empty($conf->dolifleet->enabled)) accessforbidden();
+if (empty(isModEnabled("dolifleet"))) accessforbidden();
 
 $hookmanager->initHooks(array('dolifleetparam', 'globalcard')); // Note that conf->hooks_modules contains array
 

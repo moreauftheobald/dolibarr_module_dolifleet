@@ -113,7 +113,7 @@ class DolifleetApi extends DolibarrApi
 	{
 		global $user;
 
-		if (!DolibarrApiAccess::$user->rights->dolifleet->read) {
+		if (!DolibarrApiAccess::$user->hasRight("dolifleet","read")) {
 			throw new RestException(401);
 		}
 
@@ -192,7 +192,7 @@ class DolifleetApi extends DolibarrApi
 	 */
 	public function getVehiculeOperation($id)
 	{
-		if (!DolibarrApiAccess::$user->rights->dolifleet->read) {
+		if (!DolibarrApiAccess::$user->hasRight("dolifleet","read")) {
 			throw new RestException(401);
 		}
 
@@ -227,7 +227,7 @@ class DolifleetApi extends DolibarrApi
 	{
 		global $user;
 
-		if (!DolibarrApiAccess::$user->rights->dolifleet->read) {
+		if (!DolibarrApiAccess::$user->hasRight("dolifleet","read")) {
 			throw new RestException(401);
 		}
 
@@ -305,7 +305,7 @@ class DolifleetApi extends DolibarrApi
 	{
 		global $user;
 
-		if (!DolibarrApiAccess::$user->rights->dolifleet->read) {
+		if (!DolibarrApiAccess::$user->hasRight("dolifleet","read")) {
 			throw new RestException(401);
 		}
 

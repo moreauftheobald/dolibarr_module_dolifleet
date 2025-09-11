@@ -78,10 +78,10 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$this->page_largeur = $formatarray['width'];
 		$this->page_hauteur = $formatarray['height'];
 		$this->format = array($this->page_largeur,$this->page_hauteur);
-		$this->marge_gauche=isset($conf->global->MAIN_PDF_MARGIN_LEFT)?$conf->global->MAIN_PDF_MARGIN_LEFT:10;
-		$this->marge_droite=isset($conf->global->MAIN_PDF_MARGIN_RIGHT)?$conf->global->MAIN_PDF_MARGIN_RIGHT:10;
-		$this->marge_haute =isset($conf->global->MAIN_PDF_MARGIN_TOP)?$conf->global->MAIN_PDF_MARGIN_TOP:10;
-		$this->marge_basse =isset($conf->global->MAIN_PDF_MARGIN_BOTTOM)?$conf->global->MAIN_PDF_MARGIN_BOTTOM:10;
+		$this->marge_gauche=!empty(getDolGlobalInt("MAIN_PDF_MARGIN_LEFT") )?getDolGlobalInt("MAIN_PDF_MARGIN_LEFT") :10;
+		$this->marge_droite=!empty(getDolGlobalInt("MAIN_PDF_MARGIN_RIGHT") )?getDolGlobalInt("MAIN_PDF_MARGIN_RIGHT") :10;
+		$this->marge_haute =!empty(getDolGlobalInt("MAIN_PDF_MARGIN_TOP") )?getDolGlobalInt("MAIN_PDF_MARGIN_TOP") :10;
+		$this->marge_basse =!empty(getDolGlobalInt("MAIN_PDF_MARGIN_BOTTOM") )?getDolGlobalInt("MAIN_PDF_MARGIN_BOTTOM") :10;
 
 		$this->option_logo = 1;
 
@@ -119,7 +119,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 
 		if (! is_object($this->outputlangs)) $this->outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
-		if (! empty($conf->global->MAIN_USE_FPDF)) $this->outputlangs->charset_output='ISO-8859-1';
+		if (! empty(getDolGlobalString("MAIN_USE_FPDF") )) $this->outputlangs->charset_output='ISO-8859-1';
 
 		// Translations
 		$this->outputlangs->loadLangs(array("main", "bills", "products", "dict", "companies", "propal", "deliveries", "sendings", "productbatch"));
@@ -162,9 +162,9 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				$this->pdf=pdf_getInstance($this->format);
 				$this->default_font_size = pdf_getPDFFontSize($this->outputlangs);
 				$heightforinfotot = 8;	// Height reserved to output the info and total part
-				$heightforfreetext= (isset($conf->global->MAIN_PDF_FREETEXT_HEIGHT)?$conf->global->MAIN_PDF_FREETEXT_HEIGHT:5);	// Height reserved to output the free text on last page
+				$heightforfreetext= (!empty(getDolGlobalInt("MAIN_PDF_FREETEXT_HEIGHT") )?getDolGlobalInt("MAIN_PDF_FREETEXT_HEIGHT") :5);	// Height reserved to output the free text on last page
 				$heightforfooter = $this->marge_basse + 20;	// Height reserved to output the footer (value include bottom margin)
-				if ($conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS >0) $heightforfooter+= 6;
+				if (getDolGlobalInt("MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS")  >0) $heightforfooter+= 6;
 				$this->pdf->SetAutoPageBreak(1, 0);
 
 				if (class_exists('TCPDF')) {
@@ -173,8 +173,8 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				}
 				$this->pdf->SetFont(pdf_getPDFFont($this->outputlangs));
 				// Set path to the background PDF File
-				if (! empty($conf->global->MAIN_ADD_PDF_BACKGROUND)) {
-					$pagecount = $this->pdf->setSourceFile($conf->mycompany->dir_output.'/'.$conf->global->MAIN_ADD_PDF_BACKGROUND);
+				if (! empty(getDolGlobalString("MAIN_ADD_PDF_BACKGROUND") )) {
+					$pagecount = $this->pdf->setSourceFile($conf->mycompany->dir_output.'/'.getDolGlobalString("MAIN_ADD_PDF_BACKGROUND") );
 					$tplidx = $this->pdf->importPage(1);
 				}
 
@@ -189,7 +189,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				$this->pdf->SetCreator("Dolibarr ".DOL_VERSION);
 				$this->pdf->SetAuthor($this->outputlangs->convToOutputCharset($user->getFullName($this->outputlangs)));
 				$this->pdf->SetKeyWords($this->outputlangs->convToOutputCharset($object->ref)." ".$this->outputlangs->transnoentities("Processrules"));
-				if (! empty($conf->global->MAIN_DISABLE_PDF_COMPRESSION)) $this->pdf->SetCompression(false);
+				if (! empty(getDolGlobalString("MAIN_DISABLE_PDF_COMPRESSION") )) $this->pdf->SetCompression(false);
 
 				$this->pdf->SetMargins($this->marge_gauche, $this->marge_haute, $this->marge_droite);   // Left, Top, Right
 
@@ -225,8 +225,8 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 				global $action;
 				$reshook=$hookmanager->executeHooks('afterPDFCreation', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
 
-				if (! empty($conf->global->MAIN_UMASK))
-					@chmod($file, octdec($conf->global->MAIN_UMASK));
+				if (! empty(getDolGlobalString("MAIN_UMASK") ))
+					@chmod($file, octdec(getDolGlobalInt("MAIN_UMASK") ));
 
 				$this->result = array('fullpath'=>$file);
 
@@ -383,8 +383,8 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		pdf_pagehead($this->pdf, $outputlangs, $this->page_hauteur);
 
 		// Show Draft Watermark
-		if ($object->statut==0 && (! empty($conf->global->COMMANDE_DRAFT_WATERMARK)) ) {
-			pdf_watermark($this->pdf, $outputlangs, $this->page_hauteur, $this->page_largeur, 'mm', $conf->global->COMMANDE_DRAFT_WATERMARK);
+		if ($object->statut==0 && (! empty(getDolGlobalString("COMMANDE_DRAFT_WATERMARK") )) ) {
+			pdf_watermark($this->pdf, $outputlangs, $this->page_hauteur, $this->page_largeur, 'mm', getDolGlobalString("COMMANDE_DRAFT_WATERMARK") );
 		}
 
 		$this->pdf->SetTextColor(0, 0, 60);
@@ -396,11 +396,11 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$this->pdf->SetXY($this->marge_gauche, $posy);
 
 		// Logo
-		if (empty($conf->global->PDF_DISABLE_MYCOMPANY_LOGO)) {
+		if (empty(getDolGlobalString("PDF_DISABLE_MYCOMPANY_LOGO") )) {
 			if ($this->emetteur->logo) {
 				$logodir = $conf->mycompany->dir_output;
 				if (! empty($conf->mycompany->multidir_output[$object->entity])) $logodir = $conf->mycompany->multidir_output[$object->entity];
-				if (empty($conf->global->MAIN_PDF_USE_LARGE_LOGO)) {
+				if (empty(getDolGlobalString("MAIN_PDF_USE_LARGE_LOGO") )) {
 					$logo = $logodir.'/logos/thumbs/'.$this->emetteur->logo_small;
 				} else {
 					$logo = $logodir.'/logos/'.$this->emetteur->logo;
@@ -449,7 +449,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$montharray = monthArray($outputlangs, 1);
 		$this->pdf->MultiCell(100, 3, $outputlangs->transnoentities("Period")." : " . $montharray[$object->month] . " " . $object->year, '', 'R');
 
-		if (!empty($conf->global->DOC_SHOW_CUSTOMER_CODE) && ! empty($object->thirdparty->code_client)) {
+		if (!empty(getDolGlobalString("DOC_SHOW_CUSTOMER_CODE") ) && ! empty($object->thirdparty->code_client)) {
 			$posy+=4;
 			$this->pdf->SetXY($posx, $posy);
 			$this->pdf->SetTextColor(0, 0, 60);
@@ -457,7 +457,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		}
 
 		// Get contact
-		if (!empty($conf->global->DOC_SHOW_FIRST_SALES_REP)) {
+		if (!empty(getDolGlobalString("DOC_SHOW_FIRST_SALES_REP") )) {
 			$arrayidcontact=$object->getIdContact('internal', 'SALESREPFOLL');
 			if (count($arrayidcontact) > 0) {
 				$usertmp=new User($this->db);
@@ -495,7 +495,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 			// Show sender
 			$posy=42+$top_shift;
 			$posx=$this->marge_gauche;
-			if (! empty($conf->global->MAIN_INVERT_SENDER_RECIPIENT)) $posx=$this->page_largeur-$this->marge_droite-80;
+			if (! empty(getDolGlobalString("MAIN_INVERT_SENDER_RECIPIENT") )) $posx=$this->page_largeur-$this->marge_droite-80;
 			$hautcadre=40;
 
 			$afterHeader = $posy + $hautcadre;
@@ -533,7 +533,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 
 			//Recipient name
 			// On peut utiliser le nom de la societe du contact
-			if ($usecontact && !empty($conf->global->MAIN_USE_COMPANY_NAME_OF_CONTACT)) {
+			if ($usecontact && !empty(getDolGlobalString("MAIN_USE_COMPANY_NAME_OF_CONTACT") )) {
 				$thirdparty = $object->contact;
 			} else {
 				$thirdparty = $object->thirdparty;
@@ -548,7 +548,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 			if ($this->page_largeur < 210) $widthrecbox=84;	// To work with US executive format
 			$posy=42+$top_shift;
 			$posx=$this->page_largeur-$this->marge_droite-$widthrecbox;
-			if (! empty($conf->global->MAIN_INVERT_SENDER_RECIPIENT)) $posx=$this->marge_gauche;
+			if (! empty(getDolGlobalString("MAIN_INVERT_SENDER_RECIPIENT") )) $posx=$this->marge_gauche;
 
 			// Show recipient frame
 			$this->pdf->SetTextColor(0, 0, 0);
@@ -587,7 +587,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 	function _pagefoot(&$pdf, $object, $outputlangs, $hidefreetext = 0)
 	{
 		global $conf;
-		$showdetails=$conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS;
+		$showdetails=getDolGlobalString("MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS") ;
 		return pdf_pagefoot($this->pdf, $outputlangs, 'SHIPPING_FREE_TEXT', $this->emetteur, $this->marge_basse, $this->marge_gauche, $this->page_hauteur, $object, $showdetails, $hidefreetext);
 	}
 
@@ -650,14 +650,14 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		global $conf, $outputlangs;
 
 		// Set path to the background PDF File
-		if (! empty($conf->global->MAIN_ADD_PDF_BACKGROUND)) {
-			$pagecount = $pdf->setSourceFile($conf->mycompany->dir_output.'/'.$conf->global->MAIN_ADD_PDF_BACKGROUND);
+		if (! empty(getDolGlobalString("MAIN_ADD_PDF_BACKGROUND") )) {
+			$pagecount = $pdf->setSourceFile($conf->mycompany->dir_output.'/'.getDolGlobalString("MAIN_ADD_PDF_BACKGROUND") );
 			$tplidx = $pdf->importPage(1);
 		}
 
 		if (! empty($tplidx)) $pdf->useTemplate($tplidx);
 
-		if ($forceHead || empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)) $afterHeader = $this->_pagehead($pdf, $this->object, 1, $outputlangs);
+		if ($forceHead || empty(getDolGlobalString("MAIN_PDF_DONOTREPEAT_HEAD") )) $afterHeader = $this->_pagehead($pdf, $this->object, 1, $outputlangs);
 		$this->lineTableHeader($pdf, $outputlangs);
 
 		$topY = $pdf->GetY() + 20;
@@ -672,7 +672,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 
 		$tab_top_newpage = $afterHeader + $this->h_ligne;
 		$pdf->SetY($tab_top_newpage);
-		return empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)?42:10;
+		return empty(getDolGlobalString("MAIN_PDF_DONOTREPEAT_HEAD") )?42:10;
 	}
 
 	/**

@@ -136,13 +136,13 @@ print '<input type="hidden" name="action" value="set_DOLIFLEET_MOTRICE_TYPES">';
 dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
 $dict = new dictionaryVehiculeType($db);
 $TType = $dict->getAllActiveArray('label');
-print $form->multiselectarray('DOLIFLEET_MOTRICE_TYPES', $TType, unserialize($conf->global->DOLIFLEET_MOTRICE_TYPES));
+print $form->multiselectarray('DOLIFLEET_MOTRICE_TYPES', $TType, unserialize(getDolGlobalString("DOLIFLEET_MOTRICE_TYPES") ));
 print '<input class="butAction" type="submit" value="'.$langs->trans('Save').'">';
 print '</form></td>';
 print '</tr>';
 
 
-if (empty($conf->global->DOLIFLEET_DELAY_SEARCH_OPERATIONS)) {
+if (empty(getDolGlobalString("DOLIFLEET_DELAY_SEARCH_OPERATIONS") )) {
 	dolibarr_set_const($db, 'DOLIFLEET_DELAY_SEARCH_OPERATIONS', 12, 'chaine', 0, '', $conf->entity);
 }
 setup_print_input_form_part('DOLIFLEET_DELAY_SEARCH_OPERATIONS');
@@ -235,8 +235,8 @@ if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
 								$module = new $classname($db);
 
 								$modulequalified = 1;
-								if ($module->version == 'development' && $conf->global->MAIN_FEATURES_LEVEL < 2) $modulequalified = 0;
-								if ($module->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1) $modulequalified = 0;
+								if ($module->version == 'development' && getDolGlobalString("MAIN_FEATURES_LEVEL")  < 2) $modulequalified = 0;
+								if ($module->version == 'experimental' && getDolGlobalString("MAIN_FEATURES_LEVEL")  < 1) $modulequalified = 0;
 
 								if ($modulequalified) {
 									print '<tr class="oddeven"><td width="100">';
@@ -261,7 +261,7 @@ if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
 
 									// Defaut
 									print '<td class="center">';
-									if ($conf->global->DOLIFLEET_RENTALPROPOSAL_ADDON_PDF == $name) {
+									if (getDolGlobalString("DOLIFLEET_RENTALPROPOSAL_ADDON_PDF")  == $name) {
 										print img_picto($langs->trans("Default"), 'on');
 									} else {
 										print '<a href="' . $_SERVER["PHP_SELF"] . '?action=setdoc&value=' . $name . '&scan_dir=' . $module->scandir . '&label=' . urlencode($module->name) . '" alt="' . $langs->trans("Default") . '">' . img_picto($langs->trans("SetAsDefault"), 'off') . '</a>';

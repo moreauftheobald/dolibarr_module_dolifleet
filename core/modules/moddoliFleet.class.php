@@ -146,14 +146,14 @@ class moddoliFleet extends DolibarrModules
 			),
 		);
 		// Example: $this->cronjobs=array(
-		//    0=>array('label'=>'My label', 'jobtype'=>'method', 'class'=>'/dir/class/file.class.php', 'objectname'=>'MyClass', 'method'=>'myMethod', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>2, 'unitfrequency'=>3600, 'status'=>0, 'test'=>'$conf->mymodule->enabled', 'priority'=>50),
-		//    1=>array('label'=>'My label', 'jobtype'=>'command', 'command'=>'', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>1, 'unitfrequency'=>3600*24, 'status'=>0, 'test'=>'$conf->mymodule->enabled', 'priority'=>50)
+		//    0=>array('label'=>'My label', 'jobtype'=>'method', 'class'=>'/dir/class/file.class.php', 'objectname'=>'MyClass', 'method'=>'myMethod', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>2, 'unitfrequency'=>3600, 'status'=>0, 'test'=>'isModEnabled("mymodule")', 'priority'=>50),
+		//    1=>array('label'=>'My label', 'jobtype'=>'command', 'command'=>'', 'parameters'=>'param1, param2', 'comment'=>'Comment', 'frequency'=>1, 'unitfrequency'=>3600*24, 'status'=>0, 'test'=>'isModEnabled("mymodule")', 'priority'=>50)
 		// );
 
 
 		// Array to add new pages in new tabs
-		// Example: $this->tabs = array('objecttype:+tabname1:Title1:dolifleet@dolifleet:$user->rights->dolifleet->read:/dolifleet/mynewtab1.php?id=__ID__',  	// To add a new tab identified by code tabname1
-		//                              'objecttype:+tabname2:Title2:dolifleet@dolifleet:$user->rights->othermodule->read:/dolifleet/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2
+		// Example: $this->tabs = array('objecttype:+tabname1:Title1:dolifleet@dolifleet:$user->hasRight("dolifleet","read"):/dolifleet/mynewtab1.php?id=__ID__',  	// To add a new tab identified by code tabname1
+		//                              'objecttype:+tabname2:Title2:dolifleet@dolifleet:$user->hasRight("othermodule","read"):/dolifleet/mynewtab2.php?id=__ID__',  	// To add another new tab identified by code tabname2
 		//                              'objecttype:-tabname:NU:conditiontoremove');                                                     						// To remove an existing tab identified by code tabname
 		// where objecttype can be
 		// 'categories_x'	  to add a tab in category view (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
@@ -178,7 +178,7 @@ class moddoliFleet extends DolibarrModules
 		$this->tabs = array();
 
 		// Dictionaries
-		if (!isset($conf->dolifleet->enabled)) {
+		if (empty(isModEnabled("dolifleet"))) {
 			$conf->dolifleet = new stdClass();
 			$conf->dolifleet->enabled = 0;
 		}
@@ -241,11 +241,11 @@ class moddoliFleet extends DolibarrModules
 				"rowid",
 			),                                                                                                    // Name of columns with primary key (try to always name it 'rowid')
 			'tabcond' => array(
-				$conf->dolifleet->enabled,
-				$conf->dolifleet->enabled,
-				$conf->dolifleet->enabled,
-				$conf->dolifleet->enabled,
-				$conf->dolifleet->enabled,
+				isModEnabled("dolifleet"),
+				isModEnabled("dolifleet"),
+				isModEnabled("dolifleet"),
+				isModEnabled("dolifleet"),
+				isModEnabled("dolifleet"),
 			)
 
 		);
@@ -265,103 +265,103 @@ class moddoliFleet extends DolibarrModules
 		// $this->rights[$r][0] = $this->numero . $r;	// Permission id (must not be already used)
 		// $this->rights[$r][1] = 'Permision label';	// Permission label
 		// $this->rights[$r][3] = 1; 					// Permission by default for new user (0/1)
-		// $this->rights[$r][4] = 'level1';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		// $this->rights[$r][5] = 'level2';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		// $this->rights[$r][4] = 'level1';				// In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		// $this->rights[$r][5] = 'level2';				// In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		// $r++;
 
 		// droits vehicules
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'vehicule_read';    // Permission label
 		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'read';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'vehicule_write';    // Permission label
 		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'write';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'vehicule_delete';    // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'delete';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'delete';            // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = '';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		// droits loyers
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'rental_read';    // Permission label
 		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rental';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'rental';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'rental_write';        // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rental';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'rental';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'rental_delete';    // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rental';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'rental';            // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		// droits proposition de loyers
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'rentalproposal_read';    // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'rentalproposal_write';    // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'rentalproposal_validate';    // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'validate';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'validate';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'rentalproposal_delete';    // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'rentalproposal';            // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		// droits matrices de loyers
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'matrix_read';    // Permission label
 		$this->rights[$r][3] = 1;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'matrix';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'matrix';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'read';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'matrix_write';        // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'matrix';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'matrix';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'write';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		$this->rights[$r][0] = $this->numero . $r;    // Permission id (must not be already used)
 		$this->rights[$r][1] = 'matrix_delete';    // Permission label
 		$this->rights[$r][3] = 0;                    // Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'matrix';            // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'matrix';            // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
+		$this->rights[$r][5] = 'delete';                // In php code, permission will be checked by test if ($user->hasRight("permkey","level")1->level2)
 		$r++;
 
 		// Main menu entries
@@ -380,7 +380,7 @@ class moddoliFleet extends DolibarrModules
 		//							'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
 		//							'enabled'=>"isModEnabled('dolifleet')",	// Define condition to show or hide menu entry. Use "isModEnabled('dolifleet')" if entry must be visible if module is enabled.
-		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->dolifleet->level1->level2' if you want your menu with a permission rules
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->hasRight("dolifleet","level")1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
 		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
@@ -395,7 +395,7 @@ class moddoliFleet extends DolibarrModules
 		//							'langs'=>'dolifleet@dolifleet',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
 		//							'enabled'=>"isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use "isModEnabled('dolifleet')" if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->dolifleet->level1->level2' if you want your menu with a permission rules
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->hasRight("dolifleet","level")1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
 		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
@@ -410,8 +410,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled.
+			'perms' => '$user->hasRight("dolifleet","read")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);
@@ -426,8 +426,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled.
+			'perms' => '$user->hasRight("dolifleet","read")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);
@@ -442,8 +442,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_card.php?action=create',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms' => '$user->rights->dolifleet->write',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->hasRight("dolifleet","write")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);                                // 0=Menu for internal users, 1=external users, 2=both
@@ -459,8 +459,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet')",  // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->hasRight("dolifleet","read")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);                                // 0=Menu for internal users, 1=external users, 2=both
@@ -475,8 +475,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/rental_proposal_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms' => '$user->hasRight("dolifleet","rentalproposal","read")',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",    // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled.
+			'perms' => '$user->hasRight("dolifleet","rentalproposal","read")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);
@@ -491,8 +491,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/rental_proposal_card.php?action=create',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms' => '$user->hasRight("dolifleet","rentalproposal","write")',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",  // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->hasRight("dolifleet","rentalproposal","write")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);                                // 0=Menu for internal users, 1=external users, 2=both
@@ -508,8 +508,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/rental_proposal_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",  // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-			'perms' => '$user->hasRight("dolifleet","rentalproposal","read")',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet') && getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')",  // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+			'perms' => '$user->hasRight("dolifleet","rentalproposal","read")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);                                // 0=Menu for internal users, 1=external users, 2=both
@@ -524,8 +524,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/vehicule_operation_list.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms' => '$user->rights->dolifleet->read',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled.
+			'perms' => '$user->hasRight("dolifleet","read")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);
@@ -540,8 +540,8 @@ class moddoliFleet extends DolibarrModules
 			'url' => '/dolifleet/param/vh_setup_marque.php',
 			'langs' => 'dolifleet@dolifleet',            // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position' => 100 + $r,
-			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use '$conf->missionorder->enabled' if entry must be visible if module is enabled.
-			'perms' => '$user->rights->dolifleet->write',                            // Use 'perms'=>'$user->rights->missionorder->level1->level2' if you want your menu with a permission rules
+			'enabled' => "isModEnabled('dolifleet')",    // Define condition to show or hide menu entry. Use 'isModEnabled("missionorder")' if entry must be visible if module is enabled.
+			'perms' => '$user->hasRight("dolifleet","write")',                            // Use 'perms'=>'$user->hasRight("missionorder","level")1->level2' if you want your menu with a permission rules
 			'target' => '',
 			'user' => 0
 		);

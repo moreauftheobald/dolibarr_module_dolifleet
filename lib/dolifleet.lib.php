@@ -51,7 +51,7 @@ function dolifleetAdminPrepareHead()
 	$head[$h][2] = 'extrafields';
 	$h++;
 
-	if (!empty($conf->multicompany->enabled)) {
+	if (!empty(isModEnabled("multicompany"))) {
 		$head[$h][0] = dol_buildpath("/dolifleet/admin/multicompany_sharing.php", 1);
 		$head[$h][1] = $langs->trans("multicompanySharing");
 		$head[$h][2] = 'multicompanySharing';
@@ -154,46 +154,46 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 
 	$formconfirm = '';
 
-	if ($action === 'valid' && !empty($user->rights->dolifleet->write)) {
+	if ($action === 'valid' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmActivatedoliFleetVehiculeBody', $object->immatriculation);
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmActivatedoliFleetVehiculeTitle'), $body, 'confirm_validate', '', 0, 1);
-	} elseif ($action === 'validate' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'validate' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmValidateRentalProposalBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmValidateRentalProposalTitle'), $body, 'confirm_validate', '', 0, 1);
-	} elseif ($action === 'accept' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'accept' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmAcceptRentalProposalBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmAcceptRentalProposalTitle'), $body, 'confirm_accept', '', 0, 1);
-	} elseif ($action === 'close' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'close' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmCloseRentalProposalBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloseRentalProposalTitle'), $body, 'confirm_close', '', 0, 1);
-	} elseif ($action === 'modif' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'modif' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmReopendoliFleetVehiculeBody', $object->immatriculation);
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmReopendoliFleetVehiculeTitle'), $body, 'confirm_modif', '', 0, 1);
-	} elseif ($action === 'delete' && !empty($user->rights->dolifleet->delete)) {
+	} elseif ($action === 'delete' && !empty($user->hasRight("dolifleet","delete"))) {
 		$body = $langs->trans('ConfirmDeletedoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
-	} elseif ($action === 'deleteRental' && !empty($user->rights->dolifleet->delete)) {
+	} elseif ($action === 'deleteRental' && !empty($user->hasRight("dolifleet","delete"))) {
 		$body = $langs->trans('ConfirmDeleteRentalBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
-	} elseif ($action === 'clone' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'clone' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmClonedoliFleetVehiculeBody', $object->immatriculation);
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmClonedoliFleetVehiculeTitle'), $body, 'confirm_clone', '', 0, 1);
-	} elseif ($action === 'delActivity' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'delActivity' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmDelActivitydoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&act_id=' . GETPOST('act_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delActivity', '', 0, 1);
-	} elseif ($action === 'unlinkVehicule' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'unlinkVehicule' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmUnlinkVehiculedoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&linkVehicule_id=' . GETPOST('linkVehicule_id'), $langs->trans('ConfirmUnlinkVehiculedoliFleetVehiculeTitle'), $body, 'confirm_unlinkVehicule', '', 0, 1);
-	} elseif ($action === 'delRental' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'delRental' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmDelRentaldoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&rent_id=' . GETPOST('rent_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delRental', '', 0, 1);
-	} elseif ($action === 'delOperation' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'delOperation' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
-	} elseif ($action === 'delOperationNp' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'delOperationNp' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&openp_id=' . GETPOST('openp_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperationNp', '', 0, 1);
-	} elseif ($action === 'delMatrixLine' && !empty($user->rights->dolifleet->write)) {
+	} elseif ($action === 'delMatrixLine' && !empty($user->hasRight("dolifleet","write"))) {
 		$body = $langs->trans('ConfirmDeldoliFleetLineBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . GETPOST('id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delMatrixLine', '', 0, 1);
 	}
@@ -367,7 +367,7 @@ function printLinkedVehicules($object, $fromcard = false)
 	$sql = "SELECT v.rowid, v.immatriculation, vt.label FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule as v";
 	$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "c_dolifleet_vehicule_type as vt ON vt.rowid = v.fk_vehicule_type";
 	$sql .= " WHERE v.status = 1";
-	$DOLIFLEET_MOTRICE_TYPES = unserialize($conf->global->DOLIFLEET_MOTRICE_TYPES);
+	$DOLIFLEET_MOTRICE_TYPES = unserialize(getDolGlobalString("DOLIFLEET_MOTRICE_TYPES") );
 	if (!empty($DOLIFLEET_MOTRICE_TYPES)) {
 		if (in_array($object->fk_vehicule_type, $DOLIFLEET_MOTRICE_TYPES))
 			$sql .= " AND v.fk_vehicule_type NOT IN (" . implode(', ', $DOLIFLEET_MOTRICE_TYPES) . ")";
@@ -815,7 +815,7 @@ function callAPI($method, $url, $data = false, $header = false)
 			if ($data) $url = sprintf("%s?%s", $url, http_build_query($data));
 	}
 	curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-	curl_setopt($curl, CURLOPT_USERPWD, $conf->global->THEO_API_USER . ':' . $conf->global->THEO_API_PASS);
+	curl_setopt($curl, CURLOPT_USERPWD, getDolGlobalString("THEO_API_USER")  . ':' . getDolGlobalString("THEO_API_PASS") );
 
 	curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 	curl_setopt($curl, CURLOPT_HEADER, false);

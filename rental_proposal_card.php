@@ -146,12 +146,12 @@ if (empty($reshook)) {
 
 		case 'modif':
 		case 'reopen':
-			if (!empty($user->rights->dolifleet->rentalproposal->write)) $object->setDraft($user);
+			if (!empty($user->hasRight("dolifleet","rentalproposal","write"))) $object->setDraft($user);
 
 			break;
 
 		case 'confirm_validate':
-			if (!empty($user->rights->dolifleet->rentalproposal->validate)) $object->setValid($user);
+			if (!empty($user->hasRight("dolifleet","rentalproposal","validate"))) $object->setValid($user);
 
 			if (!empty($object->errors)) setEventMessages('', $object->errors, "errors");
 
@@ -159,7 +159,7 @@ if (empty($reshook)) {
 			exit;
 
 		case 'confirm_accept':
-			if (!empty($user->rights->dolifleet->rentalproposal->validate)) $object->setAccepted($user);
+			if (!empty($user->hasRight("dolifleet","rentalproposal","validate"))) $object->setAccepted($user);
 
 			if (!empty($object->errors)) setEventMessages('', $object->errors, "errors");
 
@@ -167,7 +167,7 @@ if (empty($reshook)) {
 			exit;
 
 		case 'confirm_close':
-			if (!empty($user->rights->dolifleet->rentalproposal->validate)) $object->setClosed($user);
+			if (!empty($user->hasRight("dolifleet","rentalproposal","validate"))) $object->setClosed($user);
 
 			if (!empty($object->errors)) setEventMessages('', $object->errors, "errors");
 
@@ -175,7 +175,7 @@ if (empty($reshook)) {
 			exit;
 
 		case 'confirm_delete':
-			if (!empty($user->rights->dolifleet->rentalproposal->delete)) $object->delete($user);
+			if (!empty($user->hasRight("dolifleet","rentalproposal","delete"))) $object->delete($user);
 
 			header('Location: '.dol_buildpath('/dolifleet/rental_proposal_list.php', 1));
 			exit;
@@ -295,8 +295,8 @@ if ($action == 'create') {
 			$morehtmlref='<div class="refidno">';
 			/*
 			// Ref bis
-			$morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->dolifleet->rentalproposal->write, 'string', '', 0, 1);
-			$morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->rights->dolifleet->rentalproposal->write, 'string', '', null, null, '', 1);
+			$morehtmlref.=$form->editfieldkey("RefBis", 'ref_client', $object->ref_client, $object, $user->hasRight("dolifleet","rentalproposal","write"), 'string', '', 0, 1);
+			$morehtmlref.=$form->editfieldval("RefBis", 'ref_client', $object->ref_client, $object, $user->hasRight("dolifleet","rentalproposal","write"), 'string', '', null, null, '', 1);
 			// Thirdparty
 			$morehtmlref.='<br>'.$langs->trans('ThirdParty') . ' : ' . $soc->getNomUrl(1);
 			*/
@@ -441,7 +441,7 @@ if ($action == 'create') {
 				//        print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=presend&mode=init#formmailbeforetitle">' . $langs->trans('SendMail') . '</a>'."\n";
 
 				// Modify
-				if (!empty($user->rights->dolifleet->rentalproposal->validate)) {
+				if (!empty($user->hasRight("dolifleet","rentalproposal","validate"))) {
 					// Valid
 					if ($object->status === dolifleetRentalProposal::STATUS_DRAFT) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=validate">'.$langs->trans('doliFleetValid').'</a></div>'."\n";
 
@@ -473,7 +473,7 @@ if ($action == 'create') {
 				}
 
 				if ($object->status != dolifleetRentalProposal::STATUS_CLOSED) {
-					if (!empty($user->rights->dolifleet->rentalproposal->delete)) {
+					if (!empty($user->hasRight("dolifleet","rentalproposal","delete"))) {
 						print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=deleteRental">'.$langs->trans("doliFleetDelete").'</a></div>'."\n";
 					} else {
 						print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("doliFleetDelete").'</a></div>'."\n";
@@ -492,8 +492,8 @@ if ($action == 'create') {
 			$relativepath = $propalref.'/'.$propalref.'.pdf';
 			$filedir = $conf->dolifleet->multidir_output[$conf->entity].'/'.$propalref;
 			$urlsource = $_SERVER["PHP_SELF"]."?id=".$object->id;
-			$genallowed = $user->rights->dolifleet->rentalproposal->read;
-			$delallowed = $user->rights->dolifleet->rentalproposal->write;
+			$genallowed = $user->hasRight("dolifleet","rentalproposal","read");
+			$delallowed = $user->hasRight("dolifleet","rentalproposal","write");
 			print $formfile->showdocuments('dolifleet:rentalproposal', $propalref, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, 'entity='.$conf->entity, '', '', $soc->default_lang, '', $object);
 
 			$linktoelem = $form->showLinkToObjectBlock($object, null, array($object->element));

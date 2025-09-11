@@ -27,14 +27,14 @@ $elementConvertionAnotherOne = 'dolifleet_vehicule'; // voir selectForFormsList 
 
 
 $moduleSharingEnabled = 'MULTICOMPANY_'.strtoupper($moduleKey).'_SHARING_ENABLED';
-$moduleSharingEnabledValue = $conf->global->{$moduleSharingEnabled};
+$moduleSharingEnabledValue = getDolGlobalString("{$moduleSharingEnabled}") ;
 
 dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertion).'_SHARING_ENABLED', $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
 dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertionAnotherOne).'_SHARING_ENABLED', $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
 
 $externalmodules = array();
-if (! empty($conf->global->MULTICOMPANY_EXTERNAL_MODULES_SHARING)) {
-	$externalmodules = json_decode($conf->global->MULTICOMPANY_EXTERNAL_MODULES_SHARING, true);
+if (! empty(getDolGlobalString("MULTICOMPANY_EXTERNAL_MODULES_SHARING") )) {
+	$externalmodules = json_decode(getDolGlobalString("MULTICOMPANY_EXTERNAL_MODULES_SHARING") , true);
 }
 
 if (!empty($moduleSharingEnabledValue)) {
@@ -84,7 +84,7 @@ if ($action == 'save_multicompany_shared_conf') {
 
 
 $extrajs = $extracss = array();
-if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED)) {
+if (!empty(isModEnabled("multicompany")) && !empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED") )) {
 	$extrajs = array(
 		'/multicompany/inc/multiselect/js/ui.multiselect.js',
 	);
@@ -106,7 +106,7 @@ print dol_get_fiche_head($head, 'multicompanySharing', $langs->trans("Module1040
 
 
 
-if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_SHARINGS_ENABLED)) {
+if (!empty(isModEnabled("multicompany")) && !empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED") )) {
 	print '<br><br>';
 
 	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';

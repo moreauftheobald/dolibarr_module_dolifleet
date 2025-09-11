@@ -19,7 +19,7 @@ require 'config.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 dol_include_once('dolifleet/class/rentalProposal.class.php');
 
-if (empty($user->rights->dolifleet->rentalproposal->read)) accessforbidden();
+if (empty($user->hasRight("dolifleet","rentalproposal","read"))) accessforbidden();
 
 $langs->load('abricot@abricot');
 $langs->load('dolifleet@dolifleet');
@@ -103,7 +103,7 @@ $sql.=$hookmanager->resPrint;
 $formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_dolifleetrentalproposal', 'GET');
 print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
 $nbLine = GETPOST('limit');
-if (empty($nbLine)) $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : $conf->global->MAIN_SIZE_LISTE_LIMIT;
+if (empty($nbLine)) $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : getDolGlobalInt("MAIN_SIZE_LISTE_LIMIT") ;
 
 // List configuration
 $listViewConfig = array(
