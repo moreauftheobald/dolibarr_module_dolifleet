@@ -111,7 +111,7 @@ function vehicule_prepare_head(doliFleetVehicule $object)
 
 
 		$h++;
-		$nbOperationOrder = getNbORVehicle($object->id,0);
+		$nbOperationOrder = getNbORVehicle($object->id, 0);
 		$langs->load('operationorder@operationorder');
 		$head[$h][0] = dol_buildpath('operationorder/vsr.php?origin=vehicule&originid=' . $object->id, 1);
 		$head[$h][1] = $langs->trans('ORListVSR') . '<span class="badge marginleftonlyshort">' . (max($nbOperationOrder, 0)) . '</span>';
@@ -779,7 +779,7 @@ function printBannerVehicleCard($vehicle)
 }
 
 
-function getNbORVehicle($idvehicle, $checkEntity=1)
+function getNbORVehicle($idvehicle, $checkEntity = 1)
 {
 	global $db;
 
