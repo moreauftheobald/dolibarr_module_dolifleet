@@ -84,7 +84,7 @@ function dolifleetAdminPrepareHead()
  */
 function vehicule_prepare_head(doliFleetVehicule $object)
 {
-	global $langs, $conf, $db;
+	global $langs, $conf, $db, $user;
 	$h = 0;
 	$head = array();
 	$head[$h][0] = dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id;
@@ -101,11 +101,22 @@ function vehicule_prepare_head(doliFleetVehicule $object)
 	$head[$h][1] = $langs->trans('Documents');
 	if (($nbFiles + $nbLinks) > 0) $head[$h][1] .= '<span class="badge marginleftonlyshort">' . ($nbFiles + $nbLinks) . '</span>';
 	$head[$h][2] = 'document';
-	$h++;
-	$nbOperationOrder = getNbORVehicle($object->id);
-	$head[$h][0] = dol_buildpath('operationorder/list.php?&origin=vehicule&originid=' . $object->id, 1);
-	$head[$h][1] = $langs->trans('ORListHisto') . '<span class="badge marginleftonlyshort">' . ($nbOperationOrder >= 0 ? $nbOperationOrder : 0) . '</span>';
-	$head[$h][2] = 'list';
+
+	if (isModEnabled("operationorder") && $user->hasRight('operationorder', 'read')) {
+		$h++;
+		$nbOperationOrder = getNbORVehicle($object->id);
+		$head[$h][0] = dol_buildpath('operationorder/list.php?&origin=vehicule&originid=' . $object->id, 1);
+		$head[$h][1] = $langs->trans('ORListHisto') . '<span class="badge marginleftonlyshort">' . (max($nbOperationOrder, 0)) . '</span>';
+		$head[$h][2] = 'list';
+
+
+		$h++;
+		$nbOperationOrder = getNbORVehicle($object->id,0);
+		$langs->load('operationorder@operationorder');
+		$head[$h][0] = dol_buildpath('operationorder/vsr.php?origin=vehicule&originid=' . $object->id, 1);
+		$head[$h][1] = $langs->trans('ORListVSR') . '<span class="badge marginleftonlyshort">' . (max($nbOperationOrder, 0)) . '</span>';
+		$head[$h][2] = 'vsr';
+	}
 
 
 	// Show more tabs from modules
@@ -768,13 +779,13 @@ function printBannerVehicleCard($vehicle)
 }
 
 
-function getNbORVehicle($idvehicle)
+function getNbORVehicle($idvehicle, $checkEntity=1)
 {
 	global $db;
 
 	$sql = 'SELECT COUNT(o.rowid) as nb FROM ' . MAIN_DB_PREFIX . 'operationorder as o ';
 	$sql .= ' WHERE o.fk_vehicule = ' . $idvehicle;
-	$sql .= ' AND o.entity IN (' . getEntity('operationorder') . ')';
+	if ($checkEntity) $sql .= ' AND o.entity IN (' . getEntity('operationorder') . ')';
 	$resql = $db->query($sql);
 
 	if ($resql) {
