@@ -235,8 +235,8 @@ if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
 								$module = new $classname($db);
 
 								$modulequalified = 1;
-								if ($module->version == 'development' && getDolGlobalString("MAIN_FEATURES_LEVEL")  < 2) $modulequalified = 0;
-								if ($module->version == 'experimental' && getDolGlobalString("MAIN_FEATURES_LEVEL")  < 1) $modulequalified = 0;
+								if ($module->version == 'development' && getDolGlobalInt("MAIN_FEATURES_LEVEL")  < 2) $modulequalified = 0;
+								if ($module->version == 'experimental' && getDolGlobalInt("MAIN_FEATURES_LEVEL")  < 1) $modulequalified = 0;
 
 								if ($modulequalified) {
 									print '<tr class="oddeven"><td width="100">';
