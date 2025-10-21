@@ -109,7 +109,7 @@ class WebPortalVehicule extends doliFleetVehicule
 	// Etat
 
 	  public $fields = array(
-	      'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
+		  'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
 		  'vin' => array(
 			  'type' => 'varchar(50)',
 			  'length' => 50,
@@ -227,159 +227,159 @@ class WebPortalVehicule extends doliFleetVehicule
 			  'position' => 130
 		  ),
 	  );
-	//public $rowid;
-	//public $ref;
-	/**
-	 * @var int date vehicule
-	 */
-	//public $datef;
-	//public $date_lim_reglement;
-	//public $total_ht;
-	//public $total_tva;
-	//public $total_ttc;
-	//public $multicurrency_total_ht;
-	//public $multicurrency_total_tva;
-	//public $multicurrency_total_ttc;
+	  //public $rowid;
+	  //public $ref;
+	  /**
+	   * @var int date vehicule
+	   */
+	  //public $datef;
+	  //public $date_lim_reglement;
+	  //public $total_ht;
+	  //public $total_tva;
+	  //public $total_ttc;
+	  //public $multicurrency_total_ht;
+	  //public $multicurrency_total_tva;
+	  //public $multicurrency_total_ttc;
 
-	/**
-	 * @var int status
-	 */
-	//public $fk_statut;
-	// END MODULEBUILDER PROPERTIES
+	  /**
+	   * @var int status
+	   */
+	  //public $fk_statut;
+	  // END MODULEBUILDER PROPERTIES
 
 
-	/**
-	 * Get vehicule for static methods
-	 *
-	 * @return	Facture
-	 */
-	protected function getVehiculeStatic()
-	{
-		if (!$this->vehicule_static) {
-			$this->vehicule_static = new doliFleetVehicule($this->db);
-		}
+	  /**
+	   * Get vehicule for static methods
+	   *
+	   * @return	Facture
+	   */
+	  protected function getVehiculeStatic()
+	  {
+		  if (!$this->vehicule_static) {
+			  $this->vehicule_static = new doliFleetVehicule($this->db);
+		  }
 
-		return $this->vehicule_static;
-	}
+		  return $this->vehicule_static;
+	  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param	DoliDB	 $db	Database handler
-	 */
-	public function __construct(DoliDB $db)
-	{
-		$this->db = $db;
+	  /**
+	   * Constructor
+	   *
+	   * @param	DoliDB	 $db	Database handler
+	   */
+	  public function __construct(DoliDB $db)
+	  {
+		  $this->db = $db;
 
-		$this->isextrafieldmanaged = 0;
+		  $this->isextrafieldmanaged = 0;
 
-		$this->getVehiculeStatic();
-	}
+		  $this->getVehiculeStatic();
+	  }
 
-	/**
-	 * getTooltipContentArray
-	 * @param array<string,mixed> $params params to construct tooltip data
-	 * @since v18
-	 * @return array{picto?:string,ref?:string,refsupplier?:string,label?:string,date?:string,date_echeance?:string,amountht?:string,total_ht?:string,totaltva?:string,amountlt1?:string,amountlt2?:string,amountrevenustamp?:string,totalttc?:string}|array{optimize:string}
-	 */
-	public function getTooltipContentArray($params)
-	{
-		global $langs;
+	  /**
+	   * getTooltipContentArray
+	   * @param array<string,mixed> $params params to construct tooltip data
+	   * @since v18
+	   * @return array{picto?:string,ref?:string,refsupplier?:string,label?:string,date?:string,date_echeance?:string,amountht?:string,total_ht?:string,totaltva?:string,amountlt1?:string,amountlt2?:string,amountrevenustamp?:string,totalttc?:string}|array{optimize:string}
+	   */
+	  public function getTooltipContentArray($params)
+	  {
+		  global $langs;
 
-		$langs->load('dolifleet@dolifleet');
+		  $langs->load('dolifleet@dolifleet');
 
-		$datas = [];
+		  $datas = [];
 
-		return $datas;
-	}
+		  return $datas;
+	  }
 
-	/**
-	 *  Return clickable link of object (with eventually picto)
-	 *
-	 * @param	int		$withpicto				Add picto into link
-	 * @param	string	$option					Where point the link
-	 * @param	int		$max					Maxlength of ref
-	 * @param	int		$short					1=Return just URL
-	 * @param	string	$moretitle				Add more text to title tooltip
-	 * @param	int		$notooltip				1=Disable tooltip
-	 * @param	int		$addlinktonotes			1=Add link to notes
-	 * @param	int		$save_lastsearch_value	-1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
-	 * @param	string	$target					Target of link ('', '_self', '_blank', '_parent', '_backoffice', ...)
-	 * @return	string	String with URL
-	 */
-	public function getNomUrl($withpicto = 0, $option = '', $max = 0, $short = 0, $moretitle = '', $notooltip = 0, $addlinktonotes = 0, $save_lastsearch_value = -1, $target = '')
-	{
-		global $langs, $conf;
+	  /**
+	   *  Return clickable link of object (with eventually picto)
+	   *
+	   * @param	int		$withpicto				Add picto into link
+	   * @param	string	$option					Where point the link
+	   * @param	int		$max					Maxlength of ref
+	   * @param	int		$short					1=Return just URL
+	   * @param	string	$moretitle				Add more text to title tooltip
+	   * @param	int		$notooltip				1=Disable tooltip
+	   * @param	int		$addlinktonotes			1=Add link to notes
+	   * @param	int		$save_lastsearch_value	-1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
+	   * @param	string	$target					Target of link ('', '_self', '_blank', '_parent', '_backoffice', ...)
+	   * @return	string	String with URL
+	   */
+	  public function getNomUrl($withpicto = 0, $option = '', $max = 0, $short = 0, $moretitle = '', $notooltip = 0, $addlinktonotes = 0, $save_lastsearch_value = -1, $target = '')
+	  {
+		  global $langs, $conf;
 
-		if (!empty($conf->dol_no_mouse_hover)) {
-			$notooltip = 1; // Force disable tooltips
-		}
+		  if (!empty($conf->dol_no_mouse_hover)) {
+			  $notooltip = 1; // Force disable tooltips
+		  }
 
-		$result = '';
+		  $result = '';
 
-		$url = '';
-		$option = 'nolink';
+		  $url = '';
+		  $option = 'nolink';
 
-		if ($short) {
-			return $url;
-		}
+		  if ($short) {
+			  return $url;
+		  }
 
-		$picto = $this->picto;
-		//      if ($this->type == self::TYPE_REPLACEMENT) {
-		//          $picto .= 'r'; // Replacement vehicule
-		//      }
-		//      if ($this->type == self::TYPE_CREDIT_NOTE) {
-		//          $picto .= 'a'; // Credit note
-		//      }
-		//      if ($this->type == self::TYPE_DEPOSIT) {
-		//          $picto .= 'd'; // Deposit vehicule
-		//      }
-		$params = [
+		  $picto = $this->picto;
+		  //      if ($this->type == self::TYPE_REPLACEMENT) {
+		  //          $picto .= 'r'; // Replacement vehicule
+		  //      }
+		  //      if ($this->type == self::TYPE_CREDIT_NOTE) {
+		  //          $picto .= 'a'; // Credit note
+		  //      }
+		  //      if ($this->type == self::TYPE_DEPOSIT) {
+		  //          $picto .= 'd'; // Deposit vehicule
+		  //      }
+		  $params = [
 			'id' => $this->id,
 			'objecttype' => $this->element,
 			'moretitle' => $moretitle,
 			'option' => $option,
-		];
-		$classfortooltip = 'classfortooltip';
-		$dataparams = '';
-		if (getDolGlobalInt('MAIN_ENABLE_AJAX_TOOLTIP')) {
-			$classfortooltip = 'classforajaxtooltip';
-			$dataparams = ' data-params="' . dol_escape_htmltag(json_encode($params)) . '"';
-			$label = '';
-		} else {
-			$label = implode($this->getTooltipContentArray($params));
-		}
+		  ];
+		  $classfortooltip = 'classfortooltip';
+		  $dataparams = '';
+		  if (getDolGlobalInt('MAIN_ENABLE_AJAX_TOOLTIP')) {
+			  $classfortooltip = 'classforajaxtooltip';
+			  $dataparams = ' data-params="' . dol_escape_htmltag(json_encode($params)) . '"';
+			  $label = '';
+		  } else {
+			  $label = implode($this->getTooltipContentArray($params));
+		  }
 
-		$linkclose = ($target ? ' target="' . $target . '"' : '');
+		  $linkclose = ($target ? ' target="' . $target . '"' : '');
 
-		$linkstart = '<a href="' . $url . '"';
-		$linkstart .= $linkclose . '>';
-		$linkend = '</a>';
+		  $linkstart = '<a href="' . $url . '"';
+		  $linkstart .= $linkclose . '>';
+		  $linkend = '</a>';
 
-		if ($option == 'nolink') {
-			$linkstart = '';
-			$linkend = '';
-		}
+		  if ($option == 'nolink') {
+			  $linkstart = '';
+			  $linkend = '';
+		  }
 
-		$result .= $linkstart;
-		if ($withpicto) {
-			$result .= img_object(($notooltip ? '' : $label), $picto, ($notooltip ? (($withpicto != 2) ? 'class="paddingright"' : '') : $dataparams . ' class="' . (($withpicto != 2) ? 'paddingright ' : '') . $classfortooltip . '"'), 0, 0, $notooltip ? 0 : 1);
-		}
-		if ($withpicto != 2) {
-			$result .= ($max ? dol_trunc($this->ref, $max) : $this->ref);
-		}
-		$result .= $linkend;
+		  $result .= $linkstart;
+		  if ($withpicto) {
+			  $result .= img_object(($notooltip ? '' : $label), $picto, ($notooltip ? (($withpicto != 2) ? 'class="paddingright"' : '') : $dataparams . ' class="' . (($withpicto != 2) ? 'paddingright ' : '') . $classfortooltip . '"'), 0, 0, $notooltip ? 0 : 1);
+		  }
+		  if ($withpicto != 2) {
+			  $result .= ($max ? dol_trunc($this->ref, $max) : $this->ref);
+		  }
+		  $result .= $linkend;
 
-		global $action, $hookmanager;
-		$hookmanager->initHooks(array('vehiculedao'));
-		$parameters = array('id' => $this->id, 'getnomurl' => &$result, 'notooltip' => $notooltip, 'addlinktonotes' => $addlinktonotes, 'save_lastsearch_value' => $save_lastsearch_value, 'target' => $target);
-		$reshook = $hookmanager->executeHooks('getNomUrl', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
-		if ($reshook > 0) {
-			$result = $hookmanager->resPrint;
-		} else {
-			$result .= $hookmanager->resPrint;
-		}
+		  global $action, $hookmanager;
+		  $hookmanager->initHooks(array('vehiculedao'));
+		  $parameters = array('id' => $this->id, 'getnomurl' => &$result, 'notooltip' => $notooltip, 'addlinktonotes' => $addlinktonotes, 'save_lastsearch_value' => $save_lastsearch_value, 'target' => $target);
+		  $reshook = $hookmanager->executeHooks('getNomUrl', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
+		  if ($reshook > 0) {
+			  $result = $hookmanager->resPrint;
+		  } else {
+			  $result .= $hookmanager->resPrint;
+		  }
 
-		return $result;
-	}
+		  return $result;
+	  }
 }
