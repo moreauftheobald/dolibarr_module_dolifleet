@@ -67,6 +67,15 @@ class ActionsdoliFleet
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager)
 	{
+
+		if (isset($parameters['controller'])) {
+			require_once DOL_DOCUMENT_ROOT.'/webportal/class/context.class.php';
+			$object->addControllerDefinition('vehiculelist', dol_buildpath('/dolifleet/controllers/vehiculelist.controller.class.php'), 'VehiculeListController');
+			$object->initController();
+
+			return 0;
+		}
+
 		/*$error = 0; // Error counter
 		$myvalue = 'test'; // A result value
 
@@ -178,5 +187,63 @@ class ActionsdoliFleet
 		$arrayobject['doliFleetVehicule'] =  array('table' => 'dolifleet_vehicule','fields' => array('immatriculation'),'class' => 'dolifleet/class/vehicule.class.php','object' => 'doliFleetVehicule');
 		$this->results = $arrayobject;
 		return 1;
+	}
+
+	/**
+	 * @param array $parameters parameters
+	 * @param Object $object Object to use hooks on
+	 * @param string $action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	 * @param object $hookmanager class instance
+	 * @return int
+	 **/
+	public function PrintPageView($parameters, $object, &$action, $hookmanager)
+	{
+		global $langs;
+		if (isset($parameters['controller']) && $parameters['controller']!=='login') {
+			//var_dump($parameters['controller'],$object);
+
+			print '
+				<script type="text/javascript">
+					$(document).ready(function() {
+						let article = $("<article>");
+						article.addClass("home-links-card");
+						article.addClass("--vehicule-list");
+						let divicon = $("<div>");
+						divicon.addClass("home-links-card__icon");
+						article.append(divicon);
+						let link_article = $("<a>");
+						link_article.addClass("home-links-card__link");
+						link_article.attr("href","' . $object->getControllerUrl('vehiculelist') . '");
+						link_article.attr("title","' . $langs->trans('WebPortalVehiculeListMenu') . '");
+						link_article.html("' . $langs->trans('WebPortalVehiculeListMenu') . '");
+						article.append(link_article);
+						$("div.home-links-grid.grid").append(article);
+					})
+				</script>
+			 ';
+			return 0;
+		}
+	}
+
+	/**
+	 * @param array $parameters parameters
+	 * @param Object $object Object to use hooks on
+	 * @param string $action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	 * @param object $hookmanager class instance
+	 * @return int
+	 **/
+	public function PrintTopMenu($parameters, $object, &$action, $hookmanager)
+	{
+		global $langs;
+		if (isset($parameters['controller'])) {
+			$this->results['vehicule_list'] = array(
+				'id' => 'vehicule_list',
+				'rank' => 10,
+				'url' => $object->getControllerUrl('vehiculelist'),
+				'name' => $langs->trans('WebPortalVehiculeListMenu'),
+				//'group' => 'administrative' // group identifier for the group if necessary
+			);
+			return 0;
+		}
 	}
 }
