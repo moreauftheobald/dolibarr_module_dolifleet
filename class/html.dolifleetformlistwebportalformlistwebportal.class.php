@@ -225,7 +225,7 @@ class DoliFleetFormListWebPortal extends FormListWebPortal
 		// filter on logged third-party
 		$sql .= " AND t.fk_soc = " . ((int) $socid);
 		// discard record with status draft
-		$sql .= " AND t.status <> 0";
+		//$sql .= " AND t.status <> 0";
 
 		foreach ($search as $key => $val) {
 			if (array_key_exists($key, $object->fields)) {
@@ -404,6 +404,8 @@ class DoliFleetFormListWebPortal extends FormListWebPortal
 					$html .= '<div class="grid width150">';
 					$html .= $this->form->inputDate('search_' . $key . '_dtend', $postDateEnd ? $postDateEnd : '', $langs->trans('to'));
 					$html .= '</div>';
+				} elseif ((strpos($val['type'], 'integer:') === 0) || (strpos($val['type'], 'sellist:') === 0)) {
+					$html .= $object->showInputField($val, $key, (isset($search[$key]) ? $search[$key] : ''), '', '', 'search_', $cssforfield.' maxwidth250', 1);
 				} else {
 					$html .= '<input type="text" name="search_' . $key . '" value="' . dol_escape_htmltag(isset($search[$key]) ? $search[$key] : '') . '">';
 				}

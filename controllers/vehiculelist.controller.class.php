@@ -72,11 +72,7 @@ class VehiculeListController extends Controller
 		$formListWebPortal = new DoliFleetFormListWebPortal($this->db);
 		$formListWebPortal->init('vehicule');
 
-		// hook for action
-		//      $hookRes = $this->hookDoAction();
-		//      if (empty($hookRes)) {
-		//          $formListWebPortal->doActions();
-		//      }
+		$formListWebPortal->doActions();
 
 		$this->formList = $formListWebPortal;
 
@@ -105,17 +101,6 @@ class VehiculeListController extends Controller
 			print '<main class="container">';
 			//print '<figure>';
 			print $this->formList->elementList($context);
-			//Vin
-			//Type
-			//MArque
-			// Modéle
-			// Immat
-			// Date premiére mise en circul
-			// KM
-			// DAte KM
-			//Type contrat/
-			//Date fin contrat
-			// Etat
 			//print '</figure>';
 			print '</main>';
 		}

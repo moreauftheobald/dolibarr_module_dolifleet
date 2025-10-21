@@ -38,16 +38,6 @@ class WebPortalVehicule extends doliFleetVehicule
 	public $module = 'webportal';
 
 	/**
-	 * Status list (short label)
-	 */
-	//  const ARRAY_STATUS_LABEL = array(
-	//      Facture::STATUS_DRAFT => 'BillShortStatusDraft',
-	//      Facture::STATUS_VALIDATED => 'BillShortStatusNotPaid',
-	//      Facture::STATUS_CLOSED => 'BillShortStatusPaid',
-	//      Facture::STATUS_ABANDONED => 'BillShortStatusCanceled',
-	//  );
-
-	/**
 	 * @var Facture Vehicule for static methods
 	 */
 	protected $vehicule_static = null;
@@ -96,20 +86,9 @@ class WebPortalVehicule extends doliFleetVehicule
 	 * @var array<string,array{type:string,label:string,enabled:int<0,2>|string,position:int,notnull?:int,visible:int<-5,5>|string,alwayseditable?:int<0,1>,noteditable?:int<0,1>,default?:string,index?:int,foreignkey?:string,searchall?:int<0,1>,isameasure?:int<0,1>,css?:string,csslist?:string,help?:string,showoncombobox?:int<0,4>,disabled?:int<0,1>,arrayofkeyval?:array<int|string,string>,autofocusoncreate?:int<0,1>,comment?:string,copytoclipboard?:int<1,2>,validate?:int<0,1>,showonheader?:int<0,1>}>	Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
 
-	//Vin
-	//Type
-	//MArque
-	// Modéle
-	// Immat
-	// Date premiére mise en circul
-	// KM
-	// DAte KM
-	//Type contrat/
-	//Date fin contrat
-	// Etat
-
 	  public $fields = array(
 		  'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
+
 		  'vin' => array(
 			  'type' => 'varchar(50)',
 			  'length' => 50,
@@ -133,8 +112,8 @@ class WebPortalVehicule extends doliFleetVehicule
 			  'index' => 1,
 			  'position' => 30,
 			  'arrayofkeyval' => array(
-				  self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft'
-			  , self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
+				  self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft',
+				  self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
 			  )
 		  ),
 		  'fk_vehicule_type' => array(
