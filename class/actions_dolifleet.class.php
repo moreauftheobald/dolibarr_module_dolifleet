@@ -68,44 +68,20 @@ class ActionsdoliFleet
 	public function doActions($parameters, &$object, &$action, $hookmanager)
 	{
 
-		if (isset($parameters['controller'])) {
+		if (isset($parameters['controller']) &&
+			$parameters['controller'] == 'vehiculelist' &&
+			isset($parameters['currentcontext']) &&
+			$parameters['currentcontext']=='webportalpage') {
 			require_once DOL_DOCUMENT_ROOT.'/webportal/class/context.class.php';
+			dol_include_once('/dolifleet/controllers/vehiculelist.controller.class.php');
 			$object->addControllerDefinition('vehiculelist', dol_buildpath('/dolifleet/controllers/vehiculelist.controller.class.php'), 'VehiculeListController');
-			$object->initController();
+			$object->controllerInstance = new VehiculeListController();
+			$object->setControllerFound();
+			$object->controllerInstance->action();
 
 			return 0;
 		}
 
-		/*$error = 0; // Error counter
-		$myvalue = 'test'; // A result value
-
-		print_r($parameters);
-		echo "action: " . $action;
-		print_r($object);
-
-		if (in_array('somecontext', explode(':', $parameters['context'])))
-		{
-		  // do something only for the context 'somecontext'
-		}
-
-		if (! $error)
-		{
-			$this->results = array('myreturn' => $myvalue);
-			$this->resprints = 'A text to show';
-			return 0; // or return 1 to replace standard code
-		}
-		else
-		{
-			$this->errors[] = 'Error message';
-			return -1;
-		}*/
-	}
-
-	public function completeTabsHead($parameters, &$object, &$action, $hookmanager)
-	{
-		global $langs;
-
-		return 0;
 	}
 
 	/**
@@ -199,7 +175,9 @@ class ActionsdoliFleet
 	public function PrintPageView($parameters, $object, &$action, $hookmanager)
 	{
 		global $langs;
-		if (isset($parameters['controller']) && $parameters['controller']!=='login') {
+		if (isset($parameters['controller']) &&
+			isset($parameters['currentcontext']) &&
+			$parameters['currentcontext']=='webportalpage') {
 			//var_dump($parameters['controller'],$object);
 
 			print '
@@ -221,6 +199,7 @@ class ActionsdoliFleet
 					})
 				</script>
 			 ';
+
 			return 0;
 		}
 	}
@@ -235,7 +214,9 @@ class ActionsdoliFleet
 	public function PrintTopMenu($parameters, $object, &$action, $hookmanager)
 	{
 		global $langs;
-		if (isset($parameters['controller'])) {
+		if (isset($parameters['controller']) &&
+			isset($parameters['currentcontext']) &&
+			$parameters['currentcontext']=='webportalpage') {
 			$this->results['vehicule_list'] = array(
 				'id' => 'vehicule_list',
 				'rank' => 10,

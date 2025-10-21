@@ -30,7 +30,7 @@ class VehiculeListController extends Controller
 	/**
 	 * @var FormListWebPortal Form for list
 	 */
-	protected $formList;
+	public $formList;
 
 	/**
 	 * Check current access to controller
@@ -59,24 +59,24 @@ class VehiculeListController extends Controller
 			return -1;
 		}
 
-		dol_include_once('/webportal/class/html.formlistwebportal.class.php');
+		dol_include_once('/dolifleet/class/html.dolifleetformlistwebportalformlistwebportal.class.php');
 
 		// Load translation files required by the page
-		$langs->loadLangs(array('bills', 'companies', 'products', 'categories'));
+		$langs->loadLangs(array('dolifleet@dolifleet'));
 
 		$context->title = $langs->trans('WebPortalVehiculeListTitle');
 		$context->desc = $langs->trans('WebPortalVehiculeListDesc');
 		$context->menu_active[] = 'vehicule_list';
 
 		// set form list
-		$formListWebPortal = new FormListWebPortal($this->db);
+		$formListWebPortal = new DoliFleetFormListWebPortal($this->db);
 		$formListWebPortal->init('vehicule');
 
 		// hook for action
-		$hookRes = $this->hookDoAction();
-		if (empty($hookRes)) {
-			$formListWebPortal->doActions();
-		}
+//		$hookRes = $this->hookDoAction();
+//		if (empty($hookRes)) {
+//			$formListWebPortal->doActions();
+//		}
 
 		$this->formList = $formListWebPortal;
 
@@ -100,11 +100,22 @@ class VehiculeListController extends Controller
 		$this->loadTemplate('menu');
 		$this->loadTemplate('hero-header-banner');
 
-		//$hookRes = $this->hookPrintPageView();
+		$hookRes = $this->hookPrintPageView();
 		if (empty($hookRes)) {
 			print '<main class="container">';
 			//print '<figure>';
-			//print $this->formList->elementList($context);
+			print $this->formList->elementList($context);
+			//Vin
+			//Type
+			//MArque
+			// Modéle
+			// Immat
+			// Date premiére mise en circul
+			// KM
+			// DAte KM
+			//Type contrat/
+			//Date fin contrat
+			// Etat
 			//print '</figure>';
 			print '</main>';
 		}
