@@ -40,12 +40,12 @@ class WebPortalVehicule extends doliFleetVehicule
 	/**
 	 * Status list (short label)
 	 */
-//	const ARRAY_STATUS_LABEL = array(
-//		Facture::STATUS_DRAFT => 'BillShortStatusDraft',
-//		Facture::STATUS_VALIDATED => 'BillShortStatusNotPaid',
-//		Facture::STATUS_CLOSED => 'BillShortStatusPaid',
-//		Facture::STATUS_ABANDONED => 'BillShortStatusCanceled',
-//	);
+	//  const ARRAY_STATUS_LABEL = array(
+	//      Facture::STATUS_DRAFT => 'BillShortStatusDraft',
+	//      Facture::STATUS_VALIDATED => 'BillShortStatusNotPaid',
+	//      Facture::STATUS_CLOSED => 'BillShortStatusPaid',
+	//      Facture::STATUS_ABANDONED => 'BillShortStatusCanceled',
+	//  );
 
 	/**
 	 * @var Facture Vehicule for static methods
@@ -95,22 +95,22 @@ class WebPortalVehicule extends doliFleetVehicule
 	/**
 	 * @var array<string,array{type:string,label:string,enabled:int<0,2>|string,position:int,notnull?:int,visible:int<-5,5>|string,alwayseditable?:int<0,1>,noteditable?:int<0,1>,default?:string,index?:int,foreignkey?:string,searchall?:int<0,1>,isameasure?:int<0,1>,css?:string,csslist?:string,help?:string,showoncombobox?:int<0,4>,disabled?:int<0,1>,arrayofkeyval?:array<int|string,string>,autofocusoncreate?:int<0,1>,comment?:string,copytoclipboard?:int<1,2>,validate?:int<0,1>,showonheader?:int<0,1>}>	Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
-//	public $fields = array(
-//		'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
-//		'entity' => array('type' => 'integer', 'label' => 'Entity', 'default' => '1', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 20, 'index' => 1,),
-//		'ref' => array('type' => 'varchar(30)', 'label' => 'Ref', 'enabled' => 1, 'visible' => 2, 'notnull' => 1, 'showoncombobox' => 1, 'position' => 5,),
-//		'type' => array('type' => 'smallint(6)', 'label' => 'Type', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 15,),
-//		'datef' => array('type' => 'date', 'label' => 'DateVehicule', 'enabled' => 1, 'visible' => 2, 'position' => 20,),
-//		'date_lim_reglement' => array('type' => 'date', 'label' => 'DateDue', 'enabled' => 1, 'visible' => 2, 'position' => 25,),
-//		'paye' => array('type' => 'smallint(6)', 'label' => 'VehiculePaidCompletely', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 80,),
-//		'total_ht' => array('type' => 'price', 'label' => 'AmountHT', 'enabled' => 1, 'visible' => 2, 'position' => 95, 'isameasure' => 1,),
-//		'total_tva' => array('type' => 'price', 'label' => 'AmountVAT', 'enabled' => 1, 'visible' => 2, 'position' => 100, 'isameasure' => 1,),
-//		'total_ttc' => array('type' => 'price', 'label' => 'AmountTTC', 'enabled' => 1, 'visible' => 2, 'position' => 130, 'isameasure' => 1,),
-//		'multicurrency_total_ht' => array('type' => 'price', 'label' => 'MulticurrencyAmountHT', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 290, 'isameasure' => 1,),
-//		'multicurrency_total_tva' => array('type' => 'price', 'label' => 'MulticurrencyAmountVAT', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 291, 'isameasure' => 1,),
-//		'multicurrency_total_ttc' => array('type' => 'price', 'label' => 'MulticurrencyAmountTTC', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 292, 'isameasure' => 1,),
-//		'fk_statut' => array('type' => 'smallint(6)', 'label' => 'Status', 'enabled' => 1, 'visible' => 2, 'notnull' => 1, 'position' => 1000, 'arrayofkeyval' => self::ARRAY_STATUS_LABEL,),
-//	);
+	//  public $fields = array(
+	//      'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
+	//      'entity' => array('type' => 'integer', 'label' => 'Entity', 'default' => '1', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 20, 'index' => 1,),
+	//      'ref' => array('type' => 'varchar(30)', 'label' => 'Ref', 'enabled' => 1, 'visible' => 2, 'notnull' => 1, 'showoncombobox' => 1, 'position' => 5,),
+	//      'type' => array('type' => 'smallint(6)', 'label' => 'Type', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 15,),
+	//      'datef' => array('type' => 'date', 'label' => 'DateVehicule', 'enabled' => 1, 'visible' => 2, 'position' => 20,),
+	//      'date_lim_reglement' => array('type' => 'date', 'label' => 'DateDue', 'enabled' => 1, 'visible' => 2, 'position' => 25,),
+	//      'paye' => array('type' => 'smallint(6)', 'label' => 'VehiculePaidCompletely', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 80,),
+	//      'total_ht' => array('type' => 'price', 'label' => 'AmountHT', 'enabled' => 1, 'visible' => 2, 'position' => 95, 'isameasure' => 1,),
+	//      'total_tva' => array('type' => 'price', 'label' => 'AmountVAT', 'enabled' => 1, 'visible' => 2, 'position' => 100, 'isameasure' => 1,),
+	//      'total_ttc' => array('type' => 'price', 'label' => 'AmountTTC', 'enabled' => 1, 'visible' => 2, 'position' => 130, 'isameasure' => 1,),
+	//      'multicurrency_total_ht' => array('type' => 'price', 'label' => 'MulticurrencyAmountHT', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 290, 'isameasure' => 1,),
+	//      'multicurrency_total_tva' => array('type' => 'price', 'label' => 'MulticurrencyAmountVAT', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 291, 'isameasure' => 1,),
+	//      'multicurrency_total_ttc' => array('type' => 'price', 'label' => 'MulticurrencyAmountTTC', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 292, 'isameasure' => 1,),
+	//      'fk_statut' => array('type' => 'smallint(6)', 'label' => 'Status', 'enabled' => 1, 'visible' => 2, 'notnull' => 1, 'position' => 1000, 'arrayofkeyval' => self::ARRAY_STATUS_LABEL,),
+	//  );
 	//public $rowid;
 	//public $ref;
 	/**
@@ -209,15 +209,15 @@ class WebPortalVehicule extends doliFleetVehicule
 		}
 
 		$picto = $this->picto;
-//		if ($this->type == self::TYPE_REPLACEMENT) {
-//			$picto .= 'r'; // Replacement vehicule
-//		}
-//		if ($this->type == self::TYPE_CREDIT_NOTE) {
-//			$picto .= 'a'; // Credit note
-//		}
-//		if ($this->type == self::TYPE_DEPOSIT) {
-//			$picto .= 'd'; // Deposit vehicule
-//		}
+		//      if ($this->type == self::TYPE_REPLACEMENT) {
+		//          $picto .= 'r'; // Replacement vehicule
+		//      }
+		//      if ($this->type == self::TYPE_CREDIT_NOTE) {
+		//          $picto .= 'a'; // Credit note
+		//      }
+		//      if ($this->type == self::TYPE_DEPOSIT) {
+		//          $picto .= 'd'; // Deposit vehicule
+		//      }
 		$params = [
 			'id' => $this->id,
 			'objecttype' => $this->element,
@@ -266,5 +266,4 @@ class WebPortalVehicule extends doliFleetVehicule
 
 		return $result;
 	}
-
 }

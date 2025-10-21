@@ -94,7 +94,7 @@ class moddoliFleet extends DolibarrModules
 				'vehiculecard',
 				'emailcolector',
 				'webportalpage',
-//				'webportal',
+		//              'webportal',
 			),
 			'models' => 1,
 		);

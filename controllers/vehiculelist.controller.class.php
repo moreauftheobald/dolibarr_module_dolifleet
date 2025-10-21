@@ -73,10 +73,10 @@ class VehiculeListController extends Controller
 		$formListWebPortal->init('vehicule');
 
 		// hook for action
-//		$hookRes = $this->hookDoAction();
-//		if (empty($hookRes)) {
-//			$formListWebPortal->doActions();
-//		}
+		//      $hookRes = $this->hookDoAction();
+		//      if (empty($hookRes)) {
+		//          $formListWebPortal->doActions();
+		//      }
 
 		$this->formList = $formListWebPortal;
 

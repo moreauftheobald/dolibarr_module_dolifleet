@@ -81,7 +81,6 @@ class ActionsdoliFleet
 
 			return 0;
 		}
-
 	}
 
 	/**
