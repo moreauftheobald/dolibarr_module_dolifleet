@@ -95,22 +95,138 @@ class WebPortalVehicule extends doliFleetVehicule
 	/**
 	 * @var array<string,array{type:string,label:string,enabled:int<0,2>|string,position:int,notnull?:int,visible:int<-5,5>|string,alwayseditable?:int<0,1>,noteditable?:int<0,1>,default?:string,index?:int,foreignkey?:string,searchall?:int<0,1>,isameasure?:int<0,1>,css?:string,csslist?:string,help?:string,showoncombobox?:int<0,4>,disabled?:int<0,1>,arrayofkeyval?:array<int|string,string>,autofocusoncreate?:int<0,1>,comment?:string,copytoclipboard?:int<1,2>,validate?:int<0,1>,showonheader?:int<0,1>}>	Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
-	//  public $fields = array(
-	//      'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
-	//      'entity' => array('type' => 'integer', 'label' => 'Entity', 'default' => '1', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 20, 'index' => 1,),
-	//      'ref' => array('type' => 'varchar(30)', 'label' => 'Ref', 'enabled' => 1, 'visible' => 2, 'notnull' => 1, 'showoncombobox' => 1, 'position' => 5,),
-	//      'type' => array('type' => 'smallint(6)', 'label' => 'Type', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 15,),
-	//      'datef' => array('type' => 'date', 'label' => 'DateVehicule', 'enabled' => 1, 'visible' => 2, 'position' => 20,),
-	//      'date_lim_reglement' => array('type' => 'date', 'label' => 'DateDue', 'enabled' => 1, 'visible' => 2, 'position' => 25,),
-	//      'paye' => array('type' => 'smallint(6)', 'label' => 'VehiculePaidCompletely', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 80,),
-	//      'total_ht' => array('type' => 'price', 'label' => 'AmountHT', 'enabled' => 1, 'visible' => 2, 'position' => 95, 'isameasure' => 1,),
-	//      'total_tva' => array('type' => 'price', 'label' => 'AmountVAT', 'enabled' => 1, 'visible' => 2, 'position' => 100, 'isameasure' => 1,),
-	//      'total_ttc' => array('type' => 'price', 'label' => 'AmountTTC', 'enabled' => 1, 'visible' => 2, 'position' => 130, 'isameasure' => 1,),
-	//      'multicurrency_total_ht' => array('type' => 'price', 'label' => 'MulticurrencyAmountHT', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 290, 'isameasure' => 1,),
-	//      'multicurrency_total_tva' => array('type' => 'price', 'label' => 'MulticurrencyAmountVAT', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 291, 'isameasure' => 1,),
-	//      'multicurrency_total_ttc' => array('type' => 'price', 'label' => 'MulticurrencyAmountTTC', 'enabled' => 'isModEnabled("multicurrency")', 'visible' => -2, 'position' => 292, 'isameasure' => 1,),
-	//      'fk_statut' => array('type' => 'smallint(6)', 'label' => 'Status', 'enabled' => 1, 'visible' => 2, 'notnull' => 1, 'position' => 1000, 'arrayofkeyval' => self::ARRAY_STATUS_LABEL,),
-	//  );
+
+	//Vin
+	//Type
+	//MArque
+	// Modéle
+	// Immat
+	// Date premiére mise en circul
+	// KM
+	// DAte KM
+	//Type contrat/
+	//Date fin contrat
+	// Etat
+
+	  public $fields = array(
+	      'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
+		  'vin' => array(
+			  'type' => 'varchar(50)',
+			  'length' => 50,
+			  'label' => 'VIN',
+			  'enabled' => 1,
+			  'visible' => 1,
+			  'notnull' => 1,
+			  'showoncombobox' => 1,
+			  'index' => 1,
+			  'position' => 10,
+			  'searchall' => 1,
+			  'comment' => 'Vehicule international number'
+		  ),
+		  'status' => array(
+			  'type' => 'integer',
+			  'label' => 'Status',
+			  'enabled' => 1,
+			  'visible' => 1,
+			  'notnull' => 1,
+			  'default' => 0,
+			  'index' => 1,
+			  'position' => 30,
+			  'arrayofkeyval' => array(
+				  self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft'
+			  , self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
+			  )
+		  ),
+		  'fk_vehicule_type' => array(
+			  'type' => 'sellist:c_dolifleet_vehicule_type:label:rowid::active=1',
+			  'label' => 'vehiculeType',
+			  'visible' => 1,
+			  'notnull' => 1,
+			  'default' => 0,
+			  'enabled' => 1,
+			  'position' => 40,
+			  'index' => 1,
+		  ),
+
+		  'fk_vehicule_mark' => array(
+			  'type' => 'sellist:c_dolifleet_vehicule_mark:label:rowid::active=1',
+			  'label' => 'vehiculeMark',
+			  'visible' => 1,
+			  'notnull' => 1,
+			  'default' => 0,
+			  'enabled' => 1,
+			  'position' => 50,
+			  'index' => 1,
+		  ),
+
+		  'modele' => array(
+			  'type' => 'varchar(255)',
+			  'label' => 'modele',
+			  'enabled' => 1,
+			  'visible' => 1,
+			  'notnull' => 0,
+			  'index' => 0,
+			  'position' => 55
+		  ),
+
+		  'immatriculation' => array(
+			  'type' => 'varchar(20)',
+			  'label' => 'immatriculation',
+			  'enabled' => 1,
+			  'visible' => 1,
+			  'notnull' => 1,
+			  'position' => 60,
+			  'searchall' => 1,
+			  'css' => 'minwidth200',
+			  'showoncombobox' => 1
+		  ),
+
+		  'date_immat' => array(
+			  'type' => 'date',
+			  'label' => 'immatriculation_date',
+			  'enabled' => 1,
+			  'visible' => 1,
+			  'notnull' => 1,
+			  'default' => 0,
+			  'position' => 70,
+			  'searchall' => 1,
+		  ),
+
+		  'km' => array(
+			  'type' => 'double',
+			  'label' => 'kilometrage',
+			  'visible' => 1,
+			  'notnull' => 1,
+			  'default' => 0,
+			  'enabled' => 1,
+			  'position' => 100
+		  ),
+
+		  'km_date' => array(
+			  'type' => 'date',
+			  'label' => 'km_date',
+			  'visible' => 1,
+			  'enabled' => 1,
+			  'position' => 110
+		  ),
+
+		  'fk_contract_type' => array(
+			  'type' => 'sellist:c_dolifleet_contract_type:label:rowid::(active=1)',
+			  'label' => 'contractType',
+			  'visible' => 1,
+			  'enabled' => 1,
+			  'position' => 120,
+			  'index' => 1,
+		  ),
+
+		  'date_end_contract' => array(
+			  'type' => 'date',
+			  'label' => 'date_end_contract',
+			  'visible' => 1,
+			  'enabled' => 1,
+			  'position' => 130
+		  ),
+	  );
 	//public $rowid;
 	//public $ref;
 	/**
