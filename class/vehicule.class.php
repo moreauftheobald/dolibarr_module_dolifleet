@@ -182,6 +182,14 @@ class doliFleetVehicule extends SeedObject
 			'help' => 'LinkToThirparty'
 		),
 
+		'date_customer_exploit' => array(
+			'type' => 'date',
+			'label' => 'km_date',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 90
+		),
+
 		'km' => array(
 			'type' => 'double',
 			'label' => 'kilometrage',
@@ -217,12 +225,34 @@ class doliFleetVehicule extends SeedObject
 			'position' => 130
 		),
 
+		'atelier' => array(
+			'type' => 'sellist:entity:label:rowid::visible=1',
+			'label' => 'AtelierPrincipal',
+			'visible' => 1,
+			'enabled' => 1,
+			'position' => 140
+		),
+
 		'carrosserie' => array(
 			'type' => 'text', // or html for WYSWYG
 			'label' => 'Carrosserie',
 			'enabled' => 1,
 			'visible' => '1',
 			'position' => 150
+		),
+
+		'dfol' => array(
+			'type' => 'integer',
+			'label' => 'DFolVC',
+			'enabled' => 1,
+			'visible' => 1,
+			'notnull' => 1,
+			'default' => 0,
+			'position' => 160,
+			'arrayofkeyval' => array(
+				0 => 'Non'
+			, 1 => 'Oui'
+			)
 		),
 
 		'dim_pneu' => array(
@@ -232,12 +262,75 @@ class doliFleetVehicule extends SeedObject
 			'visible' => '1',
 			'position' => 240,
 		),
+
 		'nb_pneu' => array(
 			'type' => 'int',
 			'label' => 'NbPneu',
 			'enabled' => 1,
 			'visible' => '1',
 			'position' => 250
+		),
+
+		'essieu' => array(
+			'type' => 'varchar(255)',
+			'label' => 'SNEssieu',
+			'enabled' => 1,
+			'visible' => '0',
+			'position' => 170
+		),
+
+		'type_custom' => array(
+			'type' => 'int',
+			'label' => 'Type',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 170
+		),
+
+		'coutm' => array(
+			'type' => 'price',
+			'label' => 'CoutMensuel',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 170
+		),
+
+		'date_fin_fin' => array(
+			'type' => 'date',
+			'label' => 'DateFinFinancement',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 180
+		),
+
+		'type_fin' => array(
+			'type' => 'varchar(255)',
+			'label' => 'TypeFinancement',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 190
+		),
+
+		'date_fin_loc' => array(
+			'type' => 'date',
+			'label' => 'DateEndLocation',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 210
+		),
+		'exit_data' => array(
+			'type' => 'int',
+			'label' => 'SortiePrevue',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 220
+		),
+		'age_veh' => array(
+			'type' => 'int',
+			'label' => 'AgeVeh',
+			'enabled' => 1,
+			'visible' => 0,
+			'position' => 230
 		),
 
 		'import_key' => array(
@@ -251,6 +344,8 @@ class doliFleetVehicule extends SeedObject
 		),
 
 	);
+
+
 
 	/** @var string $vin Object reference */
 	public $vin;

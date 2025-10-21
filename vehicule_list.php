@@ -187,7 +187,7 @@ $listViewConfig = array(
 	, 'date_end_contract' => 'date'
 	)
 , 'search' => array(
-		'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
+	'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
 	, 'fk_vehicule_type' => array('search_type' => $dictVT->getAllActiveArray('label'))
 	, 'fk_vehicule_mark' => array('search_type' => $dictVM->getAllActiveArray('label'))
 	, 'immatriculation' => array('search_type' => true, 'table' => 't', 'field' => 'immatriculation')
