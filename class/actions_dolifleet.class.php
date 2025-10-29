@@ -174,6 +174,8 @@ class ActionsdoliFleet
 	public function PrintPageView($parameters, $object, &$action, $hookmanager)
 	{
 		global $langs;
+		$langs->load('dolifleet@dolifleet');
+
 		if (isset($parameters['controller']) &&
 			isset($parameters['currentcontext']) &&
 			$parameters['currentcontext']=='webportalpage') {
@@ -213,6 +215,8 @@ class ActionsdoliFleet
 	public function PrintTopMenu($parameters, $object, &$action, $hookmanager)
 	{
 		global $langs;
+		$langs->load('dolifleet@dolifleet');
+
 		if (isset($parameters['controller']) &&
 			isset($parameters['currentcontext']) &&
 			$parameters['currentcontext']=='webportalpage') {

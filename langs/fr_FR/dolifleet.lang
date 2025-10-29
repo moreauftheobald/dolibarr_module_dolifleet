@@ -95,7 +95,7 @@ NewdoliFleetVehicule=Création véhicule
 doliFleetVehiculeCard=Fiche véhicule
 doliFleetVehicule=Véhicule
 NewdoliFleet=Nouveau véhicule
-immatriculation_date=date de première mise en circulation
+immatriculation_date=Date de première mise en circulation
 immatriculation_date_short=Mise en circulation
 vehiculeDelayExploit=Durée maximum d'exploitation
 LinkToThirparty=Lien vers le tiers
@@ -266,3 +266,17 @@ pneulabel=Nom du type de pneu
 
 
 ORListVSR=VSR
+
+#
+# WebPortal
+#
+VehiculeListController =  Liste des véhicules
+VehiculeListTitle = Liste des véhicules
+WebPortalVehiculeListTitle = Liste des véhicules
+VehiculeListDesc = Liste des véhicules
+VehiculeListTitleDesc = Liste des véhicules
+WebPortalVehiculeListMenu = Véhicule
+WebPortalVehiculeListDesc = Liste des véhicule
+VehiculeCardTitle =Véhicule
+VehiculeCardTitleDesc = Véhicule
+ThirdpartyName = Nom du client
