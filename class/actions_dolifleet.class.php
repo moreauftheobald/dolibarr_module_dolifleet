@@ -21,7 +21,8 @@
  * \brief   This file is an example hook overload class file
  *          Put some comments here
  */
-
+require_once dol_buildpath('dolifleet/controllers/vehiculelist.controller.class.php');
+require_once dol_buildpath('dolifleet/controllers/vehiculecard.controller.class.php');
 /**
  * Class ActionsdoliFleet
  */
@@ -68,14 +69,30 @@ class ActionsdoliFleet
 	public function doActions($parameters, &$object, &$action, $hookmanager)
 	{
 
-		if (isset($parameters['controller']) &&
-			$parameters['controller'] == 'vehiculelist' &&
-			isset($parameters['currentcontext']) &&
-			$parameters['currentcontext']=='webportalpage') {
-			require_once DOL_DOCUMENT_ROOT.'/webportal/class/context.class.php';
-			dol_include_once('/dolifleet/controllers/vehiculelist.controller.class.php');
-			$object->addControllerDefinition('vehiculelist', dol_buildpath('/dolifleet/controllers/vehiculelist.controller.class.php'), 'VehiculeListController');
-			$object->controllerInstance = new VehiculeListController();
+		if (
+			isset($parameters['controller'])
+			&& in_array($object->controller, ['vehiculelist', 'vehiculecard'])
+			&& isset($parameters['currentcontext'])
+			&& $parameters['currentcontext']=='webportalpage'
+		) {
+			global $langs;
+			$langs->loadLangs(['dolifleet@dolifleet']);
+			if ($object->controller == 'vehiculelist') {
+				$object->addControllerDefinition(
+					'vehiculelist',
+					dol_buildpath('/dolifleet/controllers/vehiculelist.controller.class.php'),
+					'VehiculeListController'
+				);
+				$object->controllerInstance = new VehiculeListController();
+			} elseif ($object->controller == 'vehiculecard') {
+				$object->addControllerDefinition(
+					'vehiculecard',
+					dol_buildpath('/dolifleet/controllers/vehiculecard.controller.class.php'),
+					'VehiculeCardController'
+				);
+				$object->controllerInstance = new VehiculeCardController();
+			}
+
 			$object->setControllerFound();
 			$object->controllerInstance->action();
 
@@ -217,9 +234,11 @@ class ActionsdoliFleet
 		global $langs;
 		$langs->load('dolifleet@dolifleet');
 
-		if (isset($parameters['controller']) &&
-			isset($parameters['currentcontext']) &&
-			$parameters['currentcontext']=='webportalpage') {
+		if (
+			isset($parameters['controller'])
+			&& isset($parameters['currentcontext'])
+			&& $parameters['currentcontext']=='webportalpage'
+		) {
 			$this->results['vehicule_list'] = array(
 				'id' => 'vehicule_list',
 				'rank' => 10,

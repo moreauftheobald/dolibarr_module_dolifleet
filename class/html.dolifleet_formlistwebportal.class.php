@@ -302,7 +302,7 @@ class DoliFleetFormListWebPortal extends FormListWebPortal
 
 			// Store properties in $object
 			$object->setVarsFromFetchObj($obj);
-			$html .= $this->printLineVehicule($obj, $object, $arrayfields, $totalarray, $i);
+			$html .= $this->printLineVehicule($obj, $object, $arrayfields, $totalarray, $i, $context);
 
 			$i++;
 		}
@@ -548,7 +548,7 @@ class DoliFleetFormListWebPortal extends FormListWebPortal
 		return $html;
 	}
 
-	public function printLineVehicule($obj, $object, $arrayfields, &$totalarray, $i)
+	public function printLineVehicule($obj, $object, $arrayfields, &$totalarray, $i, $context)
 	{
 
 		// Show line of result
@@ -565,8 +565,9 @@ class DoliFleetFormListWebPortal extends FormListWebPortal
 				$html .= '<td class="nowraponall" data-label="' . $arrayfields['t.' . $key]['label'] . '">';
 				if ($key == 'status' || $key == 'fk_statut') {
 					$html .= $object->getLibStatut(5);
-				} elseif ($key == 'rowid') {
-					$html .= $this->form->showOutputFieldForObject($object, $val, $key, $object->id, '');
+				} elseif ($key == 'vin') {
+					$url_file = $context->getControllerUrl('vehiculecard', ['vh_id' => $obj->rowid]);
+					$html .= '<a href="' . $url_file . '">' . $obj->vin . '</a>';
 				} else {
 					$html .= $this->form->showOutputFieldForObject($object, $val, $key, $obj->{$key}, '');
 				}

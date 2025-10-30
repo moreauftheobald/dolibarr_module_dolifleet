@@ -21,16 +21,18 @@
  * \ingroup     dolifleet
  * \brief       This file is a controller for vehicule list
  */
+require_once DOL_DOCUMENT_ROOT . '/webportal/class/controller.class.php';
+dol_include_once('/dolifleet/class/html.dolifleet_formcardwebportal.class.php');
 
 /**
  * Class for VehiculeListController
  */
-class VehiculeListController extends Controller
+class VehiculeCardController extends Controller
 {
 	/**
-	 * @var FormListWebPortal Form for list
+	 * @var VehiculeFormCardWebPortal Form for card
 	 */
-	public $formList;
+	protected $formCard;
 
 	/**
 	 * Check current access to controller
@@ -40,8 +42,7 @@ class VehiculeListController extends Controller
 	public function checkAccess()
 	{
 		$this->accessRight = isModEnabled('dolifleet');
-
-		return parent::checkAccess();
+		return isModEnabled('dolifleet');
 	}
 
 	/**
@@ -59,22 +60,38 @@ class VehiculeListController extends Controller
 			return -1;
 		}
 
-		dol_include_once('/dolifleet/class/html.dolifleet_formlistwebportal.class.php');
 
 		// Load translation files required by the page
-		$langs->loadLangs(array('dolifleet@dolifleet'));
+		$langs->loadLangs(array('bills', 'companies', 'products', 'categories'));
 
-		$context->title = $langs->trans('WebPortalVehiculeListTitle');
-		$context->desc = $langs->trans('WebPortalVehiculeListDesc');
+		$context->title = $langs->trans('VehiculeCardTitle');
+		$context->desc = $langs->trans('VehiculeCardTitleDesc');
 		$context->menu_active[] = 'vehicule_list';
 
+
+		$permissiontoread = 1;
+		$permissiontoadd = 0;
+		$permissiontodelete = 0;
+		$permissionnote = 0;
+		$permissiondellink = 0;
 		// set form list
-		$formListWebPortal = new DoliFleetFormListWebPortal($this->db);
-		$formListWebPortal->init('vehicule');
+		$formCardWebPortal = new VehiculeFormCardWebPortal($this->db);
+		$formCardWebPortal->init(
+			'vehicule',
+			GETPOST("vh_id", 'int'),
+			$permissiontoread,
+			$permissiontoadd,
+			$permissiontodelete,
+			$permissionnote,
+			$permissiondellink
+		);
 
-		$formListWebPortal->doActions();
-
-		$this->formList = $formListWebPortal;
+		// hook for action
+		//      $hookRes = $this->hookDoAction();
+		//      if (empty($hookRes)) {
+		//      }
+		$formCardWebPortal->doActions();
+		$this->formCard = $formCardWebPortal;
 
 		return 1;
 	}
@@ -87,21 +104,19 @@ class VehiculeListController extends Controller
 	public function display()
 	{
 		$context = Context::getInstance();
+
 		if (!$context->controllerInstance->checkAccess()) {
 			$this->display404();
 			return;
 		}
-
 		$this->loadTemplate('header');
 		$this->loadTemplate('menu');
 		$this->loadTemplate('hero-header-banner');
-
 		$hookRes = $this->hookPrintPageView();
+
 		if (empty($hookRes)) {
 			print '<main class="container">';
-			//print '<figure>';
-			print $this->formList->elementList($context);
-			//print '</figure>';
+			print $this->formCard->elementCard($context);
 			print '</main>';
 		}
 

@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2023-2024 	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2023-2024	Lionel Vessiller		<lvessiller@easya.solutions>
  * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
@@ -23,7 +24,6 @@
  * \ingroup     dolifleet
  * \brief       This file is a CRUD class file for WebPortalVehicule (Create/Read/Update/Delete)
  */
-
 // Put here all includes required by your class file
 dol_include_once('/dolifleet/class/vehicule.class.php');
 
@@ -32,6 +32,7 @@ dol_include_once('/dolifleet/class/vehicule.class.php');
  */
 class WebPortalVehicule extends doliFleetVehicule
 {
+
 	/**
 	 * @var string ID of module.
 	 */
@@ -80,285 +81,306 @@ class WebPortalVehicule extends doliFleetVehicule
 	 *
 	 *  Note: To have value dynamic, you can set value to 0 in definition and edit the value on the fly into the constructor.
 	 */
-
 	// BEGIN MODULEBUILDER PROPERTIES
+
 	/**
 	 * @var array<string,array{type:string,label:string,enabled:int<0,2>|string,position:int,notnull?:int,visible:int<-5,5>|string,alwayseditable?:int<0,1>,noteditable?:int<0,1>,default?:string,index?:int,foreignkey?:string,searchall?:int<0,1>,isameasure?:int<0,1>,css?:string,csslist?:string,help?:string,showoncombobox?:int<0,4>,disabled?:int<0,1>,arrayofkeyval?:array<int|string,string>,autofocusoncreate?:int<0,1>,comment?:string,copytoclipboard?:int<1,2>,validate?:int<0,1>,showonheader?:int<0,1>}>	Array with all fields and their property. Do not use it as a static var. It may be modified by constructor.
 	 */
+	public $fields = array(
+		'rowid' => array(
+			'type' => 'integer',
+			'label' => 'TechnicalID',
+			'enabled' => 1,
+			'visible' => 0,
+			'notnull' => 1,
+			'position' => 1
+		),
+		'vin'			   => array(
+			'type'			 => 'varchar(50)',
+			'length'		 => 50,
+			'label'			 => 'VIN',
+			'enabled'		 => 1,
+			'visible'		 => 1,
+			'notnull'		 => 1,
+			'showoncombobox' => 1,
+			'index'			 => 1,
+			'position'		 => 10,
+			'searchall'		 => 1,
+			'comment'		 => 'Vehicule international number'
+		),
+		'status'		   => array(
+			'type'			=> 'integer',
+			'label'			=> 'Status',
+			'enabled'		=> 1,
+			'visible'		=> 1,
+			'notnull'		=> 1,
+			'default'		=> 0,
+			'index'			=> 1,
+			'position'		=> 30,
+			'arrayofkeyval' => array(
+				self::STATUS_DRAFT	=> 'doliFleetVehiculeStatusShortDraft',
+				self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
+			)
+		),
+		'fk_vehicule_type' => array(
+			'type'	   => 'sellist:c_dolifleet_vehicule_type:label:rowid::active=1',
+			'label'	   => 'vehiculeType',
+			'visible'  => 1,
+			'notnull'  => 1,
+			'default'  => 0,
+			'enabled'  => 1,
+			'position' => 40,
+			'index'	   => 1,
+		),
+		'fk_vehicule_mark' => array(
+			'type'	   => 'sellist:c_dolifleet_vehicule_mark:label:rowid::active=1',
+			'label'	   => 'vehiculeMark',
+			'visible'  => 1,
+			'notnull'  => 1,
+			'default'  => 0,
+			'enabled'  => 1,
+			'position' => 50,
+			'index'	   => 1,
+		),
+		//        'modele' => array(
+		//            'type' => 'varchar(255)',
+		//            'label' => 'modele',
+		//            'enabled' => 1,
+		//            'visible' => 1,
+		//            'notnull' => 0,
+		//            'index' => 0,
+		//            'position' => 55
+		//        ),
+		'immatriculation' => array(
+			'type'			 => 'varchar(20)',
+			'label'			 => 'Immatriculation',
+			'enabled'		 => 1,
+			'visible'		 => 1,
+			'notnull'		 => 1,
+			'position'		 => 60,
+			'searchall'		 => 1,
+			'css'			 => 'minwidth200',
+			'showoncombobox' => 1
+		),
+		'date_immat' => array(
+			'type'		=> 'date',
+			'label'		=> 'immatriculation_date',
+			'enabled'	=> 1,
+			'visible'	=> 1,
+			'notnull'	=> 1,
+			'default'	=> 0,
+			'position'	=> 70,
+			'searchall' => 1,
+		),
+		'km' => array(
+			'type'	   => 'double',
+			'label'	   => 'Kilometrage',
+			'visible'  => 1,
+			'notnull'  => 1,
+			'default'  => 0,
+			'enabled'  => 1,
+			'position' => 100
+		),
+		'km_date' => array(
+			'type'	   => 'date',
+			'label'	   => 'km_date',
+			'visible'  => 1,
+			'enabled'  => 1,
+			'position' => 110
+		),
+		'fk_contract_type' => array(
+			'type'	   => 'sellist:c_dolifleet_contract_type:label:rowid::(active=1)',
+			'label'	   => 'contractType',
+			'visible'  => 1,
+			'enabled'  => 1,
+			'position' => 120,
+			'index'	   => 1,
+		),
+		'date_end_contract' => array(
+			'type'	   => 'date',
+			'label'	   => 'date_end_contract',
+			'visible'  => 1,
+			'enabled'  => 1,
+			'position' => 130
+		),
+	);
 
-	  public $fields = array(
-		  'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => 0, 'notnull' => 1, 'position' => 1,),
+	//public $rowid;
+	//public $ref;
+	/**
+	 * @var int date vehicule
+	 */
+	//public $datef;
+	//public $date_lim_reglement;
+	//public $total_ht;
+	//public $total_tva;
+	//public $total_ttc;
+	//public $multicurrency_total_ht;
+	//public $multicurrency_total_tva;
+	//public $multicurrency_total_ttc;
 
-		  'vin' => array(
-			  'type' => 'varchar(50)',
-			  'length' => 50,
-			  'label' => 'VIN',
-			  'enabled' => 1,
-			  'visible' => 1,
-			  'notnull' => 1,
-			  'showoncombobox' => 1,
-			  'index' => 1,
-			  'position' => 10,
-			  'searchall' => 1,
-			  'comment' => 'Vehicule international number'
-		  ),
-		  'status' => array(
-			  'type' => 'integer',
-			  'label' => 'Status',
-			  'enabled' => 1,
-			  'visible' => 1,
-			  'notnull' => 1,
-			  'default' => 0,
-			  'index' => 1,
-			  'position' => 30,
-			  'arrayofkeyval' => array(
-				  self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft',
-				  self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
-			  )
-		  ),
-		  'fk_vehicule_type' => array(
-			  'type' => 'sellist:c_dolifleet_vehicule_type:label:rowid::active=1',
-			  'label' => 'vehiculeType',
-			  'visible' => 1,
-			  'notnull' => 1,
-			  'default' => 0,
-			  'enabled' => 1,
-			  'position' => 40,
-			  'index' => 1,
-		  ),
+	/**
+	 * @var int status
+	 */
+	//public $fk_statut;
+	// END MODULEBUILDER PROPERTIES
 
-		  'fk_vehicule_mark' => array(
-			  'type' => 'sellist:c_dolifleet_vehicule_mark:label:rowid::active=1',
-			  'label' => 'vehiculeMark',
-			  'visible' => 1,
-			  'notnull' => 1,
-			  'default' => 0,
-			  'enabled' => 1,
-			  'position' => 50,
-			  'index' => 1,
-		  ),
+	/**
+	 * Get vehicule for static methods
+	 *
+	 * @return	Facture
+	 */
+	protected function getVehiculeStatic()
+	{
+		if (!$this->vehicule_static) {
+			$this->vehicule_static = new doliFleetVehicule($this->db);
+		}
 
-	  //        'modele' => array(
-	  //            'type' => 'varchar(255)',
-	  //            'label' => 'modele',
-	  //            'enabled' => 1,
-	  //            'visible' => 1,
-	  //            'notnull' => 0,
-	  //            'index' => 0,
-	  //            'position' => 55
-	  //        ),
+		return $this->vehicule_static;
+	}
 
-		  'immatriculation' => array(
-			  'type' => 'varchar(20)',
-			  'label' => 'Immatriculation',
-			  'enabled' => 1,
-			  'visible' => 1,
-			  'notnull' => 1,
-			  'position' => 60,
-			  'searchall' => 1,
-			  'css' => 'minwidth200',
-			  'showoncombobox' => 1
-		  ),
+	/**
+	 * Constructor
+	 *
+	 * @param	DoliDB	 $db	Database handler
+	 */
+	public function __construct(DoliDB $db)
+	{
+		$this->db = $db;
 
-		  'date_immat' => array(
-			  'type' => 'date',
-			  'label' => 'immatriculation_date',
-			  'enabled' => 1,
-			  'visible' => 1,
-			  'notnull' => 1,
-			  'default' => 0,
-			  'position' => 70,
-			  'searchall' => 1,
-		  ),
+		$this->isextrafieldmanaged = 0;
 
-		  'km' => array(
-			  'type' => 'double',
-			  'label' => 'Kilometrage',
-			  'visible' => 1,
-			  'notnull' => 1,
-			  'default' => 0,
-			  'enabled' => 1,
-			  'position' => 100
-		  ),
+		$this->getVehiculeStatic();
+	}
 
-		  'km_date' => array(
-			  'type' => 'date',
-			  'label' => 'km_date',
-			  'visible' => 1,
-			  'enabled' => 1,
-			  'position' => 110
-		  ),
+	/**
+	 * getTooltipContentArray
+	 * @param array<string,mixed> $params params to construct tooltip data
+	 * @since v18
+	 * @return array{picto?:string,ref?:string,refsupplier?:string,label?:string,date?:string,date_echeance?:string,amountht?:string,total_ht?:string,totaltva?:string,amountlt1?:string,amountlt2?:string,amountrevenustamp?:string,totalttc?:string}|array{optimize:string}
+	 */
+	public function getTooltipContentArray($params)
+	{
+		global $langs;
 
-		  'fk_contract_type' => array(
-			  'type' => 'sellist:c_dolifleet_contract_type:label:rowid::(active=1)',
-			  'label' => 'contractType',
-			  'visible' => 1,
-			  'enabled' => 1,
-			  'position' => 120,
-			  'index' => 1,
-		  ),
+		$langs->load('dolifleet@dolifleet');
 
-		  'date_end_contract' => array(
-			  'type' => 'date',
-			  'label' => 'date_end_contract',
-			  'visible' => 1,
-			  'enabled' => 1,
-			  'position' => 130
-		  ),
-	  );
-	  //public $rowid;
-	  //public $ref;
-	  /**
-	   * @var int date vehicule
-	   */
-	  //public $datef;
-	  //public $date_lim_reglement;
-	  //public $total_ht;
-	  //public $total_tva;
-	  //public $total_ttc;
-	  //public $multicurrency_total_ht;
-	  //public $multicurrency_total_tva;
-	  //public $multicurrency_total_ttc;
+		$datas = [];
 
-	  /**
-	   * @var int status
-	   */
-	  //public $fk_statut;
-	  // END MODULEBUILDER PROPERTIES
+		return $datas;
+	}
 
+	/**
+	 *  Return clickable link of object (with eventually picto)
+	 *
+	 * @param	int		$withpicto				Add picto into link
+	 * @param	string	$option					Where point the link
+	 * @param	int		$max					Maxlength of ref
+	 * @param	int		$short					1=Return just URL
+	 * @param	string	$moretitle				Add more text to title tooltip
+	 * @param	int		$notooltip				1=Disable tooltip
+	 * @param	int		$addlinktonotes			1=Add link to notes
+	 * @param	int		$save_lastsearch_value	-1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
+	 * @param	string	$target					Target of link ('', '_self', '_blank', '_parent', '_backoffice', ...)
+	 * @return	string	String with URL
+	 */
+	public function getNomUrl($withpicto = 0, $option = '', $max = 0, $short = 0, $moretitle = '', $notooltip = 0, $addlinktonotes =
+		0, $save_lastsearch_value = -1, $target = '')
+	{
+		global $langs, $conf;
 
-	  /**
-	   * Get vehicule for static methods
-	   *
-	   * @return	Facture
-	   */
-	  protected function getVehiculeStatic()
-	  {
-		  if (!$this->vehicule_static) {
-			  $this->vehicule_static = new doliFleetVehicule($this->db);
-		  }
+		if (!empty($conf->dol_no_mouse_hover)) {
+			$notooltip = 1; // Force disable tooltips
+		}
 
-		  return $this->vehicule_static;
-	  }
+		$result = '';
 
-	  /**
-	   * Constructor
-	   *
-	   * @param	DoliDB	 $db	Database handler
-	   */
-	  public function __construct(DoliDB $db)
-	  {
-		  $this->db = $db;
+		$url = '';
+		$option = 'nolink';
 
-		  $this->isextrafieldmanaged = 0;
+		if ($short) {
+			return $url;
+		}
 
-		  $this->getVehiculeStatic();
-	  }
-
-	  /**
-	   * getTooltipContentArray
-	   * @param array<string,mixed> $params params to construct tooltip data
-	   * @since v18
-	   * @return array{picto?:string,ref?:string,refsupplier?:string,label?:string,date?:string,date_echeance?:string,amountht?:string,total_ht?:string,totaltva?:string,amountlt1?:string,amountlt2?:string,amountrevenustamp?:string,totalttc?:string}|array{optimize:string}
-	   */
-	  public function getTooltipContentArray($params)
-	  {
-		  global $langs;
-
-		  $langs->load('dolifleet@dolifleet');
-
-		  $datas = [];
-
-		  return $datas;
-	  }
-
-	  /**
-	   *  Return clickable link of object (with eventually picto)
-	   *
-	   * @param	int		$withpicto				Add picto into link
-	   * @param	string	$option					Where point the link
-	   * @param	int		$max					Maxlength of ref
-	   * @param	int		$short					1=Return just URL
-	   * @param	string	$moretitle				Add more text to title tooltip
-	   * @param	int		$notooltip				1=Disable tooltip
-	   * @param	int		$addlinktonotes			1=Add link to notes
-	   * @param	int		$save_lastsearch_value	-1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
-	   * @param	string	$target					Target of link ('', '_self', '_blank', '_parent', '_backoffice', ...)
-	   * @return	string	String with URL
-	   */
-	  public function getNomUrl($withpicto = 0, $option = '', $max = 0, $short = 0, $moretitle = '', $notooltip = 0, $addlinktonotes = 0, $save_lastsearch_value = -1, $target = '')
-	  {
-		  global $langs, $conf;
-
-		  if (!empty($conf->dol_no_mouse_hover)) {
-			  $notooltip = 1; // Force disable tooltips
-		  }
-
-		  $result = '';
-
-		  $url = '';
-		  $option = 'nolink';
-
-		  if ($short) {
-			  return $url;
-		  }
-
-		  $picto = $this->picto;
-		  //      if ($this->type == self::TYPE_REPLACEMENT) {
-		  //          $picto .= 'r'; // Replacement vehicule
-		  //      }
-		  //      if ($this->type == self::TYPE_CREDIT_NOTE) {
-		  //          $picto .= 'a'; // Credit note
-		  //      }
-		  //      if ($this->type == self::TYPE_DEPOSIT) {
-		  //          $picto .= 'd'; // Deposit vehicule
-		  //      }
-		  $params = [
-			'id' => $this->id,
+		$picto = $this->picto;
+		//      if ($this->type == self::TYPE_REPLACEMENT) {
+		//          $picto .= 'r'; // Replacement vehicule
+		//      }
+		//      if ($this->type == self::TYPE_CREDIT_NOTE) {
+		//          $picto .= 'a'; // Credit note
+		//      }
+		//      if ($this->type == self::TYPE_DEPOSIT) {
+		//          $picto .= 'd'; // Deposit vehicule
+		//      }
+		$params = [
+			'id'		 => $this->id,
 			'objecttype' => $this->element,
-			'moretitle' => $moretitle,
-			'option' => $option,
-		  ];
-		  $classfortooltip = 'classfortooltip';
-		  $dataparams = '';
-		  if (getDolGlobalInt('MAIN_ENABLE_AJAX_TOOLTIP')) {
-			  $classfortooltip = 'classforajaxtooltip';
-			  $dataparams = ' data-params="' . dol_escape_htmltag(json_encode($params)) . '"';
-			  $label = '';
-		  } else {
-			  $label = implode($this->getTooltipContentArray($params));
-		  }
+			'moretitle'	 => $moretitle,
+			'option'	 => $option,
+		];
+		$classfortooltip = 'classfortooltip';
+		$dataparams = '';
+		if (getDolGlobalInt('MAIN_ENABLE_AJAX_TOOLTIP')) {
+			$classfortooltip = 'classforajaxtooltip';
+			$dataparams = ' data-params="' . dol_escape_htmltag(json_encode($params)) . '"';
+			$label = '';
+		} else {
+			$label = implode($this->getTooltipContentArray($params));
+		}
 
-		  $linkclose = ($target ? ' target="' . $target . '"' : '');
+		$linkclose = ($target ? ' target="' . $target . '"' : '');
 
-		  $linkstart = '<a href="' . $url . '"';
-		  $linkstart .= $linkclose . '>';
-		  $linkend = '</a>';
+		$linkstart = '<a href="' . $url . '"';
+		$linkstart .= $linkclose . '>';
+		$linkend = '</a>';
 
-		  if ($option == 'nolink') {
-			  $linkstart = '';
-			  $linkend = '';
-		  }
+		if ($option == 'nolink') {
+			$linkstart = '';
+			$linkend = '';
+		}
 
-		  $result .= $linkstart;
-		  if ($withpicto) {
-			  $result .= img_object(($notooltip ? '' : $label), $picto, ($notooltip ? (($withpicto != 2) ? 'class="paddingright"' : '') : $dataparams . ' class="' . (($withpicto != 2) ? 'paddingright ' : '') . $classfortooltip . '"'), 0, 0, $notooltip ? 0 : 1);
-		  }
-		  if ($withpicto != 2) {
-			  $result .= ($max ? dol_trunc($this->ref, $max) : $this->ref);
-		  }
-		  $result .= $linkend;
+		$result .= $linkstart;
+		if ($withpicto) {
+			$result .= img_object(($notooltip ? '' : $label), $picto,
+				($notooltip ? (($withpicto != 2) ? 'class="paddingright"' : '') : $dataparams . ' class="' . (($withpicto != 2)
+					? 'paddingright ' : '') . $classfortooltip . '"'), 0, 0, $notooltip ? 0 : 1);
+		}
+		if ($withpicto != 2) {
+			$result .= ($max ? dol_trunc($this->ref, $max) : $this->ref);
+		}
+		$result .= $linkend;
 
-		  global $action, $hookmanager;
-		  $hookmanager->initHooks(array('vehiculedao'));
-		  $parameters = array('id' => $this->id, 'getnomurl' => &$result, 'notooltip' => $notooltip, 'addlinktonotes' => $addlinktonotes, 'save_lastsearch_value' => $save_lastsearch_value, 'target' => $target);
-		  $reshook = $hookmanager->executeHooks('getNomUrl', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
-		  if ($reshook > 0) {
-			  $result = $hookmanager->resPrint;
-		  } else {
-			  $result .= $hookmanager->resPrint;
-		  }
+		global $action, $hookmanager;
+		$hookmanager->initHooks(array('vehiculedao'));
+		$parameters = array('id' => $this->id, 'getnomurl' => &$result, 'notooltip' => $notooltip, 'addlinktonotes' => $addlinktonotes,
+			'save_lastsearch_value' => $save_lastsearch_value, 'target' => $target);
+		$reshook = $hookmanager->executeHooks('getNomUrl', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
+		if ($reshook > 0) {
+			$result = $hookmanager->resPrint;
+		} else {
+			$result .= $hookmanager->resPrint;
+		}
 
-		  return $result;
-	  }
+		return $result;
+	}
+
+	/**
+	 *    Get object and children from database
+	 *
+	 * @param int $id Id of object to load
+	 * @param bool $loadChild used to load children from database
+	 * @param string $ref Ref
+	 * @return     int                        >0 if OK, <0 if KO, 0 if not found
+	 */
+	public function fetchWebVehicule($id, $loadChild = true, $ref = null)
+	{
+		$static = new doliFleetVehicule($this->db);
+
+		$this->fields = $static->fields;
+
+		$res = parent::fetch($id, $loadChild, $ref);
+
+		$this->oldcopy = clone $this;
+		return $res;
+	}
 }
