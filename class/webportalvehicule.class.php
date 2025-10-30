@@ -138,15 +138,15 @@ class WebPortalVehicule extends doliFleetVehicule
 			  'index' => 1,
 		  ),
 
-//		  'modele' => array(
-//			  'type' => 'varchar(255)',
-//			  'label' => 'modele',
-//			  'enabled' => 1,
-//			  'visible' => 1,
-//			  'notnull' => 0,
-//			  'index' => 0,
-//			  'position' => 55
-//		  ),
+	  //        'modele' => array(
+	  //            'type' => 'varchar(255)',
+	  //            'label' => 'modele',
+	  //            'enabled' => 1,
+	  //            'visible' => 1,
+	  //            'notnull' => 0,
+	  //            'index' => 0,
+	  //            'position' => 55
+	  //        ),
 
 		  'immatriculation' => array(
 			  'type' => 'varchar(20)',
