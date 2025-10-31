@@ -184,7 +184,7 @@ class doliFleetVehicule extends SeedObject
 
 		'date_customer_exploit' => array(
 			'type' => 'date',
-			'label' => 'km_date',
+			'label' => 'date_customer_exploit',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 90
@@ -254,21 +254,20 @@ class doliFleetVehicule extends SeedObject
 			, 1 => 'Oui'
 			)
 		),
+		'nb_pneu' => array(
+			'type' => 'int',
+			'label' => 'NbPneu',
+			'enabled' => 1,
+			'visible' => '1',
+			'position' => 240
+		),
 
 		'dim_pneu' => array(
 			'type' => 'chkbxlst:c_dolifleet_vehicule_dimpneu:label:rowid::(1=active)',
 			'label' => 'DimensionsPneumatiques',
 			'enabled' => 1,
 			'visible' => '1',
-			'position' => 240,
-		),
-
-		'nb_pneu' => array(
-			'type' => 'int',
-			'label' => 'NbPneu',
-			'enabled' => 1,
-			'visible' => '1',
-			'position' => 250
+			'position' => 250,
 		),
 
 		'essieu' => array(

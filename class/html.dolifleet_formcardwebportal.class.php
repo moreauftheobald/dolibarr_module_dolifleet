@@ -218,16 +218,9 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 			$fieldShowList[$key] = $val;
 		}
 
-		$nbFieldShow = count($fieldShowList);
-		$lastKeyFieldLeft = $keyforbreak;
-		$lastNumFieldLeft = 0;
-		if ($lastKeyFieldLeft == '') {
-			$lastNumFieldLeft = ceil($nbFieldShow / 2);
-		}
-		$numField = 0;
 		$html .= '<div class="grid">';
 		$html .= '<div class="card-left">';
-
+		$keyforbreak = 'km_date';
 		unset($object->fields['dfol']);
 		unset($object->fields['fk_soc']);
 		foreach ($object->fields as $key => $val) {
@@ -263,20 +256,9 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 
 			$html .= '</div>';
 
-			$numField++;
 
 			// fields on the right
-			$cardRight = false;
-			if ($keyforbreak != '') {
-				if ($key == $keyforbreak) {
-					$cardRight = true;
-				}
-			} else {
-				if ($numField == $lastNumFieldLeft) {
-					$cardRight = true;
-				}
-			}
-			if ($cardRight) {
+			if ($key == $keyforbreak) {
 				$html .= '</div>';
 				$html .= '<div class="card-right">';
 			}
