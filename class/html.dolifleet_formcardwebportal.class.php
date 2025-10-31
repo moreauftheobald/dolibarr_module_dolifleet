@@ -228,6 +228,8 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		$html .= '<div class="grid">';
 		$html .= '<div class="card-left">';
 
+		unset($object->fields['dfol']);
+		unset($object->fields['fk_soc']);
 		foreach ($object->fields as $key => $val) {
 			if (!array_key_exists($key, $fieldShowList)) {
 				continue; // not to show
@@ -282,7 +284,6 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		$html .= '</div>';
 		$html .= '</div><br><br>';
 
-		$html .= '<div>' . $this->printLines($object) . '</div>';
 
 		return $html;
 	}
@@ -308,8 +309,6 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 			<header>
 				<div class="header-card-left-block inline-block" style="width: 75%;">
 					<div class="header-card-main-information inline-block valignmiddle">
-						<div><strong>' . $langs->trans("Ref") . ' : ' . dol_escape_htmltag($object->ref) . '</strong></div>
-						<div><strong>' . $langs->trans("RefCustomer") . ' : ' . dol_escape_htmltag($object->ref_client) . '</strong></div>
 						<div><strong>' . $langs->trans("ThirdParty") . ' : ' . dol_escape_htmltag($context->logged_thirdparty->ref) . '</strong></div>
 					</div>
 				</div>
@@ -321,54 +320,6 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 
 		$html .= '</header>';
 
-		return $html;
-	}
-
-	/**
-	 * Html for header
-	 *
-	 * @param	Context	$context	Context object
-	 * @return	string
-	 */
-	protected function printLines($object)
-	{
-		global $langs;
-
-		if (empty($object->lines)) {
-			return '';
-		}
-
-		$TLineQtyUsed = $object->getAlreadyUsedQtyLines();
-		$TLastLinesByProduct = $object->getLastLinesByProduct();
-		$html = '
-			<table id="webportal-dolifleet-line-list" role="grid">
-				<thead>
-					<tr class="">
-						<th class="wrapcolumntitle  maxwidthsearch" scope="col"></th>
-						<th class="wrapcolumntitle  maxwidthsearch" scope="col" title="' . $langs->trans('Ref') . '">
-							' . $langs->trans('Ref') . '
-						</th>
-						<th class="wrapcolumntitle  maxwidthsearch" scope="col">
-							' . $langs->trans('Qty') . '
-						</th>
-						<th class="wrapcolumntitle  maxwidthsearch" scope="col">
-							' . $langs->trans('Label') . '
-						</th>
-						<th class="wrapcolumntitle  maxwidthsearch" scope="col">
-							' . $langs->trans('Description') . '
-						</th>
-						<th class="wrapcolumntitle  maxwidthsearch" scope="col">
-							' . $langs->trans('TotalHT') . '
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-			';
-
-
-		$html .= '
-			</tbody>
-		</table>';
 		return $html;
 	}
 

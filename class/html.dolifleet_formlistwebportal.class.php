@@ -552,7 +552,7 @@ class DoliFleetFormListWebPortal extends FormListWebPortal
 	{
 
 		// Show line of result
-		$html = '<tr data-rowid="' . $obj->id . '">';
+		$html = '<tr data-rowid="' . $obj->rowid . '">';
 		// if (getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN')) {
 		$html .= '<td class="nowraponall">';
 		$html .= '</td>';

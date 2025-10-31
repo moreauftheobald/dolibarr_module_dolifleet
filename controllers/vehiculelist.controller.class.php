@@ -21,6 +21,8 @@
  * \ingroup     dolifleet
  * \brief       This file is a controller for vehicule list
  */
+require_once DOL_DOCUMENT_ROOT . '/webportal/class/controller.class.php';
+dol_include_once('/dolifleet/class/html.dolifleet_formlistwebportal.class.php');
 
 /**
  * Class for VehiculeListController

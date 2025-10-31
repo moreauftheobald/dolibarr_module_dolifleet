@@ -256,7 +256,7 @@ class doliFleetVehicule extends SeedObject
 		),
 
 		'dim_pneu' => array(
-			'type' => 'chkbxlst:c_dolifleet_vehicule_dimpneu:label:rowid::(active=1)',
+			'type' => 'chkbxlst:c_dolifleet_vehicule_dimpneu:label:rowid::(1=active)',
 			'label' => 'DimensionsPneumatiques',
 			'enabled' => 1,
 			'visible' => '1',
