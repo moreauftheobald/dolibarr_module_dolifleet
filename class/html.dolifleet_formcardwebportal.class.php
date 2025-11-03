@@ -53,15 +53,15 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		$elementEnUpper = strtoupper($elementEn);
 		$objectclass = 'WebPortal' . ucfirst($elementEn);
 
+		// Load translation files required by the page
+		$langs->loadLangs(array('website', 'other', 'companies', 'dolifleet@dolifleet'));
 		if ($id <= 0) {
-			accessforbidden();
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
 		}
 
 		// load module libraries
 		dol_include_once('/dolifleet/class/webportal' . $elementEn . '.class.php');
 
-		// Load translation files required by the page
-		$langs->loadLangs(array('website', 'other', 'companies', 'dolifleet@dolifleet'));
 
 		// Get parameters
 		//$id = $id > 0 ? $id : GETPOST('id', 'int');
@@ -83,7 +83,7 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		//$search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 		if (empty($id)) {
-			accessforbidden();
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
 		}
 
 		$action = 'view';
@@ -91,20 +91,20 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		$retFetch = $object->fetchWebVehicule($id);
 
 		if ($retFetch < 0) {
-			accessforbidden();
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
 		}
 
 		if (empty($retFetch)) {
-			accessforbidden();
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
 		}
-
 
 		// Security check (enable the most restrictive one)
 		if (!isModEnabled('webportal')) {
-			accessforbidden();
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
 		}
+
 		if (!$permissiontoread) {
-			accessforbidden();
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
 		}
 
 		// set form card
@@ -136,6 +136,11 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		global $hookmanager, $langs;
 
 		$html = '<!-- elementCard -->';
+
+		$socid = (int) $context->logged_thirdparty->id;
+		if ($socid != $this->object->fk_soc) {
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
+		}
 
 		// initialize
 		$action = $this->action;

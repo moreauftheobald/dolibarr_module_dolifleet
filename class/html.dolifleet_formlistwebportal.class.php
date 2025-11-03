@@ -46,8 +46,13 @@ class DoliFleetFormListWebPortal extends FormListWebPortal
 	 */
 	public function init($elementEn)
 	{
+		global $context, $langs;
 		// load module libraries
 		dol_include_once('/dolifleet/class/webportal' . $elementEn . '.class.php');
+
+		if (empty($context->logged_thirdparty->id)) {
+			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
+		}
 
 		// Initialize a technical objects
 		$objectclass = 'WebPortal' . ucfirst($elementEn);

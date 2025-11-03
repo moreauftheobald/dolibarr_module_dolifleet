@@ -21,6 +21,7 @@ dol_include_once('dolifleet/class/vehicule.class.php');
 dol_include_once('dolifleet/class/dictionaryContractType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
 dol_include_once('dolifleet/class/dictionaryVehiculeMark.class.php');
+dol_include_once('dolifleet/class/dictionaryTireDim.class.php');
 
 if (empty($user->hasRight("dolifleet", "read"))) accessforbidden();
 
@@ -44,6 +45,7 @@ $object = new doliFleetVehicule($db);
 $dictCT = new dictionaryContractType($db);
 $dictVT = new dictionaryVehiculeType($db);
 $dictVM = new dictionaryVehiculeMark($db);
+$dictTD = new dictionaryTireDim($db);
 
 $hookmanager->initHooks(array('vehiculelist'));
 
@@ -160,57 +162,60 @@ if (!empty(array_keys($extralabels))) {
 }
 
 $listViewConfig = array(
-	'view_type' => 'list' // default = [list], [raw], [chart]
-, 'allow-fields-select' => true
-, 'limit' => array(
+	'view_type'			  => 'list', // default = [list], [raw], [chart]
+	'allow-fields-select' => true,
+	'limit'				  => array(
 		'nbLine' => $nbLine
-	)
-, 'list' => array(
-		'title' => $langs->trans('doliFleetVehiculeList')
-	, 'image' => 'title_generic.png'
-	, 'picto_precedent' => '<'
-	, 'picto_suivant' => '>'
-	, 'noheader' => 0
-	, 'messageNothing' => $langs->trans('NodoliFleet')
-	, 'picto_search' => img_picto('', 'search.png', '', 0)
-	, 'massactions' => array(//			'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
-		)
-	, 'param_url' => '&limit=' . $nbLine
-	)
-, 'subQuery' => array()
-, 'link' => array()
-, 'type' => array(
-		'date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
-	, 'tms' => 'date'
-	, 'date_immat' => 'date'
-	, 'km_date' => 'date'
-	, 'date_end_contract' => 'date'
-	)
-, 'search' => array(
-	'vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
-	, 'fk_vehicule_type' => array('search_type' => $dictVT->getAllActiveArray('label'))
-	, 'fk_vehicule_mark' => array('search_type' => $dictVM->getAllActiveArray('label'))
-	, 'immatriculation' => array('search_type' => true, 'table' => 't', 'field' => 'immatriculation')
-	, 'date_immat' => array('search_type' => 'calendars', 'allow_is_null' => false)
-	, 'fk_soc' => array('search_type' => 'override', 'override' => $form->select_company($fk_soc, 'fk_soc'))
-	, 'km' => array('search_type' => true, 'table' => 't', 'field' => 'km')
-	, 'sall' => array('search_type' => true, 'table' => 't', 'field' => array('vin', 'immatriculation'))
-	, 'km_date' => array('search_type' => 'calendars', 'allow_is_null' => false)
-	, 'fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'))
-	, 'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false)
-	, 'nb_pneu' => array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu')
-	, 'status' => array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true)
-	, 'dim_pneu' => array('search_type' => 'override', 'override' => $form->multiselectarray('dim_pneu', $object->fields['dim_pneu']['arrayofkeyval'], GETPOST('dim_pneu', 'array'), '', 0, '', 0, '100%'))
-	)
-, 'translate' => array()
-, 'hide' => array(
+	),
+	'list'				  => array(
+		'title'			  => $langs->trans('doliFleetVehiculeList'),
+		'image'			  => 'title_generic.png',
+		'picto_precedent' => '<',
+		'picto_suivant'	  => '>',
+		'noheader'		  => 0,
+		'messageNothing'  => $langs->trans('NodoliFleet'),
+		'picto_search'	  => img_picto('', 'search.png', '', 0),
+		'massactions'	  => array(//			'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
+		),
+		'param_url'		  => '&limit=' . $nbLine
+	),
+	'subQuery'			  => array(),
+	'link'				  => array(),
+	'type'				  => array(
+		'date_creation'		=> 'date', // [datetime], [hour], [money], [number], [integer],
+		'tms'				=> 'date',
+		'date_immat'		=> 'date',
+		'km_date'			=> 'date',
+		'date_end_contract' => 'date'
+	),
+	'search'			  => array(
+		'vin'				=> array('search_type' => true, 'table' => 't', 'field' => 'vin'),
+		'fk_vehicule_type'	=> array('search_type' => $dictVT->getAllActiveArray('label')),
+		'fk_vehicule_mark'	=> array('search_type' => $dictVM->getAllActiveArray('label')),
+		'immatriculation'	=> array('search_type' => true, 'table' => 't', 'field' => 'immatriculation'),
+		'date_immat'		=> array('search_type' => 'calendars', 'allow_is_null' => false),
+		'fk_soc'			=> array(
+			'search_type' => 'override',
+			'override'	  => $form->select_company($fk_soc, 'fk_soc')
+		),
+		'km'				=> array('search_type' => true, 'table' => 't', 'field' => 'km'),
+		'sall'				=> array('search_type' => true, 'table' => 't', 'field' => array('vin', 'immatriculation')),
+		'km_date'			=> array('search_type' => 'calendars', 'allow_is_null' => false),
+		'fk_contract_type'	=> array('search_type' => $dictCT->getAllActiveArray('label')),
+		'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false),
+		'nb_pneu'			=> array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu'),
+		'status'			=> array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true),
+		'dim_pneu'			=> array('search_type' => $dictTD->getAllActiveArray('label'))
+	),
+	'translate'			  => array(),
+	'hide'				  => array(
 		'rowid' // important : rowid doit exister dans la query sql pour les checkbox de massaction
-	)
-, 'title' => $TTitle
-, 'eval' => array(
-		'vin' => '_getObjectNomUrl(\'@rowid@\', \'@val@\')'
-	, 'status' => 'doliFleetVehicule::LibStatut("@val@", 5)' // Si on a un fk_user dans notre requête
-	, 'dim_pneu' => '_getDimPneu("@val@")' // Si on a un fk_user dans notre requête
+	),
+	'title'				  => $TTitle,
+	'eval'				  => array(
+		'vin'	   => '_getObjectNomUrl(\'@rowid@\', \'@val@\')',
+		'status'   => 'doliFleetVehicule::LibStatut("@val@", 5)', // Si on a un fk_user dans notre requête,
+		'dim_pneu' => '_getDimPneu("@val@")' // Si on a un fk_user dans notre requête
 	)
 );
 
@@ -293,9 +298,13 @@ function _getDimPneu($value)
 	$output = '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
 	$selected = explode(',', $value);
 	foreach ($selected as $sel) {
-		$output .= '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">' .
-			$object->fields['dim_pneu']['arrayofkeyval'][$sel] .
-			'</li>';
+		if (empty($sel)) {
+			continue;
+		}
+		$val = getDictionaryValue('c_dolifleet_vehicule_dimpneu', 'label', $sel);
+		$output .= '<li class="select2-search-choice-dolibarr noborderoncategories" style="background: #bbb">
+			' . $val .'
+			</li>';
 	}
 	$output .= '</ul></div>';
 

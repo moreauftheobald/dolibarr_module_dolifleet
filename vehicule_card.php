@@ -32,6 +32,8 @@ $id = GETPOST('id', 'int');
 $ref = GETPOST('ref');
 $vin = GETPOST('vin');
 
+$cancel    =  GETPOST('cancel', 'alpha');
+$confirm   =  GETPOST('confirm', 'alpha');
 $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'vehiculecard';   // To manage different context of search
 $backtopage = GETPOST('backtopage', 'alpha');
 
