@@ -32,6 +32,7 @@ dol_include_once('/dolifleet/class/vehicule.class.php');
 class VehiculeFormCardWebPortal extends FormCardWebPortal
 {
 
+	private $context;
 	/**
 	 * Init
 	 *
@@ -141,6 +142,8 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		if ($socid != $this->object->fk_soc) {
 			accessforbidden($langs->trans('YouCannotAccessThisWebPortalPage'), 0, 0, 1);
 		}
+
+		$this->context = $context;
 
 		// initialize
 		$action = $this->action;
@@ -271,6 +274,7 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 		$html .= '</div>';
 		$html .= '</div><br><br>';
 
+		$html .= '<div>' . $this->printLines($object) . '</div>';
 
 		return $html;
 	}
@@ -337,5 +341,100 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 			return '';
 		}
 		return $vh->vin . ' - ' . $vh->immatriculation;
+	}
+
+
+	/**
+	 * Html for header
+	 *
+	 * @param	Context	$object	 object
+	 * @return	string
+	 */
+	protected function printLines($object)
+	{
+		global $langs;
+		$res = $object->getOperations();
+		if ($res < 0) {
+			setEventMessage($object->error, 'errors');
+		}
+		if (empty($object->operations)) {
+			return '';
+		}
+
+		$html = '
+			<table id="webportal-vehicule-line-list" role="grid">
+				<thead>
+					<tr class="">
+						<th class="wrapcolumntitle  maxwidthsearch" scope="col" title="' . $langs->trans('Operation') . '">
+							' . $langs->trans('VehiculeOperation') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch right" scope="col">
+							' . $langs->trans('KM') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch" scope="col">
+							' . $langs->trans('VehiculeOperationDelay') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch right" scope="col">
+							' . $langs->trans('VehiculeOperationLastDateDone') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch right" scope="col">
+							' . $langs->trans('VehiculeOperationLastKmDone') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch right" scope="col">
+							' . $langs->trans('VehiculeOperationDateNext') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch right" scope="col">
+							' . $langs->trans('VehiculeOperationKmNext') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch" scope="col">
+							' . $langs->trans('VehiculeOperationOnTime') . '
+						</th>
+						<th class="wrapcolumntitle  maxwidthsearch" scope="col">
+							' . $langs->trans('VehiculeOperationNextOR') . '
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+			';
+
+		foreach ($object->operations as $operation) {
+			$dateDone = '';
+			if (!empty($operation->date_done)) {
+				$dateDone = dol_print_date($operation->date_done, "%d/%m/%Y");
+			}
+			$dateNext = '';
+			if (!empty($operation->date_next)) {
+				$dateNext = dol_print_date($operation->date_next, "%d/%m/%Y");
+			}
+			$operationorderLink = '';
+			if (!empty($operation->or_next)) {
+				$operationorder = new OperationOrder($object->db);
+				$res = $operationorder->fetch($operation->or_next, false);
+				if ($res<0) {
+					setEventMessages($operationorder->error, $operationorder->errors, 'errors');
+				}
+
+				$url_file = $this->context->getControllerUrl('operationordercard', ['op_id' => $operation->or_next]);
+				$operationorderLink .= '<a href="' . $url_file . '">' . $operationorder->ref . '</a>';
+			}
+			$html .= '
+				<tr class="oddeven">
+					<td class="left">' . $operation->getWebName() . '</td>
+					<td class="right">' . (!empty($operation->km) ? price2num($operation->km) : '') . '</td>
+					<td class="left">' . (!empty($operation->delai_from_last_op) ? $operation->delai_from_last_op . ' ' . $langs->trans('Months') : '') . '</td>
+					<td class="right">' . $dateDone . '</td>
+					<td class="right">' . (!empty($operation->km_done) ? $operation->km_done : '') . '</td>
+					<td class="right">'. $dateNext.'</td>
+					<td class="right">'. $operation->km_next.'</td>
+					<td class="left">'.  (!empty($operation->on_time)?dolGetBadge($langs->trans('VehiculeOperationOnTime'), '', 'danger'):'').'</td>
+					<td class="left">'.  $operationorderLink . '</td>
+				</tr>';
+		}
+
+		$html .= '
+			</tbody>
+		</table>';
+		return $html;
 	}
 }

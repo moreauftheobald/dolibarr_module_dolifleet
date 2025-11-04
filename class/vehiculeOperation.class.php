@@ -281,6 +281,13 @@ class dolifleetVehiculeOperation extends SeedObject
 		else return '';
 	}
 
+	public function getWebName()
+	{
+		$ret = $this->fetch_product();
+		if ($ret > 0) return '<b>' . $this->product->ref . '</b> - ' . $this->product->label;
+		else return '';
+	}
+
 	public function create(User &$user, $notrigger = false)
 	{
 		global $langs;
