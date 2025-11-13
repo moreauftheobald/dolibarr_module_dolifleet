@@ -271,6 +271,17 @@ class VehiculeFormCardWebPortal extends FormCardWebPortal
 				$html .= '<div class="card-right">';
 			}
 		}
+		$url = $this->context->getControllerUrl('vsrlist', ['idVh' => $object->id]);
+		$html .= '
+			<div class="grid field_pdf">
+				<div>
+					<strong>' . $langs->trans('VSRVehicule') . '</strong>
+				</div>
+				<div class="valuefield">
+					<a href="' . $url . '">Lien vers le vsr</a>
+				</div>
+			</div>';
+		
 		$html .= '</div>';
 		$html .= '</div><br><br>';
 
