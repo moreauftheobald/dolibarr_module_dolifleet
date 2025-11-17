@@ -67,21 +67,21 @@ class ActionsdoliFleet
 	 */
 	public function doActions($parameters, &$object, &$action, $hookmanager)
 	{
-//
-//		if (
-//			isset($parameters['controller'])
-//			&& in_array($object->controller, [])
-//			&& isset($parameters['currentcontext'])
-//			&& $parameters['currentcontext']=='webportalpage'
-//		) {
-//			global $langs;
-//			$langs->loadLangs(['dolifleet@dolifleet']);
-//
-//			$object->setControllerFound();
-//			$object->controllerInstance->action();
-//
-//			return 0;
-//		}
+		//
+		//      if (
+		//          isset($parameters['controller'])
+		//          && in_array($object->controller, [])
+		//          && isset($parameters['currentcontext'])
+		//          && $parameters['currentcontext']=='webportalpage'
+		//      ) {
+		//          global $langs;
+		//          $langs->loadLangs(['dolifleet@dolifleet']);
+		//
+		//          $object->setControllerFound();
+		//          $object->controllerInstance->action();
+		//
+		//          return 0;
+		//      }
 	}
 
 	/**
@@ -165,46 +165,46 @@ class ActionsdoliFleet
 		return 1;
 	}
 
-//	/**
-//	 * @param array $parameters parameters
-//	 * @param Object $object Object to use hooks on
-//	 * @param string $action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
-//	 * @param object $hookmanager class instance
-//	 * @return int
-//	 **/
-//	public function PrintPageView($parameters, $object, &$action, $hookmanager)
-//	{
-//		global $langs;
-//		$langs->load('dolifleet@dolifleet');
-//
-//		if (isset($parameters['controller']) &&
-//			isset($parameters['currentcontext']) &&
-//			$parameters['currentcontext']=='webportalpage') {
-//			//var_dump($parameters['controller'],$object);
-//
-//			print '
-//				<script type="text/javascript">
-//					$(document).ready(function() {
-//						let article = $("<article>");
-//						article.addClass("home-links-card");
-//						article.addClass("--vehicule-list");
-//						let divicon = $("<div>");
-//						divicon.addClass("home-links-card__icon");
-//						article.append(divicon);
-//						let link_article = $("<a>");
-//						link_article.addClass("home-links-card__link");
-//						link_article.attr("href","' . $object->getControllerUrl('vehiculelist') . '");
-//						link_article.attr("title","' . $langs->trans('WebPortalVehiculeListMenu') . '");
-//						link_article.html("' . $langs->trans('WebPortalVehiculeListMenu') . '");
-//						article.append(link_article);
-//						$("div.home-links-grid.grid").append(article);
-//					})
-//				</script>
-//			 ';
-//
-//			return 0;
-//		}
-//	}
+	//  /**
+	//   * @param array $parameters parameters
+	//   * @param Object $object Object to use hooks on
+	//   * @param string $action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	//   * @param object $hookmanager class instance
+	//   * @return int
+	//   **/
+	//  public function PrintPageView($parameters, $object, &$action, $hookmanager)
+	//  {
+	//      global $langs;
+	//      $langs->load('dolifleet@dolifleet');
+	//
+	//      if (isset($parameters['controller']) &&
+	//          isset($parameters['currentcontext']) &&
+	//          $parameters['currentcontext']=='webportalpage') {
+	//          //var_dump($parameters['controller'],$object);
+	//
+	//          print '
+	//              <script type="text/javascript">
+	//                  $(document).ready(function() {
+	//                      let article = $("<article>");
+	//                      article.addClass("home-links-card");
+	//                      article.addClass("--vehicule-list");
+	//                      let divicon = $("<div>");
+	//                      divicon.addClass("home-links-card__icon");
+	//                      article.append(divicon);
+	//                      let link_article = $("<a>");
+	//                      link_article.addClass("home-links-card__link");
+	//                      link_article.attr("href","' . $object->getControllerUrl('vehiculelist') . '");
+	//                      link_article.attr("title","' . $langs->trans('WebPortalVehiculeListMenu') . '");
+	//                      link_article.html("' . $langs->trans('WebPortalVehiculeListMenu') . '");
+	//                      article.append(link_article);
+	//                      $("div.home-links-grid.grid").append(article);
+	//                  })
+	//              </script>
+	//           ';
+	//
+	//          return 0;
+	//      }
+	//  }
 
 	/**
 	 * @param array $parameters parameters
@@ -223,7 +223,6 @@ class ActionsdoliFleet
 			&& isset($parameters['currentcontext'])
 			&& $parameters['currentcontext']=='webportalpage'
 		) {
-
 			return 0;
 		}
 	}
