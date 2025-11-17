@@ -269,18 +269,3 @@ pneulabel=Nom du type de pneu
 
 
 ORListVSR=VSR
-
-#
-# WebPortal
-#
-VehiculeListController =  Liste des véhicules
-VehiculeListTitle = Liste des véhicules
-WebPortalVehiculeListTitle = Liste des véhicules
-VehiculeListDesc = Liste des véhicules
-VehiculeListTitleDesc = Liste des véhicules
-WebPortalVehiculeListMenu = Véhicules
-WebPortalVehiculeListDesc = Liste des véhicules
-VehiculeCardTitle =Véhicule
-VehiculeCardTitleDesc = Véhicule
-ThirdpartyName = Nom du client
-YouCannotAccessThisWebPortalPage = Vous ne pouvez pas acceder à cette page.
