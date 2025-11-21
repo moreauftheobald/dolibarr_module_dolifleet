@@ -54,7 +54,7 @@ class DolifleetApi extends DolibarrApi
 		require_once __DIR__ . '/vehicule.class.php';
 		require_once __DIR__ . '/vehiculeOperation.class.php';
 
-		$this->vehicule = new doliFleetVehicule($this->db);
+		$this->vehicule = new Vehicule($this->db);
 		$this->vehiculeOperation = new dolifleetVehiculeOperation($this->db);
 	}
 
@@ -160,7 +160,7 @@ class DolifleetApi extends DolibarrApi
 
 			while ($i < $min) {
 				$obj = $this->db->fetch_object($result);
-				$vehiculeStatic = new doliFleetVehicule($this->db);
+				$vehiculeStatic = new Vehicule($this->db);
 
 				if ($vehiculeStatic->fetch($obj->rowid, true)) {
 					$obj_ret[] = $this->_cleanObjectDatas($vehiculeStatic);

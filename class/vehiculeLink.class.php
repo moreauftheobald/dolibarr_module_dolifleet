@@ -63,8 +63,8 @@ class doliFleetVehiculeLink extends SeedObject
 		),
 
 		'fk_source' => array(
-			'type' => 'integer:doliFleetVehicule:dolifleet/class/vehicule.class.php',
-			'label' => 'doliFleetVehicule',
+			'type' => 'integer:Vehicule:dolifleet/class/vehicule.class.php',
+			'label' => 'Vehicule',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 10,
@@ -84,8 +84,8 @@ class doliFleetVehiculeLink extends SeedObject
 		),
 
 		'fk_target' => array(
-			'type' => 'integer:doliFleetVehicule:dolifleet/class/vehicule.class.php',
-			'label' => 'doliFleetVehicule',
+			'type' => 'integer:Vehicule:dolifleet/class/vehicule.class.php',
+			'label' => 'Vehicule',
 			'visible' => 1,
 			'enabled' => 1,
 			'position' => 10,

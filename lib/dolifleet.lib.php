@@ -79,10 +79,10 @@ function dolifleetAdminPrepareHead()
 /**
  * Return array of tabs to used on pages for third parties cards.
  *
- * @param doliFleetVehicule $object Object company shown
+ * @param Vehicule $object Object company shown
  * @return    array                Array of tabs
  */
-function vehicule_prepare_head(doliFleetVehicule $object)
+function vehicule_prepare_head(Vehicule $object)
 {
 	global $langs, $conf, $db, $user;
 	$h = 0;
@@ -123,7 +123,7 @@ function vehicule_prepare_head(doliFleetVehicule $object)
 	// Entries must be declared in modules descriptor with line
 	// $this->tabs = array('entity:+tabname:Title:@dolifleet:/dolifleet/mypage.php?id=__ID__');   to add new tab
 	// $this->tabs = array('entity:-tabname:Title:@dolifleet:/dolifleet/mypage.php?id=__ID__');   to remove a tab
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'dolifleetVehicule');
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'Vehicule');
 
 	return $head;
 }
@@ -213,7 +213,7 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 }
 
 /**
- * @param doliFleetVehicule $object
+ * @param Vehicule $object
  */
 function printVehiculeActivities($object, $fromcard = false)
 {
@@ -326,7 +326,7 @@ function printVehiculeActivities($object, $fromcard = false)
 }
 
 /**
- * @param doliFleetVehicule $object
+ * @param Vehicule $object
  */
 function printLinkedVehicules($object, $fromcard = false)
 {
@@ -358,7 +358,7 @@ function printLinkedVehicules($object, $fromcard = false)
 		print '<tr><td align="center" colspan="4">' . $langs->trans('NodoliFleet') . '</td></tr>';
 	} else {
 		foreach ($object->linkedVehicules as $vehiculelink) {
-			$veh = new doliFleetVehicule($db);
+			$veh = new Vehicule($db);
 			print '<tr>';
 			print '<td align="center">';
 
@@ -418,7 +418,7 @@ function printLinkedVehicules($object, $fromcard = false)
 }
 
 /**
- * @param doliFleetVehicule $object
+ * @param Vehicule $object
  */
 function printVehiculeRental($object, $fromcard = false, $external = false)
 {
@@ -527,7 +527,7 @@ function printVehiculeRental($object, $fromcard = false, $external = false)
 }
 
 /**
- * @param doliFleetVehicule $object
+ * @param Vehicule $object
  */
 function printVehiculeOperations($object)
 {
@@ -685,7 +685,7 @@ function printVehiculeOperations($object)
 }
 
 /**
- * @param doliFleetVehicule $object
+ * @param Vehicule $object
  */
 function printVehiculeOperationsNp($object)
 {

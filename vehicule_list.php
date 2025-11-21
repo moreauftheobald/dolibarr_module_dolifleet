@@ -41,7 +41,7 @@ $action = GETPOST('action', 'alpha');
 $confirmmassaction = GETPOST('confirmmassaction', 'alpha');
 $toselect = GETPOST('toselect', 'array');
 
-$object = new doliFleetVehicule($db);
+$object = new Vehicule($db);
 $dictCT = new dictionaryContractType($db);
 $dictVT = new dictionaryVehiculeType($db);
 $dictVM = new dictionaryVehiculeMark($db);
@@ -204,7 +204,7 @@ $listViewConfig = array(
 		'fk_contract_type'	=> array('search_type' => $dictCT->getAllActiveArray('label')),
 		'date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false),
 		'nb_pneu'			=> array('search_type' => true, 'table' => 't', 'field' => 'nb_pneu'),
-		'status'			=> array('search_type' => doliFleetVehicule::$TStatus, 'to_translate' => true),
+		'status'			=> array('search_type' => Vehicule::$TStatus, 'to_translate' => true),
 		'dim_pneu'			=> array('search_type' => $dictTD->getAllActiveArray('label'))
 	),
 	'translate'			  => array(),
@@ -214,7 +214,7 @@ $listViewConfig = array(
 	'title'				  => $TTitle,
 	'eval'				  => array(
 		'vin'	   => '_getObjectNomUrl(\'@rowid@\', \'@val@\')',
-		'status'   => 'doliFleetVehicule::LibStatut("@val@", 5)', // Si on a un fk_user dans notre requête,
+		'status'   => 'Vehicule::LibStatut("@val@", 5)', // Si on a un fk_user dans notre requête,
 		'dim_pneu' => '_getDimPneu("@val@")' // Si on a un fk_user dans notre requête
 	)
 );
@@ -262,7 +262,7 @@ function _getObjectNomUrl($id)
 {
 	global $db;
 
-	$o = new doliFleetVehicule($db);
+	$o = new Vehicule($db);
 	$res = $o->fetch($id, false);
 	if ($res > 0) {
 		return $o->getNomUrl(1);
@@ -285,7 +285,7 @@ function _evalEF($key, $val, $extrafieldsobjectkey)
 function _getObjectOutputField($key, $value)
 {
 	global $db, $user;
-	$object = new doliFleetVehicule($db);
+	$object = new Vehicule($db);
 	return $object->showOutputField($object->fields[$key], $key, $value);
 }
 
@@ -293,7 +293,7 @@ function _getDimPneu($value)
 {
 
 	global $db;
-	$object = new doliFleetVehicule($db);
+	$object = new Vehicule($db);
 
 	$output = '<div class="select2-container-multi-dolibarr" style="width: 90%;"><ul class="select2-choices-dolibarr">';
 	$selected = explode(',', $value);

@@ -290,7 +290,7 @@ class pdf_rentalproposal extends ModelePDFRentalproposal
 		$posy = $this->pdf->GetY();
 		$this->pdf->SetLineStyle(array('width'=>0.2, 'cap'=>'butt', 'color'=>array(125,125,125)));
 
-		$vehicule = new doliFleetVehicule($this->db);
+		$vehicule = new Vehicule($this->db);
 		$vehicule->fetch($line->fk_vehicule);
 
 		$default_font_size = pdf_getPDFFontSize($this->outputlangs);

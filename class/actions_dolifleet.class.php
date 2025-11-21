@@ -160,7 +160,7 @@ class ActionsdoliFleet
 	{
 		$arrayobject = array();
 		$arrayobject = $parameters['arrayobject'];
-		$arrayobject['doliFleetVehicule'] =  array('table' => 'dolifleet_vehicule','fields' => array('immatriculation'),'class' => 'dolifleet/class/vehicule.class.php','object' => 'doliFleetVehicule');
+		$arrayobject['Vehicule'] =  array('table' => 'dolifleet_vehicule','fields' => array('immatriculation'),'class' => 'dolifleet/class/vehicule.class.php','object' => 'Vehicule');
 		$this->results = $arrayobject;
 		return 1;
 	}

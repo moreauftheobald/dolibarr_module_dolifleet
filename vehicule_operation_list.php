@@ -47,7 +47,7 @@ $action = GETPOST('action', 'alpha');
 $confirmmassaction = GETPOST('confirmmassaction', 'alpha');
 $toselect = GETPOST('toselect', 'array');
 
-$object = new doliFleetVehicule($db);
+$object = new Vehicule($db);
 $operation = new dolifleetVehiculeOperation($db);
 $dictCT = new dictionaryContractType($db);
 $dictVT = new dictionaryVehiculeType($db);
@@ -290,7 +290,7 @@ function _getObjectNomUrl($id)
 {
 	global $db;
 
-	$o = new doliFleetVehicule($db);
+	$o = new Vehicule($db);
 	$res = $o->fetch($id, false);
 	if ($res > 0) {
 		return $o->getNomUrl(1);

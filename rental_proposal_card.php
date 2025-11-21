@@ -402,7 +402,7 @@ if ($action == 'create') {
 
 					print '<tr id="row-'.$line->id.'"  class="nodrag nodrop">';
 					print '<td class="linecolimmat">';
-					$vehicule = new doliFleetVehicule($db);
+					$vehicule = new Vehicule($db);
 					$vehicule->fetch($line->fk_vehicule);
 					print $vehicule->getLinkUrl(0, '', 'immatriculation');
 					print '</td>';

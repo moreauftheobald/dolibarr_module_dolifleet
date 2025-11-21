@@ -38,8 +38,8 @@ class dolifleetVehiculeOperationNp extends SeedObject
 
 	public $fields = array(
 		'fk_vehicule' => array(
-			'type' => 'integer:doliFleetVehicule:dolifleet/class/vehicule.class.php',
-			'label' => 'doliFleetVehicule',
+			'type' => 'integer:Vehicule:dolifleet/class/vehicule.class.php',
+			'label' => 'Vehicule',
 			'visible' => 1,
 			'enabled' => 1,
 			'notnull' => 1,

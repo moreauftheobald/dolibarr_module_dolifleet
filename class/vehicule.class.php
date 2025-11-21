@@ -23,7 +23,7 @@ if (!class_exists('SeedObject')) {
 	require_once dirname(__FILE__) . '/../config.php';
 }
 
-class doliFleetVehicule extends SeedObject
+class Vehicule extends SeedObject
 {
 
 	/**
@@ -171,17 +171,19 @@ class doliFleetVehicule extends SeedObject
 		),
 
 		'fk_soc' => array(
-			'type' => 'integer:Societe:societe/class/societe.class.php',
+			'type' => 'integer:Societe:societe/class/societe.class.php:1:((status:=:1) AND (entity:IN:__SHARED_ENTITIES__))',
 			'label' => 'ThirdParty',
+			'picto' => 'company',
+			'enabled' => 'isModEnabled("societe")',
+			'position' => 50,
+			'notnull' => -1,
 			'visible' => 1,
-			'notnull' => 1,
-			'default' => 0,
-			'enabled' => 1,
-			'position' => 80,
 			'index' => 1,
-			'help' => 'LinkToThirparty'
+			'css' => 'maxwidth500 widthcentpercentminusxx',
+			'csslist' => 'tdoverflowmax150',
+			'help' => "ThirdPartyBookCalHelp",
+			'validate' => 1,
 		),
-
 		'date_customer_exploit' => array(
 			'type' => 'date',
 			'label' => 'date_customer_exploit',
@@ -371,7 +373,7 @@ class doliFleetVehicule extends SeedObject
 
 
 	/**
-	 * doliFleetVehicule constructor.
+	 * Vehicule constructor.
 	 * @param DoliDB $db Database connector
 	 */
 	public function __construct($db)
@@ -736,7 +738,7 @@ class doliFleetVehicule extends SeedObject
 			// le véhicule courant est déjà lié pour la période saisie
 			foreach ($this->linkedVehicules as $v) {
 				if (!in_array($v->fk_other_vehicule, array_keys($this->vehicules))) {
-					$veh = new doliFleetVehicule($this->db);
+					$veh = new Vehicule($this->db);
 					$veh->fetch($v->fk_other_vehicule);
 					$this->vehicules[$v->fk_other_vehicule] = $veh;
 				}
@@ -756,7 +758,7 @@ class doliFleetVehicule extends SeedObject
 			// le véhicule courant est déjà lié pour la période saisie
 			foreach ($vehiculeToLink->linkedVehicules as $v) {
 				if (!in_array($v->fk_other_vehicule, array_keys($this->vehicules))) {
-					$veh = new doliFleetVehicule($this->db);
+					$veh = new Vehicule($this->db);
 					$veh->fetch($v->fk_other_vehicule);
 					$this->vehicules[$v->fk_other_vehicule] = $veh;
 				}
@@ -1212,7 +1214,7 @@ class doliFleetVehicule extends SeedObject
 	{
 		global $db;
 
-		$object = new doliFleetVehicule($db);
+		$object = new Vehicule($db);
 		$object->fetch($id, false, $ref);
 
 		return $object->getNomUrl($withpicto, $moreparams);
@@ -1415,7 +1417,7 @@ class doliFleetVehicule extends SeedObject
 			$num=$this->db->num_rows($resql);
 			if ($num > 0) {
 				$obj = $this->db->fetch_object($resql);
-				$vh = new doliFleetVehicule($this->db);
+				$vh = new Vehicule($this->db);
 				$ret = $vh->fetch($obj->linked);
 				if ($ret > 0) {
 					$out = $vh->getNomUrl(1);

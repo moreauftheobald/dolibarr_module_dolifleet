@@ -56,7 +56,7 @@ if (!$sortfield) $sortfield = "name";
 //if (! $sortfield) $sortfield="position_name";
 
 // Initialize technical objects
-$object = new doliFleetVehicule($db);
+$object = new Vehicule($db);
 $extrafields = new ExtraFields($db);
 $diroutputmassaction = $conf->operationorder->dir_output.'/temp/massgeneration/'.$user->id;
 $hookmanager->initHooks(array('vehiculedocument', 'globalcard')); // Note that conf->hooks_modules contains array
