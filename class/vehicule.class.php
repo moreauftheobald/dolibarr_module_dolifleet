@@ -110,8 +110,8 @@ class Vehicule extends SeedObject
 			'index' => 1,
 			'position' => 30,
 			'arrayofkeyval' => array(
-				self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft'
-			, self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
+				self::STATUS_DRAFT => 'doliFleetVehiculeStatusShortDraft',
+				self::STATUS_ACTIVE => 'doliFleetVehiculeStatusShortActivated'
 			)
 		),
 
@@ -252,8 +252,8 @@ class Vehicule extends SeedObject
 			'default' => 0,
 			'position' => 160,
 			'arrayofkeyval' => array(
-				0 => 'Non'
-			, 1 => 'Oui'
+				0 => 'Non',
+				1 => 'Oui'
 			)
 		),
 		'nb_pneu' => array(
