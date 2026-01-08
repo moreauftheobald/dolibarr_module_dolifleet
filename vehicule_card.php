@@ -498,15 +498,21 @@ if ($action == 'create') {
 			}
 			print '</div>' . "\n";
 
-			//print '<div class="fichecenter">';
+			print '<div class="fichecenter">';
+			print '<div class="fichehalfleft">';
 
-			//print '<div class="fichehalfleft">';
-			//print '<div class="underbanner clearboth"></div>';
+			print '<div class="underbanner clearboth"></div>';
 
 			// Activités véhicule
-			//printVehiculeActivities($object/*, true*/);
+			printVehiculeActivities($object/*, true*/);
+			print '</div>'; // fin fichehalfleft
+			print '<div class="fichehalfright">';
 
-			//print '</div>'; // fin fichehalfleft
+			// véhicules liés
+			printLinkedVehicules($object/*, true*/);
+
+			print '</div>'; // fin fichehalfright
+			print '</div>'; // fin fichehalfcenter
 
 			//print '<div class="fichehalfright">';
 			//print '<div class="underbanner clearboth"></div>';
@@ -520,19 +526,10 @@ if ($action == 'create') {
 			print '</div>';    // fin fichecenter
 
 			print '<div class="fichecenter">';
-			print '<div class="fichehalfleft">';
 			print '<div class="underbanner clearboth"></div>';
 
 			// Opérations Np
 			printVehiculeOperationsNp($object);
-
-			print '</div>';    // fin fichehalfleft
-			print '<div class="fichehalfright">';
-
-			// véhicules liés
-			printLinkedVehicules($object/*, true*/);
-
-			print '</div>'; // fin fichehalfright
 
 			print '</div>';    // fin fichecenter
 

@@ -275,8 +275,8 @@ function printVehiculeActivities($object, $fromcard = false)
 				print '<td align="center">' . (!empty($activity->date_end) ? dol_print_date($activity->date_end, "%d/%m/%Y") : '') . '</td>';
 				print '<td align="center">' . $activity->showOutputField($activity->fields['fk_soc'], 'fk_soc', $activity->fk_soc) . '</td>';
 				print '<td align="center">';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '">' . img_edit() . '</a>';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '">' . img_delete() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_edit() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_delete() . '</a>';
 				print '</td>';
 				print '</tr>';
 			}
@@ -368,7 +368,7 @@ function printLinkedVehicules($object, $fromcard = false)
 			print '</td>';
 			print '<td align="center">' . dol_print_date($vehiculelink->date_start, "%d/%m/%Y") . '</td>';
 			print '<td align="center">' . (!empty($vehiculelink->date_end) ? dol_print_date($vehiculelink->date_end, "%d/%m/%Y") : '') . '</td>';
-			print '<td align="center"><a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=unlinkVehicule&linkVehicule_id=' . $vehiculelink->id . '"><span class="fas fa-unlink"></span></a> </td>';
+			print '<td align="center"><a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=unlinkVehicule&linkVehicule_id=' . $vehiculelink->id . '&token='. newToken() . '"><span class="fas fa-unlink"></span></a> </td>';
 			print '</tr>';
 		}
 	}
@@ -633,8 +633,8 @@ function printVehiculeOperations($object)
 				}
 				print '</td>';
 				print '<td align="center">';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editOperation&ope_id=' . $operation->id . '">' . img_edit() . '</a>';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperation&ope_id=' . $operation->id . '">' . img_delete() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editOperation&ope_id=' . $operation->id . '&token='. newToken() . '">' . img_edit() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperation&ope_id=' . $operation->id . '&token='. newToken() . '">' . img_delete() . '</a>';
 				print '</td>';
 			}
 			print '</tr>';
@@ -716,7 +716,7 @@ function printVehiculeOperationsNp($object)
 			print '<tr>';
 			print '<td align="left">' . $operation->getName() . '</td>';
 			print '<td align="center">';
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperationNp&openp_id=' . $operation->id . '">' . img_delete() . '</a>';
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperationNp&openp_id=' . $operation->id . '&token='. newToken() . '">' . img_delete() . '</a>';
 			print '</td>';
 			print '</tr>';
 		}
@@ -727,7 +727,7 @@ function printVehiculeOperationsNp($object)
 		print '<tr>';
 
 		print '<td align="center">';
-		print $form->select_produits(GETPOST('productid'), 'productid', 1, 0, 0, 1, 2, '', 0);
+		print $form->select_produits(GETPOST('productidnp'), 'productidnp', 1, 0, 0, 1, 2, '', 0);
 		print '</td>';
 
 		print '<td align="center" colspan="2">';
@@ -742,8 +742,8 @@ function printVehiculeOperationsNp($object)
 	print '</form>';
 	?>
 	<script>
-		$("#search_productid").removeClass("minwidth100");
-		$("#search_productid").addClass("quatrevingtpercent");
+		$("#search_productidnp").removeClass("minwidth100");
+		$("#search_productidnp").addClass("quatrevingtpercent");
 	</script>
 	<?php
 }
