@@ -511,13 +511,6 @@ if ($action == 'create') {
 			//print '<div class="fichehalfright">';
 			//print '<div class="underbanner clearboth"></div>';
 
-			// véhicules liés
-			//printLinkedVehicules($object/*, true*/);
-
-			//print '</div>'; // fin fichehalfright
-			//print '</div>';    // fin fichecenter
-			//print '<div class="clearboth"></div><br />';
-
 			print '<div class="fichecenter">';
 			print '<div class="underbanner clearboth"></div>';
 
@@ -527,10 +520,19 @@ if ($action == 'create') {
 			print '</div>';    // fin fichecenter
 
 			print '<div class="fichecenter">';
+			print '<div class="fichehalfleft">';
 			print '<div class="underbanner clearboth"></div>';
 
 			// Opérations Np
 			printVehiculeOperationsNp($object);
+
+			print '</div>';    // fin fichehalfleft
+			print '<div class="fichehalfright">';
+
+			// véhicules liés
+			printLinkedVehicules($object/*, true*/);
+
+			print '</div>'; // fin fichehalfright
 
 			print '</div>';    // fin fichecenter
 
