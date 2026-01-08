@@ -116,7 +116,7 @@ class Vehicule extends SeedObject
 		),
 
 		'fk_vehicule_type' => array(
-			'type' => 'sellist:c_dolifleet_vehicule_type:label:rowid::active=1',
+			'type' => 'sellist:c_dolifleet_vehicule_type:label:rowid::(active:=:1)',
 			'label' => 'vehiculeType',
 			'visible' => 1,
 			'notnull' => 1,
@@ -127,7 +127,7 @@ class Vehicule extends SeedObject
 		),
 
 		'fk_vehicule_mark' => array(
-			'type' => 'sellist:c_dolifleet_vehicule_mark:label:rowid::active=1',
+			'type' => 'sellist:c_dolifleet_vehicule_mark:label:rowid::(active:=:1)',
 			'label' => 'vehiculeMark',
 			'visible' => 1,
 			'notnull' => 1,
@@ -211,7 +211,7 @@ class Vehicule extends SeedObject
 		),
 
 		'fk_contract_type' => array(
-			'type' => 'sellist:c_dolifleet_contract_type:label:rowid::(active=1)',
+			'type' => 'sellist:c_dolifleet_contract_type:label:rowid::(active:=:1)',
 			'label' => 'contractType',
 			'visible' => 1,
 			'enabled' => 1,
@@ -228,7 +228,7 @@ class Vehicule extends SeedObject
 		),
 
 		'atelier' => array(
-			'type' => 'sellist:entity:label:rowid::visible=1',
+			'type' => 'sellist:entity:label:rowid::(visible:=:1)',
 			'label' => 'AtelierPrincipal',
 			'visible' => 1,
 			'enabled' => 1,
@@ -265,7 +265,7 @@ class Vehicule extends SeedObject
 		),
 
 		'dim_pneu' => array(
-			'type' => 'chkbxlst:c_dolifleet_vehicule_dimpneu:label:rowid::(1=active)',
+			'type' => 'chkbxlst:c_dolifleet_vehicule_dimpneu:label:rowid::(active:=:1)',
 			'label' => 'DimensionsPneumatiques',
 			'enabled' => 1,
 			'visible' => '1',
