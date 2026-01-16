@@ -525,13 +525,11 @@ if ($action == 'create') {
 
 			print '</div>';    // fin fichecenter
 
-			print '<div class="fichecenter">';
-			print '<div class="underbanner clearboth"></div>';
-
+			//print '<div class="fichecenter">';
+			//print '<div class="underbanner clearboth"></div>';
 			// Opérations Np
-			printVehiculeOperationsNp($object);
-
-			print '</div>';    // fin fichecenter
+			//printVehiculeOperationsNp($object);
+			//print '</div>';    // fin fichecenter
 
 			//print '<div class="fichecenter">';
 
