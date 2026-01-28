@@ -101,31 +101,6 @@ function vehicule_prepare_head(doliFleetVehicule $object)
 }
 
 /**
- * Return array of tabs to used on pages for third parties cards.
- *
- * @param 	dolifleetRentalProposal	$object		Object company shown
- * @return 	array				Array of tabs
- */
-function rental_proposal_prepare_head(dolifleetRentalProposal $object)
-{
-    global $langs, $conf;
-    $h = 0;
-    $head = array();
-    $head[$h][0] = dol_buildpath('/dolifleet/rental_proposal_card.php', 1).'?id='.$object->id;
-    $head[$h][1] = $langs->trans("doliFleetRentalProposalCard");
-    $head[$h][2] = 'card';
-    $h++;
-
-	// Show more tabs from modules
-    // Entries must be declared in modules descriptor with line
-    // $this->tabs = array('entity:+tabname:Title:@dolifleet:/dolifleet/mypage.php?id=__ID__');   to add new tab
-    // $this->tabs = array('entity:-tabname:Title:@dolifleet:/dolifleet/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf, $langs, $object, $head, $h, 'dolifleetRentalProposal');
-
-	return $head;
-}
-
-/**
  * @param Form      $form       Form object
  * @param doliFleet  $object     doliFleet object
  * @param string    $action     Triggered action
@@ -142,21 +117,6 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
         $body = $langs->trans('ConfirmActivatedoliFleetVehiculeBody', $object->immatriculation);
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmActivatedoliFleetVehiculeTitle'), $body, 'confirm_validate', '', 0, 1);
     }
-    elseif ($action === 'validate' && !empty($user->rights->dolifleet->write))
-    {
-        $body = $langs->trans('ConfirmValidateRentalProposalBody');
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmValidateRentalProposalTitle'), $body, 'confirm_validate', '', 0, 1);
-    }
-    elseif ($action === 'accept' && !empty($user->rights->dolifleet->write))
-    {
-        $body = $langs->trans('ConfirmAcceptRentalProposalBody');
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmAcceptRentalProposalTitle'), $body, 'confirm_accept', '', 0, 1);
-    }
-    elseif ($action === 'close' && !empty($user->rights->dolifleet->write))
-    {
-        $body = $langs->trans('ConfirmCloseRentalProposalBody');
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloseRentalProposalTitle'), $body, 'confirm_close', '', 0, 1);
-    }
     elseif ($action === 'modif' && !empty($user->rights->dolifleet->write))
     {
         $body = $langs->trans('ConfirmReopendoliFleetVehiculeBody', $object->immatriculation);
@@ -165,11 +125,6 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
     elseif ($action === 'delete' && !empty($user->rights->dolifleet->delete))
     {
         $body = $langs->trans('ConfirmDeletedoliFleetVehiculeBody');
-        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
-    }
-    elseif ($action === 'deleteRental' && !empty($user->rights->dolifleet->delete))
-    {
-        $body = $langs->trans('ConfirmDeleteRentalBody');
         $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
     }
     elseif ($action === 'clone' && !empty($user->rights->dolifleet->write))
