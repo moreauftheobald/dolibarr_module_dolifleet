@@ -39,11 +39,6 @@ function dolifleetAdminPrepareHead()
     $head[$h][2] = 'settings';
     $h++;
 
-    $head[$h][0] = dol_buildpath("/dolifleet/admin/rental_matrix.php", 1);
-    $head[$h][1] = $langs->trans("rentalMatrix");
-    $head[$h][2] = 'matrix';
-    $h++;
-
     $head[$h][0] = dol_buildpath("/dolifleet/admin/vehicule_extrafields.php", 1);
     $head[$h][1] = $langs->trans("ExtraFields");
     $head[$h][2] = 'extrafields';
@@ -151,11 +146,6 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 	{
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&ope_id='.GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
-	}
-	elseif ($action === 'delMatrixLine' && !empty($user->rights->dolifleet->write))
-	{
-		$body = $langs->trans('ConfirmDeldoliFleetLineBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id='.GETPOST('id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delMatrixLine', '', 0, 1);
 	}
 
     return $formconfirm;
