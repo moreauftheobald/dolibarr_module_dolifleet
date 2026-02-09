@@ -312,6 +312,14 @@ class Vehicule extends SeedObject
 			'position' => 190
 		),
 
+		'com_custom' => array(
+			'type' => 'text', // or html for WYSWYG
+			'label' => 'Commentaire',
+			'enabled' => 1,
+			'visible' => '1',
+			'position' => 200
+		),
+
 		'date_fin_loc' => array(
 			'type' => 'date',
 			'label' => 'DateEndLocation',
