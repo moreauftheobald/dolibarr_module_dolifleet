@@ -15,64 +15,168 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-global $conf;
-
 require 'config.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 dol_include_once('dolifleet/class/vehicule.class.php');
 dol_include_once('dolifleet/class/vehiculeOperation.class.php');
 dol_include_once('operationorder/class/operationorder.class.php');
-dol_include_once('dolifleet/class/dictionaryContractType.class.php');
-dol_include_once('dolifleet/class/dictionaryVehiculeType.class.php');
-dol_include_once('dolifleet/class/dictionaryVehiculeMark.class.php');
 
-if (empty($user->hasRight("dolifleet", "read"))) accessforbidden();
-
-$langs->load('abricot@abricot');
-$langs->load('dolifleet@dolifleet');
-
-$fk_soc = GETPOST('fk_soc', 'int');
-$fk_product = GETPOST('fk_product', 'int');
-$or_next = GETPOST('or_next', 'int');
-$search_by=GETPOST('search_by', 'alpha');
-$sall=GETPOST('search_all');
-if (!empty($sall)) {
-	$_GET['Listview_dolifleet_search_sall'] = $sall;
+if (empty($user->hasRight("dolifleet", "read"))) {
+	accessforbidden();
 }
 
+$langs->loadLangs(array("dolifleet@dolifleet", "products"));
 
+// Get parameters
+$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view';
 $massaction = GETPOST('massaction', 'alpha');
-$action = GETPOST('action', 'alpha');
-$confirmmassaction = GETPOST('confirmmassaction', 'alpha');
-$toselect = GETPOST('toselect', 'array');
+$confirm = GETPOST('confirm', 'alpha');
+$cancel = GETPOST('cancel', 'alpha');
+$toselect = GETPOST('toselect', 'array:int');
+$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'vehiculeoperationlist';
+$backtopage = GETPOST('backtopage', 'alpha');
+$optioncss = GETPOST('optioncss', 'aZ');
+$mode = GETPOST('mode', 'aZ');
 
+// Load variable for pagination
+$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$sortfield = GETPOST('sortfield', 'aZ09comma');
+$sortorder = GETPOST('sortorder', 'aZ09comma');
+$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
+if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	$page = 0;
+}
+$offset = $limit * $page;
+$pageprev = $page - 1;
+$pagenext = $page + 1;
+
+if (!$sortfield) {
+	$sortfield = 'o.date_next';
+}
+if (!$sortorder) {
+	$sortorder = 'ASC';
+}
+
+// Initialize technical objects
 $object = new Vehicule($db);
 $operation = new dolifleetVehiculeOperation($db);
-$dictCT = new dictionaryContractType($db);
-$dictVT = new dictionaryVehiculeType($db);
-$dictVM = new dictionaryVehiculeMark($db);
-
+$form = new Form($db);
 $hookmanager->initHooks(array('vehiculeoperationlist'));
+
+// Initialize search criteria
+$search = array();
+$search['t_vin'] = GETPOST('search_t_vin', 'alpha');
+$search['t_immatriculation'] = GETPOST('search_t_immatriculation', 'alpha');
+$search['t_fk_vehicule_type'] = GETPOST('search_t_fk_vehicule_type', 'alpha');
+$search['t_fk_vehicule_mark'] = GETPOST('search_t_fk_vehicule_mark', 'alpha');
+$search['t_fk_soc'] = GETPOSTINT('search_t_fk_soc');
+$search['t_fk_contract_type'] = GETPOST('search_t_fk_contract_type', 'alpha');
+$search['t_km'] = GETPOST('search_t_km', 'alpha');
+$search['o_fk_product'] = GETPOST('search_o_fk_product', 'array');
+$search['o_km'] = GETPOST('search_o_km', 'alpha');
+$search['o_delai_from_last_op'] = GETPOST('search_o_delai_from_last_op', 'alpha');
+$search['o_km_done'] = GETPOST('search_o_km_done', 'alpha');
+$search['o_km_next'] = GETPOST('search_o_km_next', 'alpha');
+$search['o_on_time'] = GETPOST('search_o_on_time', 'alpha');
+$search['o_or_next'] = GETPOST('search_o_or_next', 'alpha');
+$search['p_label'] = GETPOST('search_p_label', 'alpha');
+
+// Date search fields
+$search['t_date_immat_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_t_date_immat_dtstartmonth'), GETPOSTINT('search_t_date_immat_dtstartday'), GETPOSTINT('search_t_date_immat_dtstartyear'));
+$search['t_date_immat_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_t_date_immat_dtendmonth'), GETPOSTINT('search_t_date_immat_dtendday'), GETPOSTINT('search_t_date_immat_dtendyear'));
+$search['t_date_customer_exploit_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_t_date_customer_exploit_dtstartmonth'), GETPOSTINT('search_t_date_customer_exploit_dtstartday'), GETPOSTINT('search_t_date_customer_exploit_dtstartyear'));
+$search['t_date_customer_exploit_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_t_date_customer_exploit_dtendmonth'), GETPOSTINT('search_t_date_customer_exploit_dtendday'), GETPOSTINT('search_t_date_customer_exploit_dtendyear'));
+$search['t_km_date_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_t_km_date_dtstartmonth'), GETPOSTINT('search_t_km_date_dtstartday'), GETPOSTINT('search_t_km_date_dtstartyear'));
+$search['t_km_date_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_t_km_date_dtendmonth'), GETPOSTINT('search_t_km_date_dtendday'), GETPOSTINT('search_t_km_date_dtendyear'));
+$search['t_date_end_contract_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_t_date_end_contract_dtstartmonth'), GETPOSTINT('search_t_date_end_contract_dtstartday'), GETPOSTINT('search_t_date_end_contract_dtstartyear'));
+$search['t_date_end_contract_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_t_date_end_contract_dtendmonth'), GETPOSTINT('search_t_date_end_contract_dtendday'), GETPOSTINT('search_t_date_end_contract_dtendyear'));
+$search['o_date_done_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_o_date_done_dtstartmonth'), GETPOSTINT('search_o_date_done_dtstartday'), GETPOSTINT('search_o_date_done_dtstartyear'));
+$search['o_date_done_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_o_date_done_dtendmonth'), GETPOSTINT('search_o_date_done_dtendday'), GETPOSTINT('search_o_date_done_dtendyear'));
+$search['o_date_next_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_o_date_next_dtstartmonth'), GETPOSTINT('search_o_date_next_dtstartday'), GETPOSTINT('search_o_date_next_dtstartyear'));
+$search['o_date_next_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_o_date_next_dtendmonth'), GETPOSTINT('search_o_date_next_dtendday'), GETPOSTINT('search_o_date_next_dtendyear'));
+$search['o_date_due_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_o_date_due_dtstartmonth'), GETPOSTINT('search_o_date_due_dtstartday'), GETPOSTINT('search_o_date_due_dtstartyear'));
+$search['o_date_due_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_o_date_due_dtendmonth'), GETPOSTINT('search_o_date_due_dtendday'), GETPOSTINT('search_o_date_due_dtendyear'));
+
+// Build list of available products for the multiselect filter
+$sql_prod = 'SELECT op.fk_product, p.label';
+$sql_prod .= ' FROM '.MAIN_DB_PREFIX.'dolifleet_vehicule_operation AS op';
+$sql_prod .= ' INNER JOIN '.MAIN_DB_PREFIX.'product as p ON p.rowid = op.fk_product';
+$sql_prod .= ' INNER JOIN '.MAIN_DB_PREFIX.'dolifleet_vehicule as v ON v.rowid = op.fk_vehicule';
+$sql_prod .= ' WHERE v.status = 1 AND p.tosell = 1 AND p.tobuy = 1';
+$sql_prod .= ' GROUP BY op.fk_product, p.label';
+$prod_array = array();
+$resql_prod = $db->query($sql_prod);
+if ($resql_prod) {
+	while ($obj = $db->fetch_object($resql_prod)) {
+		$prod_array[$obj->fk_product] = $obj->label;
+	}
+}
+
+// Definition of array of fields for columns
+$arrayfields = array(
+	't.vin' => array('label' => 'VIN', 'checked' => 1, 'position' => 10),
+	't.fk_vehicule_type' => array('label' => 'vehiculeType', 'checked' => 1, 'position' => 20),
+	't.fk_vehicule_mark' => array('label' => 'vehiculeMark', 'checked' => 1, 'position' => 30),
+	't.immatriculation' => array('label' => 'immatriculation', 'checked' => 1, 'position' => 40),
+	't.date_immat' => array('label' => 'immatriculation_date_short', 'checked' => 0, 'position' => 50),
+	't.fk_soc' => array('label' => 'ThirdParty', 'checked' => 1, 'position' => 60),
+	't.date_customer_exploit' => array('label' => 'date_customer_exploit', 'checked' => 0, 'position' => 70),
+	't.km' => array('label' => 'kilometrage', 'checked' => 1, 'position' => 80),
+	't.km_date' => array('label' => 'km_date', 'checked' => 0, 'position' => 90),
+	't.fk_contract_type' => array('label' => 'contractType', 'checked' => 0, 'position' => 100),
+	't.date_end_contract' => array('label' => 'date_end_contract', 'checked' => 0, 'position' => 110),
+	't.status' => array('label' => 'Status', 'checked' => 1, 'position' => 115),
+	'o.fk_product' => array('label' => 'VehiculeOperation', 'checked' => 1, 'position' => 120),
+	'p.label' => array('label' => 'libelle', 'checked' => 1, 'position' => 125),
+	'o.km' => array('label' => 'km', 'checked' => 1, 'position' => 130),
+	'o.delai_from_last_op' => array('label' => 'VehiculeOperationDelay', 'checked' => 1, 'position' => 140),
+	'o.date_done' => array('label' => 'VehiculeOperationLastDateDone', 'checked' => 1, 'position' => 150),
+	'o.km_done' => array('label' => 'VehiculeOperationLastKmDone', 'checked' => 1, 'position' => 160),
+	'o.date_next' => array('label' => 'VehiculeOperationDateNext', 'checked' => 1, 'position' => 170),
+	'o.date_due' => array('label' => 'VehiculeOperationDateDue', 'checked' => 1, 'position' => 180),
+	'o.km_next' => array('label' => 'VehiculeOperationKmNext', 'checked' => 1, 'position' => 190),
+	'o.on_time' => array('label' => 'VehiculeOperationOnTime', 'checked' => 1, 'position' => 200),
+	'o.or_next' => array('label' => 'VehiculeOperationNextOR', 'checked' => 1, 'position' => 210),
+);
+$arrayfields = dol_sort_array($arrayfields, 'position');
+
 
 /*
  * Actions
  */
 
-$parameters=array();
-$reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
-if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
-
+if (GETPOST('cancel', 'alpha')) {
+	$action = 'list';
+	$massaction = '';
+}
 if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
-	unset($fk_soc);
+$parameters = array('arrayfields' => &$arrayfields);
+$reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action);
+if ($reshook < 0) {
+	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
 if (empty($reshook)) {
-	// do action from GETPOST ...
+	// Selection of new fields
+	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+
+	// Purge search criteria
+	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+		foreach ($search as $key => $val) {
+			$search[$key] = '';
+		}
+		$toselect = array();
+	}
+	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
+		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+		$massaction = '';
+	}
 }
 
 
@@ -80,275 +184,540 @@ if (empty($reshook)) {
  * View
  */
 
-llxHeader('', $langs->trans('doliFleetVehiculeOperationList'), '', '');
+$title = $langs->trans('doliFleetVehiculeOperationList');
+$help_url = '';
 
-$sql_prod  = 'SELECT op.fk_product, p.label
-		 FROM '. MAIN_DB_PREFIX .'dolifleet_vehicule_operation AS op
-		 INNER JOIN '. MAIN_DB_PREFIX .'product as p on p.rowid = op.fk_product
-		 INNER JOIN '. MAIN_DB_PREFIX .'dolifleet_vehicule as v on v.rowid = op.fk_vehicule
-         WHERE v.status =1 AND p.tosell = 1 AND p.tobuy = 1
-         GROUP BY op.fk_product, p.label';
+llxHeader('', $title, $help_url, '', 0, 0, array(), array(), '', 'mod-dolifleet page-operationlist bodyforlist');
 
-$prod_array = array();
-$resql_prod = $db->query($sql_prod);
-if ($resql_prod) {
-	$num = $db->num_rows($resql_prod);
-	if ($num) {
-		while ($obj = $db->fetch_object($resql_prod)) {
-			$prod_array[$obj->fk_product] = $obj->label;
-		}
-	}
-}
 
-//$type = GETPOST('type');
-//if (empty($user->hasRight("dolifleet","all","read"))) $type = 'mine';
-
-$formconfirm = '';
-
-$parameters = array('formConfirm' => $formconfirm);
-$reshook = $hookmanager->executeHooks('formConfirm', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-if (empty($reshook)) $formconfirm .= $hookmanager->resPrint;
-elseif ($reshook > 0) $formconfirm = $hookmanager->resPrint;
-
-// Print form confirm
-print $formconfirm;
-
-$TfieldList=array();
-foreach ($object->fields as $key=>$datafields) {
-	$TfieldList[] = 't.'.$key. ' as t_'.$key;
-}
-
-foreach ($operation->fields as $key=>$datafields) {
-	$TfieldList[] = 'o.'.$key. ' as o_'.$key;
-}
-$TfieldList[] = 'p.label as p_label';
-
-$fieldList = implode(',', $TfieldList);
-
-$sql = 'SELECT '.$fieldList;
+// Build and execute select
+// --------------------------------------------------------------------
+$sql = 'SELECT t.rowid as t_rowid, t.vin, t.fk_vehicule_type, t.fk_vehicule_mark, t.immatriculation,';
+$sql .= ' t.date_immat, t.fk_soc, t.date_customer_exploit, t.km as t_km, t.km_date,';
+$sql .= ' t.fk_contract_type, t.date_end_contract, t.status as t_status,';
+$sql .= ' o.rowid as o_rowid, o.fk_product, o.km as o_km, o.delai_from_last_op,';
+$sql .= ' o.date_done, o.km_done, o.date_next, o.date_due, o.km_next, o.on_time, o.or_next,';
+$sql .= ' p.label as p_label';
 
 // Add fields from hooks
-$parameters=array('sql' => $sql);
-$reshook=$hookmanager->executeHooks('printFieldListSelect', $parameters, $object);    // Note that $action and $object may have been modified by hook
-$sql.=$hookmanager->resPrint;
+$parameters = array();
+$reshook = $hookmanager->executeHooks('printFieldListSelect', $parameters, $object, $action);
+$sql .= $hookmanager->resPrint;
 
-$sql.= ' FROM '.MAIN_DB_PREFIX.$object->table_element.' t ';
-$sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.$operation->table_element.' o ON o.fk_vehicule=t.rowid ';
-$sql.= ' LEFT JOIN  '.MAIN_DB_PREFIX.$object->table_element.'_extrafields te ON te.fk_object=t.rowid ';
-$sql.= ' INNER JOIN  '.MAIN_DB_PREFIX.'product as p ON o.fk_product=p.rowid ';
+$sqlfields = $sql; // $sql fields to remove for count total
 
-$sql.= ' WHERE 1=1';
-$sql.= ' AND t.entity IN ('.getEntity('dolifleet', 1).') AND t.status = 1';
-if ($conf->entity !=1) {
-	$sql .= " AND o.date_next < '" . $db->idate(dol_time_plus_duree(dol_now(), (int) getDolGlobalInt("THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION"), 'm')) . "'";
+$sql .= ' FROM '.MAIN_DB_PREFIX.'dolifleet_vehicule as t';
+$sql .= ' INNER JOIN '.MAIN_DB_PREFIX.'dolifleet_vehicule_operation as o ON o.fk_vehicule = t.rowid';
+$sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'dolifleet_vehicule_extrafields as te ON te.fk_object = t.rowid';
+$sql .= ' INNER JOIN '.MAIN_DB_PREFIX.'product as p ON o.fk_product = p.rowid';
+
+// Add table from hooks
+$parameters = array();
+$reshook = $hookmanager->executeHooks('printFieldListFrom', $parameters, $object, $action);
+$sql .= $hookmanager->resPrint;
+
+$sql .= ' WHERE 1 = 1';
+$sql .= ' AND t.entity IN ('.getEntity('dolifleet', 1).')';
+$sql .= ' AND t.status = 1';
+
+if ($conf->entity != 1) {
+	$sql .= " AND o.date_next < '".$db->idate(dol_time_plus_duree(dol_now(), (int) getDolGlobalInt("THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION"), 'm'))."'";
+	$sql .= ' AND t.atelier IN ('.$conf->entity.')';
 }
-if ($conf->entity!=1) {
-	$sql .= ' AND t.atelier IN (' . $conf->entity . ')';
+
+// Search filters
+if (!empty($search['t_vin'])) {
+	$sql .= natural_search('t.vin', $search['t_vin']);
+}
+if (!empty($search['t_immatriculation'])) {
+	$sql .= natural_search('t.immatriculation', $search['t_immatriculation']);
+}
+if (!empty($search['t_fk_vehicule_type'])) {
+	$sql .= natural_search('t.fk_vehicule_type', $search['t_fk_vehicule_type'], 2);
+}
+if (!empty($search['t_fk_vehicule_mark'])) {
+	$sql .= natural_search('t.fk_vehicule_mark', $search['t_fk_vehicule_mark'], 2);
+}
+if (!empty($search['t_fk_soc']) && $search['t_fk_soc'] > 0) {
+	$sql .= ' AND t.fk_soc = '.((int) $search['t_fk_soc']);
+}
+if (!empty($search['t_fk_contract_type'])) {
+	$sql .= natural_search('t.fk_contract_type', $search['t_fk_contract_type'], 2);
+}
+if ($search['t_km'] !== '' && $search['t_km'] !== null) {
+	$sql .= natural_search('t.km', $search['t_km'], 1);
+}
+if (!empty($search['o_fk_product']) && is_array($search['o_fk_product'])) {
+	$cleanIds = array_map('intval', $search['o_fk_product']);
+	$sql .= ' AND o.fk_product IN ('.implode(',', $cleanIds).')';
+}
+if ($search['o_km'] !== '' && $search['o_km'] !== null) {
+	$sql .= natural_search('o.km', $search['o_km'], 1);
+}
+if ($search['o_delai_from_last_op'] !== '' && $search['o_delai_from_last_op'] !== null) {
+	$sql .= natural_search('o.delai_from_last_op', $search['o_delai_from_last_op'], 1);
+}
+if ($search['o_km_done'] !== '' && $search['o_km_done'] !== null) {
+	$sql .= natural_search('o.km_done', $search['o_km_done'], 1);
+}
+if ($search['o_km_next'] !== '' && $search['o_km_next'] !== null) {
+	$sql .= natural_search('o.km_next', $search['o_km_next'], 1);
+}
+if (!empty($search['o_on_time'])) {
+	$sql .= natural_search('o.on_time', $search['o_on_time'], 2);
+}
+if ($search['o_or_next'] !== '' && $search['o_or_next'] !== null) {
+	if ($search['o_or_next'] == 1) {
+		$sql .= ' AND o.or_next > 0 AND o.or_next IS NOT NULL';
+	} elseif ($search['o_or_next'] === '0') {
+		$sql .= ' AND (o.or_next IS NULL OR o.or_next = 0)';
+	}
+}
+if (!empty($search['p_label'])) {
+	$sql .= natural_search('p.label', $search['p_label']);
 }
 
-if (GETPOSTISSET('o_fk_product')) {
-	$sql .= ' AND o.fk_product IN (' . implode(',', GETPOST('o_fk_product', 'array')) . ')';
+// Date range filters
+$dateFields = array(
+	't_date_immat' => 't.date_immat',
+	't_date_customer_exploit' => 't.date_customer_exploit',
+	't_km_date' => 't.km_date',
+	't_date_end_contract' => 't.date_end_contract',
+	'o_date_done' => 'o.date_done',
+	'o_date_next' => 'o.date_next',
+	'o_date_due' => 'o.date_due',
+);
+foreach ($dateFields as $searchKey => $sqlField) {
+	if (!empty($search[$searchKey.'_dtstart'])) {
+		$sql .= " AND ".$sqlField." >= '".$db->idate($search[$searchKey.'_dtstart'])."'";
+	}
+	if (!empty($search[$searchKey.'_dtend'])) {
+		$sql .= " AND ".$sqlField." <= '".$db->idate($search[$searchKey.'_dtend'])."'";
+	}
 }
-
-if (!empty($fk_soc) && $fk_soc > 0) $sql.= ' AND t.fk_soc = '.$fk_soc;
-if (!empty($or_next) && $or_next > 0) $sql.= ' AND o.or_next > 0 AND o.or_next IS NOT NULL';
 
 // Add where from hooks
-$parameters=array('sql' => $sql);
-$reshook=$hookmanager->executeHooks('printFieldListWhere', $parameters, $object);    // Note that $action and $object may have been modified by hook
-$sql.=$hookmanager->resPrint;
+$parameters = array();
+$reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object, $action);
+$sql .= $hookmanager->resPrint;
 
-$formcore = new TFormCore($_SERVER['PHP_SELF'], 'form_list_dolifleet', 'GET');
-print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
-$form = new Form($db);
+// Count total nb of records
+$nbtotalofrecords = '';
+if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
+	$sqlforcount = preg_replace('/^'.preg_quote($sqlfields, '/').'/', 'SELECT COUNT(*) as nbtotalofrecords', $sql);
+	$sqlforcount = preg_replace('/GROUP BY .*$/', '', $sqlforcount);
 
-$nbLine = GETPOST('limit');
-if (empty($nbLine)) $nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : getDolGlobalInt("MAIN_SIZE_LISTE_LIMIT");
+	$resql = $db->query($sqlforcount);
+	if ($resql) {
+		$objforcount = $db->fetch_object($resql);
+		$nbtotalofrecords = $objforcount->nbtotalofrecords;
+	} else {
+		dol_print_error($db);
+	}
 
-// configuration listView
-
-$TTitle = array();
-
-foreach ($object->fields as $fieldKey => $infos) {
-	if (isset($infos['label']) && $infos['visible'] > 0) $TTitle['t_'.$fieldKey] = $langs->trans($infos['label']);
+	if (($page * $limit) > $nbtotalofrecords) {
+		$page = 0;
+		$offset = 0;
+	}
+	$db->free($resql);
 }
 
-$TTitle['t_status'] = $langs->trans('Status');
+// Complete request and execute it with limit
+$sql .= $db->order($sortfield, $sortorder);
+if ($limit) {
+	$sql .= $db->plimit($limit + 1, $offset);
+}
 
-foreach ($operation->fields as $fieldKey => $infos) {
-	if (isset($infos['label']) && $infos['visible'] > 0) {
-		$TTitle['o_'.$fieldKey] = $langs->trans($infos['label']);
-		if ($infos['label']=='VehiculeOperation') {
-			$TTitle['p_label'] = $langs->trans('libelle');
+$resql = $db->query($sql);
+if (!$resql) {
+	dol_print_error($db);
+	exit;
+}
+
+$num = $db->num_rows($resql);
+
+
+// Output page
+// --------------------------------------------------------------------
+
+$arrayofselected = is_array($toselect) ? $toselect : array();
+
+$param = '';
+if (!empty($mode)) {
+	$param .= '&mode='.urlencode($mode);
+}
+if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) {
+	$param .= '&contextpage='.urlencode($contextpage);
+}
+if ($limit > 0 && $limit != $conf->liste_limit) {
+	$param .= '&limit='.((int) $limit);
+}
+if ($optioncss != '') {
+	$param .= '&optioncss='.urlencode($optioncss);
+}
+foreach ($search as $key => $val) {
+	if (is_array($val)) {
+		foreach ($val as $skey) {
+			if ($skey != '') {
+				$param .= '&search_'.$key.'[]='.urlencode($skey);
+			}
 		}
+	} elseif (preg_match('/(_dtstart|_dtend)$/', $key) && !empty($val)) {
+		$param .= '&search_'.$key.'month='.GETPOSTINT('search_'.$key.'month');
+		$param .= '&search_'.$key.'day='.GETPOSTINT('search_'.$key.'day');
+		$param .= '&search_'.$key.'year='.GETPOSTINT('search_'.$key.'year');
+	} elseif ($val != '') {
+		$param .= '&search_'.$key.'='.urlencode($val);
 	}
 }
-unset($TTitle['o_fk_vehicule']);
+// Add $param from hooks
+$parameters = array('param' => &$param);
+$reshook = $hookmanager->executeHooks('printFieldListSearchParam', $parameters, $object, $action);
+$param .= $hookmanager->resPrint;
 
-$listViewConfig = array(
-	'view_type' => 'list' // default = [list], [raw], [chart]
-	,'allow-fields-select' => true
-	,'limit'=>array(
-		'nbLine' => $nbLine
-	)
-	,'list' => array(
-		'title' => $langs->trans('doliFleetVehiculeOperationList')
-		,'image' => 'title_generic.png'
-		,'picto_precedent' => '<'
-		,'picto_suivant' => '>'
-		,'noheader' => 0
-		,'messageNothing' => $langs->trans('NodoliFleet')
-		,'picto_search' => img_picto('', 'search.png', '', 0)
-		,'massactions'=>array(
-//			'yourmassactioncode'  => $langs->trans('YourMassActionLabel')
-		)
-		,'param_url' => '&limit='.$nbLine
-	)
-	,'subQuery' => array()
-	,'link' => array()
-	,'type' => array(
-		't_date_creation' => 'date' // [datetime], [hour], [money], [number], [integer]
-		,'t_tms' => 'date'
-		,'t_date_immat'=>'date'
-		,'t_date_customer_exploit'=>'date'
-		,'t_km_date'=>'date'
-		,'t_date_end_contract'=>'date'
-		,'o_date_done'=>'date'
-		,'o_date_next'=>'date'
-		,'o_date_due'=>'date'
-	)
-	,'search' => array(
-		't_vin' => array('search_type' => true, 'table' => 't', 'field' => 'vin')
-		,'t_fk_vehicule_type' => array('search_type' => $dictVT->getAllActiveArray('label'),'field'=>'fk_vehicule_type','table' => 't')
-		,'t_fk_vehicule_mark' => array('search_type' => $dictVM->getAllActiveArray('label'),'field'=>'fk_vehicule_mark','table' => 't')
-		,'t_immatriculation' => array('search_type' => true, 'table' => 't' ,'field' => 'immatriculation')
-		,'t_date_immat' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'date_immat')
-		,'t_fk_soc' => array('search_type' => 'override', 'override'=> $form->select_company($fk_soc, 'fk_soc'))
-		,'t_date_customer_exploit' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'date_customer_exploit')
-		,'t_km' => array('search_type' => true, 'table' => 't', 'field' => 'km')
-		,'sall' => array('search_type' => true, 'table' => 't', 'field' => array('vin','immatriculation'))
-		,'t_km_date' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'km_date')
-		,'t_fk_contract_type' => array('search_type' => $dictCT->getAllActiveArray('label'),'table' => 't' ,'field' => 'fk_contract_type')
-		,'t_date_end_contract' => array('search_type' => 'calendars', 'allow_is_null' => false,'table' => 't' ,'field' => 'date_end_contract')
-		,'o_fk_product' => array('search_type' => 'override', 'override' => $form->multiselectarray('o_fk_product', $prod_array, GETPOST('o_fk_product', 'array'), '', 0, '', 0, '100%'))
-		,'p_label' => array('search_type' => true, 'table' => 'p', 'field' => 'label')
-		,'o_km' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km')
-		,'o_delai_from_last_op' =>  array('search_type' => true, 'table' => 'o', 'field' => 'delai_from_last_op')
-		,'o_date_done' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_done')
-		,'o_km_done' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km_done')
-		,'o_date_next' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_next')
-		,'o_date_due' =>  array('search_type' => 'calendars', 'table' => 'o', 'field' => 'date_due')
-		,'o_km_next' =>  array('search_type' => true, 'table' => 'o', 'field' => 'km_next')
-		,'o_on_time' =>  array('search_type' => (array('1'=>$langs->trans('VehiculeOperationOnTime'))), 'table' => 'o', 'field' => 'on_time',)
-		,'o_or_next' =>  array('search_type' => 'override', 'override'=>$form->selectarray('or_next', array(0=>$langs->trans('Empty'),1=>$langs->trans('NotEmpty')), $or_next, 1))
-	)
-	,'translate' => array()
-	,'hide' => array(
-		't_rowid' // important : rowid doit exister dans la query sql pour les checkbox de massaction
-		,'o_rowid' // important : rowid doit exister dans la query sql pour les checkbox de massaction
-		,'o_fk_vehicule'
-	)
-	,'title'=>$TTitle
-	,'eval'=>array(
-		't_vin' => '_getObjectNomUrl(\'@t_rowid@\', \'@val@\')'
-		,'t_fk_vehicule_type' => '_getValueFromId("@val@", "dictionaryVehiculeType")'
-		,'t_fk_vehicule_mark' => '_getValueFromId("@val@", "dictionaryVehiculeMark")'
-		,'t_fk_soc'			=> '_getSocieteNomUrl("@val@")'
-		,'t_fk_contract_type' => '_getValueFromId("@val@", "dictionaryContractType")'
-		,'o_fk_product' => '_getProductNomUrl("@val@")'
-		,'o_on_time' => '_getBadgeLate("@val@")'
-		,'o_or_next' => '_getORNomUrl("@val@")'
-	), 'sortfield'=> 'o.date_next', 'sortorder' => 'asc'
-);
+// List of mass actions available
+$arrayofmassactions = array();
+$massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
-$r = new Listview($db, 'dolifleet');
+print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+if ($optioncss != '') {
+	print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
+}
+print '<input type="hidden" name="token" value="'.newToken().'">';
+print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
+print '<input type="hidden" name="action" value="list">';
+print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
+print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
+print '<input type="hidden" name="page" value="'.$page.'">';
+print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
+print '<input type="hidden" name="mode" value="'.$mode.'">';
 
-// Change view from hooks
-$parameters=array(  'listViewConfig' => $listViewConfig);
-$reshook=$hookmanager->executeHooks('listViewConfig', $parameters, $r);    // Note that $action and $object may have been modified by hook
-if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
-if ($reshook>0) {
-	$listViewConfig = $hookmanager->resArray;
+$varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
+$htmlofselectarray = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage, $conf->main_checkbox_left_column);
+$selectedfields = $htmlofselectarray;
+$selectedfields .= (count($arrayofmassactions) ? $form->showCheckAddButtons('checkforselect', 1) : '');
+
+print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'object_generic', 0, '', '', $limit, 0, 0, 1);
+
+// Hook for moreforfilter
+$moreforfilter = '';
+$parameters = array();
+$reshook = $hookmanager->executeHooks('printFieldPreListTitle', $parameters, $object, $action);
+if (empty($reshook)) {
+	$moreforfilter .= $hookmanager->resPrint;
+} else {
+	$moreforfilter = $hookmanager->resPrint;
+}
+if (!empty($moreforfilter)) {
+	print '<div class="liste_titre liste_titre_bydiv centpercent">';
+	print $moreforfilter;
+	print '</div>';
 }
 
+print '<div class="div-table-responsive">';
+print '<table class="tagtable nobottomiftotal noborder liste'.($moreforfilter ? " listwithfilterbefore" : "").'">'."\n";
 
-echo $r->render($sql, $listViewConfig);
+// Fields title search
+// --------------------------------------------------------------------
+print '<tr class="liste_titre_filter">';
+// Action column
+if ($conf->main_checkbox_left_column) {
+	print '<td class="liste_titre center maxwidthsearch">';
+	print $form->showFilterButtons('left');
+	print '</td>';
+}
+foreach ($arrayfields as $key => $val) {
+	if (empty($val['checked'])) {
+		continue;
+	}
+	print '<td class="liste_titre">';
+	if ($key == 't.vin') {
+		print '<input type="text" class="flat maxwidth75" name="search_t_vin" value="'.dol_escape_htmltag($search['t_vin']).'">';
+	} elseif ($key == 't.fk_vehicule_type') {
+		print $object->showInputField($object->fields['fk_vehicule_type'], 'fk_vehicule_type', $search['t_fk_vehicule_type'], '', '', 'search_t_', 'maxwidth150', 1);
+	} elseif ($key == 't.fk_vehicule_mark') {
+		print $object->showInputField($object->fields['fk_vehicule_mark'], 'fk_vehicule_mark', $search['t_fk_vehicule_mark'], '', '', 'search_t_', 'maxwidth150', 1);
+	} elseif ($key == 't.immatriculation') {
+		print '<input type="text" class="flat maxwidth75" name="search_t_immatriculation" value="'.dol_escape_htmltag($search['t_immatriculation']).'">';
+	} elseif ($key == 't.fk_soc') {
+		print $form->select_company($search['t_fk_soc'], 'search_t_fk_soc', '', 1, 0, 0, array(), 0, 'maxwidth200');
+	} elseif ($key == 't.fk_contract_type') {
+		print $object->showInputField($object->fields['fk_contract_type'], 'fk_contract_type', $search['t_fk_contract_type'], '', '', 'search_t_', 'maxwidth150', 1);
+	} elseif ($key == 't.km') {
+		print '<input type="text" class="flat maxwidth50" name="search_t_km" value="'.dol_escape_htmltag($search['t_km']).'">';
+	} elseif ($key == 'o.fk_product') {
+		print $form->multiselectarray('search_o_fk_product', $prod_array, (is_array($search['o_fk_product']) ? $search['o_fk_product'] : array()), '', 0, '', 0, '100%');
+	} elseif ($key == 'p.label') {
+		print '<input type="text" class="flat maxwidth75" name="search_p_label" value="'.dol_escape_htmltag($search['p_label']).'">';
+	} elseif ($key == 'o.km') {
+		print '<input type="text" class="flat maxwidth50" name="search_o_km" value="'.dol_escape_htmltag($search['o_km']).'">';
+	} elseif ($key == 'o.delai_from_last_op') {
+		print '<input type="text" class="flat maxwidth50" name="search_o_delai_from_last_op" value="'.dol_escape_htmltag($search['o_delai_from_last_op']).'">';
+	} elseif ($key == 'o.km_done') {
+		print '<input type="text" class="flat maxwidth50" name="search_o_km_done" value="'.dol_escape_htmltag($search['o_km_done']).'">';
+	} elseif ($key == 'o.km_next') {
+		print '<input type="text" class="flat maxwidth50" name="search_o_km_next" value="'.dol_escape_htmltag($search['o_km_next']).'">';
+	} elseif ($key == 'o.on_time') {
+		print $form->selectarray('search_o_on_time', array('1' => $langs->trans('VehiculeOperationOnTime')), $search['o_on_time'], 1, 0, 0, '', 0, 0, 0, '', 'maxwidth100');
+	} elseif ($key == 'o.or_next') {
+		print $form->selectarray('search_o_or_next', array(0 => $langs->trans('Empty'), 1 => $langs->trans('NotEmpty')), $search['o_or_next'], 1, 0, 0, '', 0, 0, 0, '', 'maxwidth100');
+	} elseif (in_array($key, array('t.date_immat', 't.date_customer_exploit', 't.km_date', 't.date_end_contract'))) {
+		// Map column key to search key prefix
+		$searchKeyMap = array(
+			't.date_immat' => 't_date_immat',
+			't.date_customer_exploit' => 't_date_customer_exploit',
+			't.km_date' => 't_km_date',
+			't.date_end_contract' => 't_date_end_contract',
+		);
+		$sk = $searchKeyMap[$key];
+		print '<div class="nowrap">';
+		print $form->selectDate($search[$sk.'_dtstart'] ? $search[$sk.'_dtstart'] : '', 'search_'.$sk.'_dtstart', 0, 0, 1, '', 1, 0, 0, '', '', '', '', 1, '', $langs->trans('From'));
+		print '</div>';
+		print '<div class="nowrap">';
+		print $form->selectDate($search[$sk.'_dtend'] ? $search[$sk.'_dtend'] : '', 'search_'.$sk.'_dtend', 0, 0, 1, '', 1, 0, 0, '', '', '', '', 1, '', $langs->trans('to'));
+		print '</div>';
+	} elseif (in_array($key, array('o.date_done', 'o.date_next', 'o.date_due'))) {
+		$searchKeyMap = array(
+			'o.date_done' => 'o_date_done',
+			'o.date_next' => 'o_date_next',
+			'o.date_due' => 'o_date_due',
+		);
+		$sk = $searchKeyMap[$key];
+		print '<div class="nowrap">';
+		print $form->selectDate($search[$sk.'_dtstart'] ? $search[$sk.'_dtstart'] : '', 'search_'.$sk.'_dtstart', 0, 0, 1, '', 1, 0, 0, '', '', '', '', 1, '', $langs->trans('From'));
+		print '</div>';
+		print '<div class="nowrap">';
+		print $form->selectDate($search[$sk.'_dtend'] ? $search[$sk.'_dtend'] : '', 'search_'.$sk.'_dtend', 0, 0, 1, '', 1, 0, 0, '', '', '', '', 1, '', $langs->trans('to'));
+		print '</div>';
+	} elseif ($key == 't.status') {
+		// No search for status (always active=1)
+	}
+	print '</td>';
+}
+// Action column
+if (!$conf->main_checkbox_left_column) {
+	print '<td class="liste_titre center maxwidthsearch">';
+	print $form->showFilterButtons();
+	print '</td>';
+}
+print '</tr>'."\n";
 
-$parameters=array('sql'=>$sql);
-$reshook=$hookmanager->executeHooks('printFieldListFooter', $parameters, $object);    // Note that $action and $object may have been modified by hook
+$totalarray = array();
+$totalarray['nbfield'] = 0;
+
+// Fields title label
+// --------------------------------------------------------------------
+print '<tr class="liste_titre">';
+if ($conf->main_checkbox_left_column) {
+	print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+	$totalarray['nbfield']++;
+}
+foreach ($arrayfields as $key => $val) {
+	if (empty($val['checked'])) {
+		continue;
+	}
+	$cssforfield = '';
+	if (in_array($key, array('t.date_immat', 't.date_customer_exploit', 't.km_date', 't.date_end_contract', 'o.date_done', 'o.date_next', 'o.date_due', 't.status'))) {
+		$cssforfield .= 'center';
+	} elseif (in_array($key, array('t.km', 'o.km', 'o.km_done', 'o.km_next', 'o.delai_from_last_op'))) {
+		$cssforfield .= 'right';
+	}
+	print getTitleFieldOfList($langs->trans($val['label']), 0, $_SERVER['PHP_SELF'], $key, '', $param, ($cssforfield ? 'class="'.$cssforfield.'"' : ''), $sortfield, $sortorder, ($cssforfield ? $cssforfield.' ' : ''))."\n";
+	$totalarray['nbfield']++;
+}
+// Hook fields
+$parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder, 'totalarray' => &$totalarray);
+$reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters, $object, $action);
+print $hookmanager->resPrint;
+// Action column
+if (!$conf->main_checkbox_left_column) {
+	print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+	$totalarray['nbfield']++;
+}
+print '</tr>'."\n";
+
+
+// Loop on record
+// --------------------------------------------------------------------
+$i = 0;
+$savnbfield = $totalarray['nbfield'];
+$totalarray = array();
+$totalarray['nbfield'] = 0;
+$imaxinloop = ($limit ? min($num, $limit) : $num);
+
+// Cache objects to avoid repeated fetches
+$cacheThirdparties = array();
+$cacheProducts = array();
+
+while ($i < $imaxinloop) {
+	$obj = $db->fetch_object($resql);
+	if (empty($obj)) {
+		break;
+	}
+
+	// Show line of result
+	print '<tr data-rowid="'.$obj->t_rowid.'" class="oddeven">';
+
+	// Action column (left)
+	if ($conf->main_checkbox_left_column) {
+		print '<td class="nowrap center">';
+		if ($massactionbutton || $massaction) {
+			$selected = 0;
+			if (in_array($obj->o_rowid, $arrayofselected)) {
+				$selected = 1;
+			}
+			print '<input id="cb'.$obj->o_rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->o_rowid.'"'.($selected ? ' checked="checked"' : '').'>';
+		}
+		print '</td>';
+		if (!$i) {
+			$totalarray['nbfield']++;
+		}
+	}
+
+	foreach ($arrayfields as $key => $val) {
+		if (empty($val['checked'])) {
+			continue;
+		}
+
+		$cssforfield = '';
+		if (in_array($key, array('t.date_immat', 't.date_customer_exploit', 't.km_date', 't.date_end_contract', 'o.date_done', 'o.date_next', 'o.date_due', 't.status'))) {
+			$cssforfield = 'center';
+		} elseif (in_array($key, array('t.km', 'o.km', 'o.km_done', 'o.km_next', 'o.delai_from_last_op'))) {
+			$cssforfield = 'right';
+		} elseif (in_array($key, array('t.fk_soc'))) {
+			$cssforfield = 'tdoverflowmax150';
+		}
+
+		print '<td'.($cssforfield ? ' class="'.$cssforfield.'"' : '').'>';
+
+		if ($key == 't.vin') {
+			$vehiculeTmp = new Vehicule($db);
+			$vehiculeTmp->id = $obj->t_rowid;
+			$vehiculeTmp->vin = $obj->vin;
+			$vehiculeTmp->immatriculation = $obj->immatriculation;
+			$vehiculeTmp->status = $obj->t_status;
+			print $vehiculeTmp->getNomUrl(1);
+		} elseif ($key == 't.fk_vehicule_type') {
+			print $object->showOutputField($object->fields['fk_vehicule_type'], 'fk_vehicule_type', $obj->fk_vehicule_type, '');
+		} elseif ($key == 't.fk_vehicule_mark') {
+			print $object->showOutputField($object->fields['fk_vehicule_mark'], 'fk_vehicule_mark', $obj->fk_vehicule_mark, '');
+		} elseif ($key == 't.immatriculation') {
+			print dol_escape_htmltag($obj->immatriculation);
+		} elseif ($key == 't.date_immat') {
+			print dol_print_date($db->jdate($obj->date_immat), 'day');
+		} elseif ($key == 't.fk_soc') {
+			if ($obj->fk_soc > 0) {
+				if (!isset($cacheThirdparties[$obj->fk_soc])) {
+					$soc = new Societe($db);
+					$soc->fetch($obj->fk_soc);
+					$cacheThirdparties[$obj->fk_soc] = $soc;
+				}
+				print $cacheThirdparties[$obj->fk_soc]->getNomUrl(1);
+			}
+		} elseif ($key == 't.date_customer_exploit') {
+			print dol_print_date($db->jdate($obj->date_customer_exploit), 'day');
+		} elseif ($key == 't.km') {
+			print $obj->t_km;
+		} elseif ($key == 't.km_date') {
+			print dol_print_date($db->jdate($obj->km_date), 'day');
+		} elseif ($key == 't.fk_contract_type') {
+			print $object->showOutputField($object->fields['fk_contract_type'], 'fk_contract_type', $obj->fk_contract_type, '');
+		} elseif ($key == 't.date_end_contract') {
+			print dol_print_date($db->jdate($obj->date_end_contract), 'day');
+		} elseif ($key == 't.status') {
+			print Vehicule::LibStatut($obj->t_status, 5);
+		} elseif ($key == 'o.fk_product') {
+			if ($obj->fk_product > 0) {
+				if (!isset($cacheProducts[$obj->fk_product])) {
+					$prod = new Product($db);
+					$prod->fetch($obj->fk_product);
+					$cacheProducts[$obj->fk_product] = $prod;
+				}
+				print $cacheProducts[$obj->fk_product]->getNomUrl(1);
+			}
+		} elseif ($key == 'p.label') {
+			print dol_escape_htmltag($obj->p_label);
+		} elseif ($key == 'o.km') {
+			print $obj->o_km;
+		} elseif ($key == 'o.delai_from_last_op') {
+			print $obj->delai_from_last_op;
+		} elseif ($key == 'o.date_done') {
+			print dol_print_date($db->jdate($obj->date_done), 'day');
+		} elseif ($key == 'o.km_done') {
+			print $obj->km_done;
+		} elseif ($key == 'o.date_next') {
+			print dol_print_date($db->jdate($obj->date_next), 'day');
+		} elseif ($key == 'o.date_due') {
+			print dol_print_date($db->jdate($obj->date_due), 'day');
+		} elseif ($key == 'o.km_next') {
+			print $obj->km_next;
+		} elseif ($key == 'o.on_time') {
+			if (!empty($obj->on_time)) {
+				print dolGetBadge($langs->trans('VehiculeOperationOnTime'), '', 'danger');
+			}
+		} elseif ($key == 'o.or_next') {
+			if (!empty($obj->or_next) && class_exists('OperationOrder')) {
+				$or = new OperationOrder($db);
+				if ($or->fetch($obj->or_next, false) > 0) {
+					print $or->getNomUrl(1);
+				}
+			}
+		}
+
+		print '</td>';
+		if (!$i) {
+			$totalarray['nbfield']++;
+		}
+	}
+
+	// Fields from hook
+	$parameters = array('arrayfields' => $arrayfields, 'object' => $object, 'obj' => $obj, 'i' => $i, 'totalarray' => &$totalarray);
+	$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters, $object, $action);
+	print $hookmanager->resPrint;
+
+	// Action column (right)
+	if (empty($conf->main_checkbox_left_column)) {
+		print '<td class="nowrap center">';
+		if ($massactionbutton || $massaction) {
+			$selected = 0;
+			if (in_array($obj->o_rowid, $arrayofselected)) {
+				$selected = 1;
+			}
+			print '<input id="cb'.$obj->o_rowid.'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$obj->o_rowid.'"'.($selected ? ' checked="checked"' : '').'>';
+		}
+		print '</td>';
+		if (!$i) {
+			$totalarray['nbfield']++;
+		}
+	}
+
+	print '</tr>'."\n";
+
+	$i++;
+}
+
+// If no record found
+if ($num == 0) {
+	$colspan = 1;
+	foreach ($arrayfields as $key => $val) {
+		if (!empty($val['checked'])) {
+			$colspan++;
+		}
+	}
+	print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("NoRecordFound").'</span></td></tr>';
+}
+
+$db->free($resql);
+
+$parameters = array('arrayfields' => $arrayfields, 'sql' => $sql);
+$reshook = $hookmanager->executeHooks('printFieldListFooter', $parameters, $object, $action);
 print $hookmanager->resPrint;
 
-$formcore->end_form();
+print '</table>'."\n";
+print '</div>'."\n";
 
-llxFooter('');
+print '</form>'."\n";
+
+// End of page
+llxFooter();
 $db->close();
-
-/**
- * TODO remove if unused
- */
-function _getObjectNomUrl($id)
-{
-	global $db;
-
-	$o = new Vehicule($db);
-	$res = $o->fetch($id, false);
-	if ($res > 0) {
-		return $o->getNomUrl(1);
-	}
-
-	return '';
-}
-
-
-function _getSocieteNomUrl($fk_soc)
-{
-	global $db;
-
-	$soc = new Societe($db);
-	if ($soc->fetch($fk_soc) > 0) {
-		return $soc->getNomUrl(1);
-	}
-
-	return '';
-}
-
-function _getProductNomUrl($fk_product)
-{
-	global $db;
-
-	$prod = new Product($db);
-	if ($prod->fetch($fk_product) > 0) {
-		return $prod->getNomUrl(1);
-	}
-
-	return '';
-}
-function _getORNomUrl($fk_or)
-{
-	global $db;
-
-	$or = new OperationOrder($db);
-	if (!empty($fk_or)) {
-		if ($or->fetch($fk_or, false) > 0) {
-			return $or->getNomUrl(1);
-		}
-	}
-
-	return '';
-}
-
-function _getValueFromId($id, $dictionaryClassname)
-{
-	global $db;
-
-	if (class_exists($dictionaryClassname)) {
-		$dict = new $dictionaryClassname($db);
-		return $dict->getValueFromId($id, 'label');
-	} else return '';
-}
-
-function _getBadgeLate($val)
-{
-	global $langs;
-	return (!empty($val)?dolGetBadge($langs->trans('VehiculeOperationOnTime'), '', 'danger'):'');
-}
