@@ -151,9 +151,6 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 	} elseif ($action === 'unlinkVehicule' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmUnlinkVehiculedoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&linkVehicule_id=' . GETPOST('linkVehicule_id'), $langs->trans('ConfirmUnlinkVehiculedoliFleetVehiculeTitle'), $body, 'confirm_unlinkVehicule', '', 0, 1);
-	} elseif ($action === 'delRental' && !empty($user->hasRight("dolifleet", "write"))) {
-		$body = $langs->trans('ConfirmDelRentaldoliFleetVehiculeBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&rent_id=' . GETPOST('rent_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delRental', '', 0, 1);
 	} elseif ($action === 'delOperation' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);

@@ -218,36 +218,6 @@ if (empty($reshook)) {
 				exit;
 			}
 
-		case 'addVehiculeRental':
-			$date_start = dol_mktime(0, 0, 0, GETPOST('RentalDate_startmonth'), GETPOST('RentalDate_startday'), GETPOST('RentalDate_startyear'));
-			$date_end = dol_mktime(23, 59, 59, GETPOST('RentalDate_endmonth'), GETPOST('RentalDate_endday'), GETPOST('RentalDate_endyear'));
-
-			if ($date_end < $date_start) $date_end = dol_mktime(23, 59, 59, GETPOST('RentalDate_startmonth'), GETPOST('RentalDate_startday'), GETPOST('RentalDate_startyear'));
-
-			$amountHT = GETPOST('RentalTotal_HT', 'int');
-
-			$ret = $object->addRental($date_start, $date_end, $amountHT);
-			if ($ret < 0) {
-				setEventMessages('', $object->errors, "errors");
-				break;
-			} else {
-				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
-				exit;
-			}
-
-		case 'confirm_delRental':
-			$rent_id = GETPOST('rent_id', 'int');
-
-			$ret = $object->delRental($rent_id);
-			if ($ret < 0) {
-				setEventMessages('', $object->errors, "errors");
-				break;
-			} else {
-				setEventMessage($langs->trans('rentDeleted'));
-				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
-				exit;
-			}
-
 		case 'addVehiculeOperation':
 			$productid = GETPOST('productid', 'int');
 			$km = GETPOST('km', 'int');
