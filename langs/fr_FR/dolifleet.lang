@@ -24,10 +24,6 @@ rental_delete=Supprimer les loyers
 matrix_read=Voir les matrices de loyers
 matrix_write=Créer une matrice de loyers
 matrix_delete=Supprimer une matrice de loyers
-rentalproposal_read=Voir les propositions de loyers
-rentalproposal_write=Créer/modifier les propositions de loyers
-rentalproposal_validate=Valider/accepter les propositions de loyers
-rentalproposal_delete=Supprimer les propositions de loyers
 
 # SETUP
 ParamLabel=Nom du paramètre
@@ -47,17 +43,12 @@ ActivateVehiculeSharing=Activer le partage des véhicules entre entités (pensez
 MulticompanyConfiguration=Configuration des partages entre entités
 ShareWith=Reprend les données dans
 multicompanySharing=Partage entre entités
-RentalproposalPDFModules=Modèles PDF Proposition de loyer
-DOLIFLEET_USE_RENTAL_FEATURE=Utiliser la gestion des loyers
 
 # MENU
 TopMenudoliFleet=Vehicule
 MenudoliFleetVehicule=Vehicule
 LeftMenudoliFleetVehiculeCreate=Créer un véhicule
 LeftMenudoliFleetVehiculeList=Liste de véhicule
-MenudolifleetRentalProposal=Proposition de loyer
-LeftMenudoliFleetRentalProposalCreate=Nouvelle proposition
-LeftMenudoliFleetRentalProposalList=Liste propositions
 MenudoliFleetVehiculeSetup=Parametres
 
 # STATUS
@@ -79,12 +70,6 @@ doliFleetOperationStatusShortToPlan=à planifier
 doliFleetOperationStatusShortPlanned=Planifié
 doliFleetOperationStatusShortDone=Réalisé
 
-doliFleetProposalStatusDraft=Brouillon (à valider)
-doliFleetProposalStatusShortDraft=Brouillon
-doliFleetProposalStatusInProgress=Validation en cours (à accepter)
-doliFleetProposalStatusShortInProgress=Validation en cours
-doliFleetProposalStatusValidated=Validée
-doliFleetProposalStatusCloture=Cloturée
 
 # LIST
 doliFleetVehiculeList=Liste de véhicules
@@ -127,20 +112,6 @@ VehiculeOperationDelay=Délais depuis dernière opé.
 VehiculeOperationLastDateDone=Date dernière opé.
 VehiculeOperationLastKmDone=Km dernière opé.
 VehiculeOperationDateDue=Date réele procaine opération
-dolifleetRentalProposal=Proposition de loyers
-doliFleetRentalProposalCard=Fiche proposition de loyers
-ShowdolifleetRentalProposal=Voir la proposition de loyers
-NewdolifleetRentalProposal=Nouvelle proposition de loyers
-dolifleetRentalProposalList=Liste de propositions de loyers
-NoMatrixDefined=Aucune matrice définie pour le tiers
-CanImportMatrix=Vous pouvez importer la matrice générale pour ce tiers
-ImportConf=Importer
-AmountIsFromThirdpartyMatrix=Prix repris depuis la matrice client
-AmountIsFromGlobalMatrix=Prix repris de la matrice globale
-AmountIsFromGlobalConf=Prix par défaut
-OnlyUserWhoValidatedCanReopen=Seul l'utilisateur qui a validé la proposition peut la rouvrir
-UserMustBeDifferentFromValider=Seul un autre utilisateur ayant le droit approprié peut accepter la proposition
-CanNotDeleteClosedProposal=Impossible de supprimer une proposition cloturée
 VehiculeOperationDateNext=Date prochaine opération
 VehiculeOperationKmNext=Km prochaine opération
 VehiculeOperationOnTime=Retards
@@ -169,8 +140,6 @@ doliFleetClose=Cloturer
 doliFleetValid=Valider
 doliFleetActivate=Activer
 doliFleetUnactivate=Désactiver
-doliFleetAccept=Accepter
-doliFleetRefuse=Refuser
 doliFleetReopen=Rouvrir
 doliFleetCancel=Abandonner
 doliFleetDelete=Supprimer
@@ -191,13 +160,6 @@ ConfirmDelRentaldoliFleetVehiculeBody=Voulez-vous vraiment supprimer ce loyer ?
 ConfirmDelOperationdoliFleetVehiculeBody=Voulez-vous vraiment supprimer cette opération ?
 ConfirmDelOperationNpdoliFleetVehiculeBody=Voulez-vous vraiment supprimer cette opération non planifiée?
 ConfirmDeldoliFleetLineBody=Voulez-vous vraiment supprimer cette ligne ?
-ConfirmValidateRentalProposalTitle=Confirmation de validation
-ConfirmValidateRentalProposalBody=Voulez-vous vraiment valider cette proposition ?
-ConfirmAcceptRentalProposalTitle=Confirmation d'acceptation
-ConfirmAcceptRentalProposalBody=Voulez-vous vraiment accepter cette proposition ?
-ConfirmDeleteRentalBody=Voulez-vous vraiment supprimer cette proposition de loyers ?
-ConfirmCloseRentalProposalTitle=Confirmation de cloture
-ConfirmCloseRentalProposalBody=Voulez-vous vraiment cloturer cette proposition ? <br /> <br /> Ceci créera les loyers clients pour chaque véhicule listé dans cette proposition.
 
 # Erreur
 ErrNoVinNumber=Aucun VIN renseigné

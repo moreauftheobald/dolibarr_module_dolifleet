@@ -81,9 +81,6 @@ if (empty($reshook)) {
 
 llxHeader('', $langs->trans('doliFleetVehiculeList'), '', '');
 
-//$type = GETPOST('type');
-//if (empty($user->hasRight('dolifleet','all','read'))) $type = 'mine';
-
 $formconfirm = '';
 
 $parameters = array('formConfirm' => $formconfirm);

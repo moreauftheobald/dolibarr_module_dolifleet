@@ -39,13 +39,6 @@ function dolifleetAdminPrepareHead()
 	$head[$h][2] = 'settings';
 	$h++;
 
-	if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
-		$head[$h][0] = dol_buildpath("/dolifleet/admin/rental_matrix.php", 1);
-		$head[$h][1] = $langs->trans("rentalMatrix");
-		$head[$h][2] = 'matrix';
-		$h++;
-	}
-
 	$head[$h][0] = dol_buildpath("/dolifleet/admin/vehicule_extrafields.php", 1);
 	$head[$h][1] = $langs->trans("ExtraFields");
 	$head[$h][2] = 'extrafields';
@@ -129,31 +122,6 @@ function vehicule_prepare_head(Vehicule $object)
 }
 
 /**
- * Return array of tabs to used on pages for third parties cards.
- *
- * @param dolifleetRentalProposal $object Object company shown
- * @return    array                Array of tabs
- */
-function rental_proposal_prepare_head(dolifleetRentalProposal $object)
-{
-	global $langs, $conf;
-	$h = 0;
-	$head = array();
-	$head[$h][0] = dol_buildpath('/dolifleet/rental_proposal_card.php', 1) . '?id=' . $object->id;
-	$head[$h][1] = $langs->trans("doliFleetRentalProposalCard");
-	$head[$h][2] = 'card';
-	$h++;
-
-	// Show more tabs from modules
-	// Entries must be declared in modules descriptor with line
-	// $this->tabs = array('entity:+tabname:Title:@dolifleet:/dolifleet/mypage.php?id=__ID__');   to add new tab
-	// $this->tabs = array('entity:-tabname:Title:@dolifleet:/dolifleet/mypage.php?id=__ID__');   to remove a tab
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'dolifleetRentalProposal');
-
-	return $head;
-}
-
-/**
  * @param Form $form Form object
  * @param doliFleet $object doliFleet object
  * @param string $action Triggered action
@@ -168,23 +136,11 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 	if ($action === 'valid' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmActivatedoliFleetVehiculeBody', $object->immatriculation);
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmActivatedoliFleetVehiculeTitle'), $body, 'confirm_validate', '', 0, 1);
-	} elseif ($action === 'validate' && !empty($user->hasRight("dolifleet", "write"))) {
-		$body = $langs->trans('ConfirmValidateRentalProposalBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmValidateRentalProposalTitle'), $body, 'confirm_validate', '', 0, 1);
-	} elseif ($action === 'accept' && !empty($user->hasRight("dolifleet", "write"))) {
-		$body = $langs->trans('ConfirmAcceptRentalProposalBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmAcceptRentalProposalTitle'), $body, 'confirm_accept', '', 0, 1);
-	} elseif ($action === 'close' && !empty($user->hasRight("dolifleet", "write"))) {
-		$body = $langs->trans('ConfirmCloseRentalProposalBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmCloseRentalProposalTitle'), $body, 'confirm_close', '', 0, 1);
 	} elseif ($action === 'modif' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmReopendoliFleetVehiculeBody', $object->immatriculation);
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmReopendoliFleetVehiculeTitle'), $body, 'confirm_modif', '', 0, 1);
 	} elseif ($action === 'delete' && !empty($user->hasRight("dolifleet", "delete"))) {
 		$body = $langs->trans('ConfirmDeletedoliFleetVehiculeBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
-	} elseif ($action === 'deleteRental' && !empty($user->hasRight("dolifleet", "delete"))) {
-		$body = $langs->trans('ConfirmDeleteRentalBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
 	} elseif ($action === 'clone' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmClonedoliFleetVehiculeBody', $object->immatriculation);
@@ -275,8 +231,8 @@ function printVehiculeActivities($object, $fromcard = false)
 				print '<td align="center">' . (!empty($activity->date_end) ? dol_print_date($activity->date_end, "%d/%m/%Y") : '') . '</td>';
 				print '<td align="center">' . $activity->showOutputField($activity->fields['fk_soc'], 'fk_soc', $activity->fk_soc) . '</td>';
 				print '<td align="center">';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_edit() . '</a>';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_delete() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '">' . img_edit() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '">' . img_delete() . '</a>';
 				print '</td>';
 				print '</tr>';
 			}
@@ -411,115 +367,6 @@ function printLinkedVehicules($object, $fromcard = false)
 	print '<input class="button" type="submit" name="linkVehicule" value="' . $langs->trans("Add") . '">';
 	print '</td>';
 	print '</tr>';
-
-	print '</table>';
-
-	print '</form>';
-}
-
-/**
- * @param Vehicule $object
- */
-function printVehiculeRental($object, $fromcard = false, $external = false)
-{
-	global $langs, $form, $db;
-
-	$title = $langs->trans('VehiculeRentals');
-	if ($external) {
-		dol_include_once('dolifleet/class/rentalProposal.class.php');
-		$prop = new dolifleetRentalProposal($db);
-		$det = new dolifleetRentalProposalDet($db);
-		$title .= ' ' . $langs->trans('Customer');
-	}
-
-	print load_fiche_titre($title, '', '');
-
-	print '<form id="vehiculeRentalForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
-	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-	print '<input type="hidden" name="action" value="addVehiculeRental">';
-	print '<input type="hidden" name="id" value="' . $object->id . '">';
-
-	print '<table class="border" width="100%">' . "\n";
-	print '<tr class="liste_titre">';
-	if ($external) {
-		print '<td align="center">' . $langs->trans('soc') . '</td>';
-	}
-	print '<td align="center">' . $langs->trans('DateStart') . '</td>';
-	print '<td align="center">' . $langs->trans('DateEnd') . '</td>';
-	print '<td align="center">' . $langs->trans('TotalHT') . '</td>';
-	if (!$external) {
-		print '<td align="center"></td>';
-	} else {
-		print '<td align="center">' . $langs->trans('Prefac') . '</td>';
-	}
-	print '</tr>';
-
-	$date_start = $date_end = '';
-	if ($fromcard) {
-		$date_start = dol_now();
-		$date_end = strtotime("+3 month", $date_start);
-	}
-
-	$object->getRentals($date_start, $date_end, $external);
-	if (empty($object->rentals)) {
-		print '<tr>';
-		print '<td align="center" colspan="5">' . $langs->trans('NodoliFleet') . '</td>';
-		print '</tr>';
-	} else {
-		foreach ($object->rentals as $rent) {
-			print '<tr>';
-			if ($external) {
-				print '<td align="center">' . $rent->showOutputField($rent->fields['fk_soc'], 'fk_soc', $rent->fk_soc) . '</td>';
-			}
-			print '<td align="center">';
-			print dol_print_date($rent->date_start, "%d/%m/%Y");
-			print '</td>';
-
-			print '<td align="center">';
-			print dol_print_date($rent->date_end, "%d/%m/%Y");
-			print '</td>';
-
-			print '<td align="center">';
-			print price($rent->total_ht);
-			print '</td>';
-
-			print '<td align="center">';
-			if (!$external) {
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delRental&rent_id=' . $rent->id . '">' . img_delete() . '</a>';
-			} else {
-				$det->fetch($rent->fk_proposaldet);
-				$prop->fetch($det->fk_rental_proposal);
-				print $prop->getNomUrl(1);
-			}
-			print '</td>';
-
-			print '</tr>';
-		}
-	}
-
-	if (!$external) {
-		// new line
-		print '<tr>';
-
-		print '<td align="center">';
-		print $form->selectDate('', 'RentalDate_start');
-		print '</td>';
-
-		print '<td align="center">';
-		print $form->selectDate('', 'RentalDate_end');
-		print '</td>';
-
-		print '<td align="center">';
-		print '<input type="number" name="RentalTotal_HT" min="0" step="0.01" value="' . GETPOST('RentalTotal_HT') . '">';
-		print '</td>';
-
-		print '<td align="center">';
-		print '<input class="button" type="submit" name="addRental" value="' . $langs->trans("Add") . '">';
-		print '</td>';
-
-		print '</tr>';
-	}
-
 
 	print '</table>';
 
@@ -687,67 +534,6 @@ function printVehiculeOperations($object)
 /**
  * @param Vehicule $object
  */
-function printVehiculeOperationsNp($object)
-{
-	global $langs, $form;
-	dol_include_once('operationorder/class/operationorder.class.php');
-
-	print load_fiche_titre($langs->trans('VehiculeOperationsNp'), '', '');
-
-	print '<form id="vehiculeOperationsNpForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
-	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-	print '<input type="hidden" name="action" value="addVehiculeOperationNp">';
-	print '<input type="hidden" name="id" value="' . $object->id . '">';
-
-	print '<table class="border" width="100%">' . "\n";
-	print '<tr class="liste_titre">';
-	print '<td align="center">' . $langs->trans('VehiculeOperationNp') . '</td>';
-	print '<td align="center"></td>';
-	print '</tr>';
-
-	$res = $object->getOperationsNp();
-	if ($res < 0) {
-		setEventMessages($object->error, $object->errors, 'errors');
-	}
-	if (empty($object->operations)) {
-		print '<tr><td align="center" colspan="6">' . $langs->trans('NodoliFleet') . '</td></tr>';
-	} else {
-		foreach ($object->operations as $operation) {
-			print '<tr>';
-			print '<td align="left">' . $operation->getName() . '</td>';
-			print '<td align="center">';
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperationNp&openp_id=' . $operation->id . '&token='. newToken() . '">' . img_delete() . '</a>';
-			print '</td>';
-			print '</tr>';
-		}
-	}
-
-	if (GETPOST('action', 'alpha') !== 'delOperationNp') {
-		// new line
-		print '<tr>';
-
-		print '<td align="center">';
-		print $form->select_produits(GETPOST('productidnp'), 'productidnp', 1, 0, 0, 1, 2, '', 0);
-		print '</td>';
-
-		print '<td align="center" colspan="2">';
-		print '<input class="button quatrevingtpercent" type="submit" name="addOperationNp" value="' . $langs->trans("Add") . '">';
-		print '</td>';
-
-		print '</tr>';
-	}
-
-	print '</table>';
-
-	print '</form>';
-	?>
-	<script>
-		$("#search_productidnp").removeClass("minwidth100");
-		$("#search_productidnp").addClass("quatrevingtpercent");
-	</script>
-	<?php
-}
-
 function printBannerVehicleCard($vehicle)
 {
 

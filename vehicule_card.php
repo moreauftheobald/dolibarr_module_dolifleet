@@ -514,8 +514,6 @@ if ($action == 'create') {
 			print '</div>'; // fin fichehalfright
 			print '</div>'; // fin fichehalfcenter
 
-			//print '<div class="fichehalfright">';
-			//print '<div class="underbanner clearboth"></div>';
 
 			print '<div class="fichecenter">';
 			print '<div class="underbanner clearboth"></div>';
@@ -524,38 +522,6 @@ if ($action == 'create') {
 			printVehiculeOperations($object);
 
 			print '</div>';    // fin fichecenter
-
-			//print '<div class="fichecenter">';
-			//print '<div class="underbanner clearboth"></div>';
-			// Opérations Np
-			//printVehiculeOperationsNp($object);
-			//print '</div>';    // fin fichecenter
-
-			//print '<div class="fichecenter">';
-
-			//print '<div class="fichehalfleft">';
-			//print '<div class="underbanner clearboth"></div>';
-			//if (getDolGlobalInt('DOLIFLEET_USE_RENTAL_FEATURE')) {
-			//	printVehiculeRental($object, false, true);
-			//}
-
-			//print '</div>'; // fin fichehalfleft
-
-			//print '<div class="fichehalfright">';
-			//print '<div class="underbanner clearboth"></div>';
-
-			// Loyers
-			//printVehiculeRental($object/*, true*/);
-
-			//print '</div>'; // fin fichehalfright
-
-
-			//print '</div>';    // fin fichecenter
-			//print '<div class="clearboth"></div><br />';
-
-
-			//print '</div></div></div>';
-
 			print dol_get_fiche_end(-1);
 		}
 	}
