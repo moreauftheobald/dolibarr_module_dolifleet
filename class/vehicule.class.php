@@ -950,91 +950,6 @@ class Vehicule extends SeedObject
 	}
 
 	/**
-	 * @return false|int
-	 */
-	public function getOperationsNp()
-	{
-		$this->operations = array();
-
-		$sql = "SELECT rowid FROM " . MAIN_DB_PREFIX . $this->table_element . "_operation_np";
-		$sql .= " WHERE fk_vehicule = " . $this->id;
-
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			$num = $this->db->num_rows($resql);
-			if ($num) {
-				dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
-
-				while ($obj = $this->db->fetch_object($resql)) {
-					$ope = new dolifleetVehiculeOperationNp($this->db);
-					$ret = $ope->fetch($obj->rowid);
-					if ($ret >= 0) {
-						$this->operations[] = $ope;
-					} else {
-						$this->error = $ope->error;
-						return $ret;
-					}
-				}
-			}
-
-			return $num;
-		} else {
-			$this->errors[] = $this->db->lasterror();
-			return -1;
-		}
-	}
-
-	/**
-	 * @param $productid
-	 * @return int
-	 */
-	public function addOperationNp($productid)
-	{
-		global $langs, $user;
-
-		dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
-
-		$ope = new dolifleetVehiculeOperationNp($this->db);
-
-		$ope->fk_vehicule = $this->id;
-		$ope->fk_product = $productid;
-
-		$ret = $ope->create($user);
-		if ($ret < 0) {
-			$this->errors = array_merge($ope->errors, array($ope->error));
-			return -1;
-		}
-
-		return $ret;
-	}
-
-	/**
-	 * @param $ope_id
-	 * @return int
-	 */
-	public function delOperationNp($ope_id)
-	{
-		global $user;
-
-		dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
-		$ope = new dolifleetVehiculeOperationNp($this->db);
-		$ope->fetch($ope_id);
-
-		if ($ope->fk_vehicule != $this->id) {
-			$this->errors[] = "IllegalDeletion";
-			return -1;
-		}
-
-		$ret = $ope->delete($user);
-		if ($ret < 0) {
-			$this->errors = array_merge($ope->errors, array($ope->error));
-			return -2;
-		}
-
-		return 1;
-	}
-
-	/**
 	 * @param int $withpicto Add picto into link
 	 * @param string $moreparams Add more parameters in the URL
 	 * @return string
@@ -1287,29 +1202,6 @@ class Vehicule extends SeedObject
 		$sql .= " AND (op.or_next IS NULL OR op.or_next=0) ";
 		$sql .= " AND op.date_next IS NOT NULL";
 		$sql .= " AND op.date_next < '" . $this->db->idate(dol_time_plus_duree(dol_now(), (int) getDolGlobalInt('THEO_NB_MONTH_CHECKING_VEHICULE_BY_ANTICIPATION'), 'm')) . "'";
-
-		$resql = $this->db->query($sql);
-
-		$num = $this->db->num_rows($resql);
-		if ($resql) {
-			if ($num > 0) {
-				$obj = $this->db->fetch_object($resql);
-				return $obj->nbop;
-			}
-		} else {
-			setEventMessage($this->db->lasterror, 'errors');
-			return 0;
-		}
-	}
-
-	/**
-	 * @return int|void
-	 */
-	public function countordernp()
-	{
-		require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
-		$sql = "SELECT COUNT(op.rowid) as nbop FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation_np as op";
-		$sql .= " WHERE op.fk_vehicule=" . $this->id;
 
 		$resql = $this->db->query($sql);
 
