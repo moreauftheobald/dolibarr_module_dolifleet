@@ -225,8 +225,8 @@ function printVehiculeActivities($object, $fromcard = false)
 				print '<td align="center">' . (!empty($activity->date_end) ? dol_print_date($activity->date_end, "%d/%m/%Y") : '') . '</td>';
 				print '<td align="center">' . $activity->showOutputField($activity->fields['fk_soc'], 'fk_soc', $activity->fk_soc) . '</td>';
 				print '<td align="center">';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '">' . img_edit() . '</a>';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '">' . img_delete() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_edit() . '</a>';
+				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_delete() . '</a>';
 				print '</td>';
 				print '</tr>';
 			}
