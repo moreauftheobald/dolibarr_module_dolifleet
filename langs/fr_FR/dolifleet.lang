@@ -94,8 +94,6 @@ LinkedVehicules=Véhicules liés
 VehiculeUnlinked=Le véhicule a été délié
 VehiculeOperations=Opérations
 VehiculeOperation=Opération
-VehiculeOperationNp=Opération non planifiée
-VehiculeOperationsNp=Opérations non planifiées
 VehiculeOperationDelay=Délais depuis dernière opé.
 VehiculeOperationLastDateDone=Date dernière opé.
 VehiculeOperationLastKmDone=Km dernière opé.
@@ -108,7 +106,6 @@ doliFleetVehiculeOperationList=Liste des opérations par véhicule
 Empty=Vide
 NotEmpty=Non vide
 operationDeleted=Opération supprimée
-operationNpDeleted=Opération non planifiée supprimée
 AtelierPrincipal=Atelier principal
 SNCarrosserie=S/N Carrosserie
 SNEssieu=S/N Essieu
@@ -145,7 +142,6 @@ ConfirmDelActivitydoliFleetVehiculeBody=Voulez-vous vraiment supprimer cette act
 ConfirmUnlinkVehiculedoliFleetVehiculeTitle=Confirmation de suppression du lien
 ConfirmUnlinkVehiculedoliFleetVehiculeBody=Voulez-vous vraiment supprimer le lien avec le véhicule ?
 ConfirmDelOperationdoliFleetVehiculeBody=Voulez-vous vraiment supprimer cette opération ?
-ConfirmDelOperationNpdoliFleetVehiculeBody=Voulez-vous vraiment supprimer cette opération non planifiée?
 ConfirmDeldoliFleetLineBody=Voulez-vous vraiment supprimer cette ligne ?
 
 # Erreur

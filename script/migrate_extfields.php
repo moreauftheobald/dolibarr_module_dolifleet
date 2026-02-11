@@ -111,35 +111,6 @@ if ($paramOKid <> 'dkQQSsopaQSDdddQQQ15QQss') {
 
 // Start of transaction
 $db->begin();
-$sql = 'SELECT fk_object,op_np FROM llx_dolifleet_vehicule_extrafields
-                       WHERE op_np IS NOT NULL';
-
-$resql = $db->query($sql);
-if (!$resql) {
-	print 'ERROR:' . $db->lasterror . "\n<BR>";
-	exit();
-} else {
-	dol_include_once('/dolifleet/class/vehiculeOperationNp.class.php');
-	while ($obj = $db->fetch_object($resql)) {
-		$ope_array = explode(':', $obj->op_np);
-		if (!empty($ope_array)) {
-			foreach ($ope_array as $prdId) {
-				$ope = new dolifleetVehiculeOperationNp($db);
-
-				$ope->fk_vehicule = $obj->fk_object;
-				$ope->fk_product = $prdId;
-
-				$ret = $ope->create($user);
-				if ($ret < 0) {
-					$error++;
-					print 'VehId:' . $obj->fk_object . "\n<BR>";
-					print 'operations:' . $obj->op_np . "\n<BR>";
-					print 'ERROR:' . $ope->error . ' ' . implode(' ', $ope->errors) . "\n<BR>";
-				}
-			}
-		}
-	}
-}
 $sql  ='UPDATE llx_dolifleet_vehicule as dest, llx_dolifleet_vehicule_extrafields as src
 	SET dest.atelier=src.atelier,
 	dest.carrosserie=src.carrosserie,
