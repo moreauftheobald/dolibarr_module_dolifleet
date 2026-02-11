@@ -328,7 +328,7 @@ if (empty($reshook)) {
  */
 $form = new Form($db);
 
-$keyforbreak = 'fk_soc';
+$keyforbreak = 'fk_contract_type';
 
 $title = $langs->trans('doliFleet');
 llxHeader('', $title);
