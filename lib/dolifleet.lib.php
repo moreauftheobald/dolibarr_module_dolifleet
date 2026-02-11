@@ -154,9 +154,6 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 	} elseif ($action === 'delOperation' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
-	} elseif ($action === 'delOperationNp' && !empty($user->hasRight("dolifleet", "write"))) {
-		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&openp_id=' . GETPOST('openp_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperationNp', '', 0, 1);
 	}
 
 	return $formconfirm;
