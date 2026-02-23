@@ -64,7 +64,7 @@ function dolifleetAdminPrepareHead()
 	//$this->tabs = array(
 	//	'entity:-tabname:Title:@dolifleet:/dolifleet/mypage.php?id=__ID__'
 	//); // to remove a tab
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'dolifleet');
+	// complete_head_from_modules($conf, $langs, $object, $head, $h, 'dolifleet');
 
 	return $head;
 }

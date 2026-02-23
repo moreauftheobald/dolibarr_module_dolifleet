@@ -16,39 +16,115 @@
  */
 
 /**
- *      \file       admin/dolifleet_extrafields.php
+ *      \file       admin/vehicule_extrafields.php
  *		\ingroup    dolifleet
  *		\brief      Page to setup extra fields of dolifleet
  */
 
-$res = @include '../../main.inc.php'; // From htdocs directory
-if (! $res) {
-	$res = @include '../../../main.inc.php'; // From "custom" directory
+// Load Dolibarr environment
+$res = 0;
+// Try main.inc.php into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
+if (!$res && !empty($_SERVER["CONTEXT_DOCUMENT_ROOT"])) {
+	$res = @include $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php";
+}
+// Try main.inc.php into web root detected using web root calculated from SCRIPT_FILENAME
+$tmp = empty($_SERVER['SCRIPT_FILENAME']) ? '' : $_SERVER['SCRIPT_FILENAME'];
+$tmp2 = realpath(__FILE__);
+$i = strlen($tmp) - 1;
+$j = strlen($tmp2) - 1;
+while ($i > 0 && $j > 0 && isset($tmp[$i]) && isset($tmp2[$j]) && $tmp[$i] == $tmp2[$j]) {
+	$i--;
+	$j--;
+}
+if (!$res && $i > 0 && file_exists(substr($tmp, 0, ($i + 1))."/main.inc.php")) {
+	$res = @include substr($tmp, 0, ($i + 1))."/main.inc.php";
+}
+if (!$res && $i > 0 && file_exists(dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php")) {
+	$res = @include dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php";
+}
+// Try main.inc.php using relative path
+if (!$res && file_exists("../main.inc.php")) {
+	$res = @include "../main.inc.php";
+}
+if (!$res && file_exists("../../main.inc.php")) {
+	$res = @include "../../main.inc.php";
+}
+if (!$res && file_exists("../../../main.inc.php")) {
+	$res = @include "../../../main.inc.php";
+}
+if (!$res) {
+	die("Include of main fails");
 }
 
-
-/*
- * Config of extrafield page for doliFleet
- */
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once '../lib/dolifleet.lib.php';
 require_once '../class/vehicule.class.php';
-$langs->loadLangs(array('dolifleet@dolifleet', 'admin', 'other'));
+
+$langs->loadLangs(array('dolifleet@dolifleet', 'admin'));
+
+// Access control
+if (!$user->admin) {
+	accessforbidden();
+}
+
+$extrafields = new ExtraFields($db);
+$form = new Form($db);
 
 $dolifleet = new Vehicule($db);
-$elementtype=$dolifleet->table_element;  //Must be the $table_element of the class that manage extrafield
+$elementtype = $dolifleet->table_element;
 
-// Page title and texts elements
-$textobject=$langs->transnoentitiesnoconv('doliFleet');
-$help_url='EN:Help doliFleet|FR:Aide doliFleet';
-$pageTitle = $langs->trans('ExtraFields');
+// Parameters
+$action = GETPOST('action', 'aZ09');
+$attrname = GETPOST('attrname', 'alpha');
+$type = GETPOST('type', 'alphanohtml');
+
+/*
+ * Actions
+ */
+require DOL_DOCUMENT_ROOT.'/core/actions_extrafields.inc.php';
+
+/*
+ * View
+ */
+$textobject = $langs->transnoentitiesnoconv('doliFleet');
+$help_url = '';
+$page_name = 'ExtraFields';
+
+llxHeader('', $langs->trans($page_name), $help_url);
 
 // Configuration header
 $head = dolifleetAdminPrepareHead();
+print dol_get_fiche_head(
+	$head,
+	'extrafields',
+	$langs->trans("Module104087Name"),
+	-1,
+	"dolifleet@dolifleet"
+);
 
+print load_fiche_titre($langs->trans("ExtraFields"), '', '');
 
+// List of existing extrafields
+require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_view.tpl.php';
 
-/*
- *  Include of extrafield page
- */
+// Buttons
+if ($action != 'create' && $action != 'edit') {
+	print '<div class="tabsAction">';
+	print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=create">'.$langs->trans("NewAttribute").'</a>';
+	print '</div>';
+}
 
-require_once dol_buildpath('abricot/tpl/extrafields_setup.tpl.php'); // use this kind of call for variables scope
+// Create or edit extrafield
+if ($action == 'create') {
+	print load_fiche_titre($langs->trans("NewAttribute"));
+	require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_add.tpl.php';
+}
+if ($action == 'edit' && !empty($attrname)) {
+	print load_fiche_titre($langs->trans("FieldEdition", $attrname));
+	require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_edit.tpl.php';
+}
+
+print dol_get_fiche_end();
+
+llxFooter();
+$db->close();

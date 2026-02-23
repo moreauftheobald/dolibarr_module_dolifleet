@@ -21,16 +21,44 @@
  * 	\brief		This file is an example module setup page
  * 				Put some comments here
  */
-// Dolibarr environment
-$res = @include '../../main.inc.php'; // From htdocs directory
-if (! $res) {
-	$res = @include '../../../main.inc.php'; // From "custom" directory
+// Load Dolibarr environment
+$res = 0;
+// Try main.inc.php into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
+if (!$res && !empty($_SERVER["CONTEXT_DOCUMENT_ROOT"])) {
+	$res = @include $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php";
+}
+// Try main.inc.php into web root detected using web root calculated from SCRIPT_FILENAME
+$tmp = empty($_SERVER['SCRIPT_FILENAME']) ? '' : $_SERVER['SCRIPT_FILENAME'];
+$tmp2 = realpath(__FILE__);
+$i = strlen($tmp) - 1;
+$j = strlen($tmp2) - 1;
+while ($i > 0 && $j > 0 && isset($tmp[$i]) && isset($tmp2[$j]) && $tmp[$i] == $tmp2[$j]) {
+	$i--;
+	$j--;
+}
+if (!$res && $i > 0 && file_exists(substr($tmp, 0, ($i + 1))."/main.inc.php")) {
+	$res = @include substr($tmp, 0, ($i + 1))."/main.inc.php";
+}
+if (!$res && $i > 0 && file_exists(dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php")) {
+	$res = @include dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php";
+}
+// Try main.inc.php using relative path
+if (!$res && file_exists("../main.inc.php")) {
+	$res = @include "../main.inc.php";
+}
+if (!$res && file_exists("../../main.inc.php")) {
+	$res = @include "../../main.inc.php";
+}
+if (!$res && file_exists("../../../main.inc.php")) {
+	$res = @include "../../../main.inc.php";
+}
+if (!$res) {
+	die("Include of main fails");
 }
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 require_once '../lib/dolifleet.lib.php';
-dol_include_once('abricot/includes/lib/admin.lib.php');
 
 // Translations
 $langs->loadLangs(array('dolifleet@dolifleet', 'admin', 'other'));
@@ -103,17 +131,17 @@ $var=false;
 print '<table class="noborder" width="100%">';
 
 
-if (!function_exists('setup_print_title')) {
-	print '<div class="error" >'.$langs->trans('AbricotNeedUpdate').' : <a href="http://wiki.atm-consulting.fr/index.php/Accueil#Abricot" target="_blank"><i class="fa fa-info"></i> Wiki</a></div>';
-	exit;
-}
+print '<tr class="liste_titre">';
+print '<td>'.$langs->trans("Parameters").'</td>';
+print '<td></td>';
+print '<td></td>';
+print '</tr>';
 
-setup_print_title("Parameters");
-
-print '<tr>';
+print '<tr class="oddeven">';
 print '<td>'.$langs->trans('DOLIFLEET_MOTRICE_TYPES').'</td>';
 print '<td></td>';
 print '<td><form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+print '<input type="hidden" name="token" value="'.newToken().'">';
 print '<input type="hidden" name="action" value="set_DOLIFLEET_MOTRICE_TYPES">';
 dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
 $dict = new dictionaryVehiculeType($db);
@@ -123,11 +151,20 @@ print '<input class="butAction" type="submit" value="'.$langs->trans('Save').'">
 print '</form></td>';
 print '</tr>';
 
-
 if (empty(getDolGlobalString("DOLIFLEET_DELAY_SEARCH_OPERATIONS"))) {
 	dolibarr_set_const($db, 'DOLIFLEET_DELAY_SEARCH_OPERATIONS', 12, 'chaine', 0, '', $conf->entity);
 }
-setup_print_input_form_part('DOLIFLEET_DELAY_SEARCH_OPERATIONS');
+
+print '<tr class="oddeven">';
+print '<td>'.$langs->trans('DOLIFLEET_DELAY_SEARCH_OPERATIONS').'</td>';
+print '<td></td>';
+print '<td><form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+print '<input type="hidden" name="token" value="'.newToken().'">';
+print '<input type="hidden" name="action" value="set_DOLIFLEET_DELAY_SEARCH_OPERATIONS">';
+print '<input type="text" name="DOLIFLEET_DELAY_SEARCH_OPERATIONS" value="'.getDolGlobalString("DOLIFLEET_DELAY_SEARCH_OPERATIONS").'" size="5">';
+print '<input class="butAction" type="submit" value="'.$langs->trans('Save').'">';
+print '</form></td>';
+print '</tr>';
 
 print '</table>';
 

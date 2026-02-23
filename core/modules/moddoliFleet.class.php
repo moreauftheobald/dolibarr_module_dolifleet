@@ -459,8 +459,6 @@ class moddoliFleet extends DolibarrModules
 
 		define('INC_FROM_DOLIBARR', true);
 
-		require dol_buildpath('/dolifleet/script/create-maj-base.php');
-
 		$result = $this->_load_tables('/dolifleet/sql/');
 
 		return $this->_init($sql, $options);
