@@ -102,9 +102,9 @@ $search['o_date_due_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_o_date_d
 
 // Build list of available products for the multiselect filter
 $sql_prod = 'SELECT op.fk_product, p.label';
-$sql_prod .= ' FROM '.MAIN_DB_PREFIX.'dolifleet_vehicule_operation AS op';
-$sql_prod .= ' INNER JOIN '.MAIN_DB_PREFIX.'product as p ON p.rowid = op.fk_product';
-$sql_prod .= ' INNER JOIN '.MAIN_DB_PREFIX.'dolifleet_vehicule as v ON v.rowid = op.fk_vehicule';
+$sql_prod .= ' FROM '.$db->prefix().'dolifleet_vehicule_operation AS op';
+$sql_prod .= ' INNER JOIN '.$db->prefix().'product as p ON p.rowid = op.fk_product';
+$sql_prod .= ' INNER JOIN '.$db->prefix().'dolifleet_vehicule as v ON v.rowid = op.fk_vehicule';
 $sql_prod .= ' WHERE v.status = 1 AND p.tosell = 1 AND p.tobuy = 1';
 $sql_prod .= ' GROUP BY op.fk_product, p.label';
 $prod_array = array();
@@ -206,10 +206,10 @@ $sql .= $hookmanager->resPrint;
 
 $sqlfields = $sql; // $sql fields to remove for count total
 
-$sql .= ' FROM '.MAIN_DB_PREFIX.'dolifleet_vehicule as t';
-$sql .= ' INNER JOIN '.MAIN_DB_PREFIX.'dolifleet_vehicule_operation as o ON o.fk_vehicule = t.rowid';
-$sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'dolifleet_vehicule_extrafields as te ON te.fk_object = t.rowid';
-$sql .= ' INNER JOIN '.MAIN_DB_PREFIX.'product as p ON o.fk_product = p.rowid';
+$sql .= ' FROM '.$db->prefix().'dolifleet_vehicule as t';
+$sql .= ' INNER JOIN '.$db->prefix().'dolifleet_vehicule_operation as o ON o.fk_vehicule = t.rowid';
+$sql .= ' LEFT JOIN '.$db->prefix().'dolifleet_vehicule_extrafields as te ON te.fk_object = t.rowid';
+$sql .= ' INNER JOIN '.$db->prefix().'product as p ON o.fk_product = p.rowid';
 
 // Add table from hooks
 $parameters = array();

@@ -40,7 +40,7 @@ class cron_dolifleet
 		$TKmAvg = array();
 		$TKmKMLast = array();
 		$sql = "SELECT dv.rowid, dv.km/DATEDIFF(dv.km_date, dv.date_immat) as km_by_day_veh, dv.km
-			FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule as dv
+			FROM " . $this->db->prefix() . "dolifleet_vehicule as dv
 			WHERE dv.date_immat IS NOT NULL AND dv.date_immat !='0000-00-00'
 			AND dv.km_date IS NOT NULL AND dv.km_date !='0000-00-00'
 			AND dv.km IS NOT NULL AND dv.km != 0
@@ -67,8 +67,8 @@ class cron_dolifleet
 		$successCounter=0;
 
 		$sql = "SELECT DISTINCT op.rowid as oprowid
-       		FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation AS op
-			INNER JOIN " . MAIN_DB_PREFIX . "dolifleet_vehicule AS vh ON vh.rowid = op.fk_vehicule WHERE vh.status = 1";
+       		FROM " . $this->db->prefix() . "dolifleet_vehicule_operation AS op
+			INNER JOIN " . $this->db->prefix() . "dolifleet_vehicule AS vh ON vh.rowid = op.fk_vehicule WHERE vh.status = 1";
 
 		$resql = $this->db->query($sql);
 		if (!$resql) {
@@ -128,7 +128,7 @@ class cron_dolifleet
 					}
 
 					$sql = "SELECT ordp.rowid";
-					$sql .= " FROM ".MAIN_DB_PREFIX."operationorder as ordp INNER JOIN ".MAIN_DB_PREFIX."operationorderdet as ord";
+					$sql .= " FROM ".$this->db->prefix()."operationorder as ordp INNER JOIN ".$this->db->prefix()."operationorderdet as ord";
 					$sql .= " ON ordp.rowid=ord.fk_operation_order";
 					$sql .= " WHERE ordp.fk_vehicule=".(int) $operation->fk_vehicule." AND ord.fk_product=".(int) $operation->fk_product;
 					$sql .= " AND ordp.status IN (".implode(',', $stToTest).")";
@@ -188,7 +188,7 @@ class cron_dolifleet
 			if ($mailfile->error) {
 				$this->output .= '<p style="color:red;font-weight: bold"> Probléme d\'envoie du mail de compte rendue</p>';
 			} else {
-				$sql = 'SELECT rowid FROM ' . MAIN_DB_PREFIX . 'user WHERE email=\'' . getDolGlobalString("MAIN_MAIL_EMAIL_FROM")  . '\'';
+				$sql = 'SELECT rowid FROM ' . $this->db->prefix() . 'user WHERE email=\'' . getDolGlobalString("MAIN_MAIL_EMAIL_FROM")  . '\'';
 				$resql = $db->query($sql);
 				if ($resql <= 0) {
 					$this->output .= '<p>' . $langs->trans('SQLERROR', $db->lastqueryerror()) . '</p>';

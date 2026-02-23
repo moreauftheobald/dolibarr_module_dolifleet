@@ -106,20 +106,20 @@ if (empty($reshook)) {
 			}
 			if (empty($error)) {
 				if ($action == 'confirmnew') {
-					$sql = "INSERT INTO " . MAIN_DB_PREFIX . "c_dolifleet_contract_type (entity,code, label, active, date_creation) VALUES (";
+					$sql = "INSERT INTO " . $db->prefix() . "c_dolifleet_contract_type (entity,code, label, active, date_creation) VALUES (";
 					$sql .= "'" . $conf->entity . "',";
 					$sql .= "'" . $code . "',";
 					$sql .= "'" . $label . "',";
 					$sql .= "'" . $active . "',";
 					$sql .= "'" . $db->idate(dol_now()) . "')";
 				} elseif ($action == 'confirmedit') {
-					$sql = "UPDATE " . MAIN_DB_PREFIX . "c_dolifleet_contract_type SET ";
+					$sql = "UPDATE " . $db->prefix() . "c_dolifleet_contract_type SET ";
 					$sql .= "code = '" . $code . "', ";
 					$sql .= "label = '" . $label . "', ";
 					$sql .= "active = '" . $active . "' ";
 					$sql .= "WHERE rowid = " . $rowid;
 				} elseif ($action == 'confirmdelete') {
-					$sql = "DELETE FROM " . MAIN_DB_PREFIX . "c_dolifleet_contract_type WHERE rowid = " . $rowid;
+					$sql = "DELETE FROM " . $db->prefix() . "c_dolifleet_contract_type WHERE rowid = " . $rowid;
 				}
 				$res = $db->query($sql);
 				if (!$res) {
@@ -172,7 +172,7 @@ $limit = 25;
 $offset = $limit * $page;
 
 $sql  = "SELECT p.rowid as rowid, p.code as code, p.label as label, p.active as active ";
-$sql .= "FROM ".MAIN_DB_PREFIX."c_dolifleet_contract_type as p ";
+$sql .= "FROM ".$db->prefix()."c_dolifleet_contract_type as p ";
 $sql .= "WHERE p.entity IN (".getEntity('product').")";
 
 $nbtotalofrecords = 0;

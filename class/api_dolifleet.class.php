@@ -121,7 +121,7 @@ class DolifleetApi extends DolibarrApi
 
 		$sql = "SELECT t.rowid";
 
-		$sql .= " FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule as t";
+		$sql .= " FROM " . $this->db->prefix() . "dolifleet_vehicule as t";
 
 		$sql .= ' WHERE 1=1';
 
@@ -235,7 +235,7 @@ class DolifleetApi extends DolibarrApi
 
 		$sql = "SELECT t.rowid";
 
-		$sql .= " FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule_operation as t";
+		$sql .= " FROM " . $this->db->prefix() . "dolifleet_vehicule_operation as t";
 
 		$sql .= ' WHERE 1=1';
 

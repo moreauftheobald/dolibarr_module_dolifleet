@@ -322,8 +322,8 @@ function printLinkedVehicules($object, $fromcard = false)
 
 	// new link
 	print '<tr">';
-	$sql = "SELECT v.rowid, v.immatriculation, vt.label FROM " . MAIN_DB_PREFIX . "dolifleet_vehicule as v";
-	$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "c_dolifleet_vehicule_type as vt ON vt.rowid = v.fk_vehicule_type";
+	$sql = "SELECT v.rowid, v.immatriculation, vt.label FROM " . $db->prefix() . "dolifleet_vehicule as v";
+	$sql .= " LEFT JOIN " . $db->prefix() . "c_dolifleet_vehicule_type as vt ON vt.rowid = v.fk_vehicule_type";
 	$sql .= " WHERE v.status = 1";
 	$DOLIFLEET_MOTRICE_TYPES = unserialize(getDolGlobalString("DOLIFLEET_MOTRICE_TYPES"));
 	if (!empty($DOLIFLEET_MOTRICE_TYPES)) {
@@ -560,7 +560,7 @@ function getNbORVehicle($idvehicle, $checkEntity = 1)
 {
 	global $db;
 
-	$sql = 'SELECT COUNT(o.rowid) as nb FROM ' . MAIN_DB_PREFIX . 'operationorder as o ';
+	$sql = 'SELECT COUNT(o.rowid) as nb FROM ' . $db->prefix() . 'operationorder as o ';
 	$sql .= ' WHERE o.fk_vehicule = ' . $idvehicle;
 	if ($checkEntity) $sql .= ' AND o.entity IN (' . getEntity('operationorder') . ')';
 	$resql = $db->query($sql);
