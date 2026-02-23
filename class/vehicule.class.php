@@ -359,12 +359,6 @@ class Vehicule extends CommonObject
 	/** @var int|string $date_creation Creation date */
 	public $date_creation;
 
-	/** @var array Status label cache */
-	public $labelStatus = array();
-
-	/** @var array Status short label cache */
-	public $labelStatusShort = array();
-
 	/**
 	 * Vehicule constructor.
 	 * @param DoliDB $db Database connector
@@ -500,46 +494,6 @@ class Vehicule extends CommonObject
 		unset($this->fk_element); // avoid conflict with standard Dolibarr behaviour
 
 		return $this->deleteCommon($user, $notrigger);
-	}
-
-	/**
-	 * @return void
-	 * @see cloneObject
-	 */
-	public function clearUniqueFields()
-	{
-		$this->ref = 'Copy of '.$this->ref;
-	}
-
-	/**
-	 * Get reference, generating next if provisional
-	 *
-	 * @return string
-	 */
-	public function getRef()
-	{
-		if (preg_match('/^[\(]?PROV/i', $this->ref) || empty($this->ref)) {
-			return $this->getNextRef();
-		}
-
-		return $this->ref;
-	}
-
-	/**
-	 * Get next reference value
-	 *
-	 * @return string
-	 */
-	private function getNextRef()
-	{
-		global $db, $conf;
-
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-
-		$mask = !empty(getDolGlobalString("DOLIFLEET_REF_MASK")) ? getDolGlobalString("DOLIFLEET_REF_MASK") : 'MM{yy}{mm}-{0000}';
-		$ref = get_next_value($db, $mask, 'dolifleet', 'ref');
-
-		return $ref;
 	}
 
 	/**
@@ -1100,23 +1054,6 @@ class Vehicule extends CommonObject
 	}
 
 	/**
-	 * @param int    $id         Identifiant
-	 * @param string $ref        Ref
-	 * @param int    $withpicto  Add picto into link
-	 * @param string $moreparams Add more parameters in the URL
-	 * @return string
-	 */
-	public static function getStaticNomUrl($id, $ref = null, $withpicto = 0, $moreparams = '')
-	{
-		global $db;
-
-		$object = new Vehicule($db);
-		$object->fetch($id, $ref);
-
-		return $object->getNomUrl($withpicto, $moreparams);
-	}
-
-	/**
 	 * Return the status label
 	 *
 	 * @param  int $mode 0=Long label, 1=Short label, 2=Picto + Short label, 3=Picto, 4=Picto + Long label, 5=Short label + Picto, 6=Long label + Picto
@@ -1157,80 +1094,6 @@ class Vehicule extends CommonObject
 		return dolGetStatus($labelStatus[$status], $labelStatusShort[$status], '', $statusType, $mode);
 	}
 
-	/**
-	 * Return HTML string to show a field into a page
-	 *
-	 * @param  string $key       Key of attribute
-	 * @param  string $moreparam To add more parameters on html input tag
-	 * @param  string $keysuffix Prefix string to add into name and id of field
-	 * @param  string $keyprefix Suffix string to add into name and id of field
-	 * @param  mixed  $morecss   Value for css to define size
-	 * @return string
-	 */
-	public function showOutputFieldQuick($key, $moreparam = '', $keysuffix = '', $keyprefix = '', $morecss = '')
-	{
-		if ($key == 'fk_contract_type_full') {
-			$res = '';
-			if (!empty($this->fk_contract_type)) {
-				$res = $this->showOutputField($this->fields['fk_contract_type'], 'fk_contract_type', $this->fk_contract_type, $moreparam, $keysuffix, $keyprefix, $morecss);
-				$res .= ' (fin le: ';
-				$res .= $this->showOutputField($this->fields['date_end_contract'], 'date_end_contract', $this->date_end_contract, $moreparam, $keysuffix, $keyprefix, $morecss);
-				$res .= ')';
-			}
-		} elseif ($key == 'operations') {
-			$res = $this->printbuttons_or();
-		} elseif ($key == 'linkedvh') {
-			$res = $this->getorlinkedHV();
-		} else {
-			$res = $this->showOutputField($this->fields[$key], $key, $this->{$key}, $moreparam, $keysuffix, $keyprefix, $morecss);
-		}
-
-		return $res;
-	}
-
-	/**
-	 * Add an action/event to the agenda
-	 *
-	 * @param  string $label      Event label
-	 * @param  string $note       Event note
-	 * @param  string $type_code  Event type code
-	 * @param  int    $percentage Event percentage
-	 * @param  int    $time       Event time
-	 * @return int                >0 event id, <0 KO
-	 */
-	public function addActionComEvent($label, $note = '', $type_code = 'AC_OTH_AUTO', $percentage = -1, $time = 0)
-	{
-		global $user;
-
-		if (empty($time)) {
-			$time = time();
-		}
-		require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
-
-		$object = new ActionComm($this->db);
-		$object->type_code = $type_code;
-		$object->label = $label;
-		$object->note_private = $note;
-
-		$object->datep = $time;
-
-		$object->fk_element = $this->id;
-		$object->elementid = 0;
-		$object->elementtype = $this->element;
-
-		$object->socid = $this->fk_soc;
-		$object->userownerid = $user->id;
-		$object->percentage = $percentage;
-
-		$newEventId = $object->create($user);
-		if ($newEventId < 1) {
-			$this->errors = array($object->error);
-			dol_syslog(__CLASS__.":".__METHOD__." launched by ".__FILE__.". id=".$this->id.' error code : '.$object->error, LOG_ERR);
-			return -1;
-		} else {
-			return $newEventId;
-		}
-	}
 
 	public function printbuttons_or()
 	{
