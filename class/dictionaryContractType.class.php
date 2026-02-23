@@ -15,14 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('SeedObject')) {
-	/**
-	 * Needed if $form->showLinkedObjectBlock() is call or for session timeout on our module page
-	 */
-	define('INC_FROM_DOLIBARR', true);
-	require_once dirname(__FILE__).'/../config.php';
-}
-
 dol_include_once('/dolifleet/class/dictionary.class.php');
 
 class dictionaryContractType extends dictionary
@@ -30,6 +22,6 @@ class dictionaryContractType extends dictionary
 	/** @var string $table_element Table name in SQL */
 	public $table_element = 'c_dolifleet_contract_type';
 
-	/** @var string $element Name of the element (tip for better integration in Dolibarr: this value should be the reflection of the class name with ucfirst() function) */
+	/** @var string $element Name of the element */
 	public $element = 'dolifleetContractType';
 }
