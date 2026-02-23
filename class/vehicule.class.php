@@ -1140,20 +1140,21 @@ class Vehicule extends CommonObject
 
 		$langs->load('dolifleet@dolifleet');
 
-		if (empty($this->labelStatus) || empty($this->labelStatusShort)) {
-			$this->labelStatus[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusDraft');
-			$this->labelStatus[self::STATUS_ACTIVE] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusActivated');
+		$labelStatus = array();
+		$labelStatusShort = array();
 
-			$this->labelStatusShort[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusShortDraft');
-			$this->labelStatusShort[self::STATUS_ACTIVE] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusShortValidate');
-		}
+		$labelStatus[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusDraft');
+		$labelStatus[self::STATUS_ACTIVE] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusActivated');
+
+		$labelStatusShort[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusShortDraft');
+		$labelStatusShort[self::STATUS_ACTIVE] = $langs->transnoentitiesnoconv('doliFleetVehiculeStatusShortValidate');
 
 		$statusType = 'status0';
 		if ($status == self::STATUS_ACTIVE) {
 			$statusType = 'status4';
 		}
 
-		return dolGetStatus($this->labelStatus[$status], $this->labelStatusShort[$status], '', $statusType, $mode);
+		return dolGetStatus($labelStatus[$status], $labelStatusShort[$status], '', $statusType, $mode);
 	}
 
 	/**
