@@ -39,8 +39,8 @@ $backtopage = GETPOST('backtopage', 'alpha');
 
 $object = new Vehicule($db);
 
-if (!empty($id) || !empty($ref)) $object->fetch($id, true, $ref);
-if (!empty($vin)) $object->fetchBy($vin, 'vin', false);
+if (!empty($id) || !empty($ref)) $object->fetch($id, $ref);
+if (!empty($vin)) $object->fetchByVin($vin);
 
 $hookmanager->initHooks(array($contextpage, 'globalcard'));
 
@@ -78,7 +78,33 @@ if (empty($reshook)) {
 	switch ($action) {
 		case 'add':
 		case 'update':
-			$object->setValues($_REQUEST); // Set standard attributes
+			// Set standard attributes from POST using $fields definition
+			foreach ($object->fields as $key => $val) {
+				if (in_array($key, array('rowid', 'entity', 'import_key', 'date_creation', 'tms'))) {
+					continue;
+				}
+				if (!GETPOSTISSET($key) && !in_array($val['type'], array('date', 'datetime'))) {
+					continue;
+				}
+				if (preg_match('/^(date|datetime)/', $val['type'])) {
+					$object->$key = dol_mktime(
+						GETPOSTINT($key.'hour'), GETPOSTINT($key.'min'), GETPOSTINT($key.'sec'),
+						GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year'),
+						'tzuserrel'
+					);
+				} elseif (preg_match('/^(chkbxlst|checkbox)/', $val['type'])) {
+					$object->$key = implode(',', GETPOST($key, 'array'));
+				} elseif ($val['type'] == 'price' || $val['type'] == 'double') {
+					$object->$key = price2num(GETPOST($key, 'alphanohtml'));
+				} elseif (preg_match('/^integer/', $val['type']) || preg_match('/^sellist/', $val['type'])) {
+					$object->$key = GETPOSTINT($key);
+				} elseif ($val['type'] == 'html') {
+					$object->$key = GETPOST($key, 'restricthtml');
+				} else {
+					$object->$key = GETPOST($key, 'alphanohtml');
+				}
+			}
+			// Override dim_pneu multiselect (handled by chkbxlst above, but also via dim_pneu_multiselect)
 			if (GETPOSTISSET('dim_pneu')) {
 				$object->dim_pneu = implode(',', GETPOST('dim_pneu', 'array'));
 			}
