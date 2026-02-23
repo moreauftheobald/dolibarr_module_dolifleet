@@ -155,7 +155,7 @@ if (empty($reshook)) {
 			$res = $object->save($user);
 
 			if ($res < 0) {
-				setEventMessage($object->errors, 'errors');
+				setEventMessages(null, $object->errors, 'errors');
 				if (empty($object->id)) $action = 'create';
 				else $action = 'edit';
 				break;

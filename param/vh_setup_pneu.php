@@ -148,7 +148,7 @@ if (empty($reshook)) {
 				} elseif ($action == 'confirmdelete') {
 					$msg='DeleteSucces';
 				}
-				setEventMessage($msg);
+				setEventMessages($msg, null);
 				unset($action);
 				unset($confirm);
 				unset($cancel);

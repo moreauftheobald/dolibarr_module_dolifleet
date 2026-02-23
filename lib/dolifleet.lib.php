@@ -178,7 +178,7 @@ function printVehiculeActivities($object, $fromcard = false)
 	}
 
 	print '<form id="activityForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
-	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="token" value="' . newToken() . '">';
 	print '<input type="hidden" name="action" value="'.$actionForm.'">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
 	if (!empty(GETPOST('act_id', 'int'))) {
@@ -282,7 +282,7 @@ function printLinkedVehicules($object, $fromcard = false)
 	print load_fiche_titre($langs->trans('LinkedVehicules'), '', '');
 
 	print '<form id="vehiculeLinkedForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
-	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="token" value="' . newToken() . '">';
 	print '<input type="hidden" name="action" value="addVehiculeLink">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
 
@@ -381,7 +381,7 @@ function printVehiculeOperations($object)
 	}
 
 	print '<form id="vehiculeOperationsForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
-	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="token" value="' . newToken() . '">';
 	print '<input type="hidden" name="action" value="'.$actionForm.'">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
 	if (!empty(GETPOST('ope_id', 'int'))) {
@@ -404,7 +404,7 @@ function printVehiculeOperations($object)
 
 	$res = $object->getOperations();
 	if ($res < 0) {
-		setEventMessage($object->error, 'errors');
+		setEventMessages($object->error, null, 'errors');
 	}
 	if (empty($object->operations)) {
 		print '<tr><td align="center" colspan="6">' . $langs->trans('NodoliFleet') . '</td></tr>';

@@ -27,7 +27,7 @@ $elementConvertionAnotherOne = 'dolifleet_vehicule'; // voir selectForFormsList 
 
 
 $moduleSharingEnabled = 'MULTICOMPANY_'.strtoupper($moduleKey).'_SHARING_ENABLED';
-$moduleSharingEnabledValue = getDolGlobalString("{$moduleSharingEnabled}");
+$moduleSharingEnabledValue = getDolGlobalString($moduleSharingEnabled);
 
 dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertion).'_SHARING_ENABLED', $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
 dolibarr_set_const($db, 'MULTICOMPANY_'.strtoupper($elementConvertionAnotherOne).'_SHARING_ENABLED', $moduleSharingEnabledValue, 'chaine', 0, '', 0); // la conf MULTICOMPANY_EXTERNAL_MODULES_SHARING regle le PB je les garde au cas ou
@@ -74,7 +74,7 @@ if ($action == 'save_multicompany_shared_conf') {
 					$dao->options['sharings'][$elementConvertionAnotherOne] = $dao->options['sharings'][$element];
 
 					if ($dao->update($entityId, $user) < 1) {
-						setEventMessage('Error');
+						setEventMessages('Error', null, 'errors');
 					}
 				}
 			}
@@ -110,7 +110,7 @@ if (!empty(isModEnabled("multicompany")) && !empty(getDolGlobalString("MULTICOMP
 	print '<br><br>';
 
 	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="save_multicompany_shared_conf">';
 
 	print '<table class="noborder" width="100%">';

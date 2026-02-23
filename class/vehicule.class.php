@@ -1136,7 +1136,7 @@ class Vehicule extends CommonObject
 				return $obj->nbop;
 			}
 		} else {
-			setEventMessage($this->db->lasterror, 'errors');
+			setEventMessages($this->db->lasterror, null, 'errors');
 			return 0;
 		}
 
