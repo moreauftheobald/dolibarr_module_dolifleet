@@ -586,6 +586,26 @@ class Vehicule extends CommonObject
 		}
 
 		dol_include_once("/dolifleet/class/vehiculeActivity.class.php");
+
+		// Auto-close the previous activity: set its date_end to new date_start - 1 day (23:59:59)
+		if (!empty($date_start)) {
+			$sqlPrev = "SELECT rowid FROM ".$this->db->prefix()."dolifleet_vehicule_activity";
+			$sqlPrev .= " WHERE fk_vehicule = ".((int) $this->id);
+			$sqlPrev .= " AND date_start < '".$this->db->idate($date_start)."'";
+			$sqlPrev .= " ORDER BY date_start DESC LIMIT 1";
+			$resqlPrev = $this->db->query($sqlPrev);
+			if ($resqlPrev) {
+				$objPrev = $this->db->fetch_object($resqlPrev);
+				if ($objPrev) {
+					$prevAct = new doliFleetVehiculeActivity($this->db);
+					if ($prevAct->fetch((int) $objPrev->rowid) > 0) {
+						$prevAct->date_end = $date_start - 1; // 23:59:59 of day before new date_start
+						$prevAct->update($user);
+					}
+				}
+			}
+		}
+
 		$act = new doliFleetVehiculeActivity($this->db);
 
 		$act->fk_vehicule = $this->id;
@@ -721,6 +741,26 @@ class Vehicule extends CommonObject
 
 		$vehiculeToLink = new static($this->db);
 		$vehiculeToLink->fetch($id);
+
+		// Auto-close the previous link: set its date_end to new date_start - 1 day (23:59:59)
+		if (!empty($date_start)) {
+			dol_include_once('/dolifleet/class/vehiculeLink.class.php');
+			$sqlPrevLink = "SELECT rowid FROM ".$this->db->prefix()."dolifleet_vehicule_link";
+			$sqlPrevLink .= " WHERE (fk_source = ".((int) $this->id)." OR fk_target = ".((int) $this->id).")";
+			$sqlPrevLink .= " AND date_start < '".$this->db->idate($date_start)."'";
+			$sqlPrevLink .= " ORDER BY date_start DESC LIMIT 1";
+			$resqlPrevLink = $this->db->query($sqlPrevLink);
+			if ($resqlPrevLink) {
+				$objPrevLink = $this->db->fetch_object($resqlPrevLink);
+				if ($objPrevLink) {
+					$prevLink = new doliFleetVehiculeLink($this->db);
+					if ($prevLink->fetch((int) $objPrevLink->rowid) > 0) {
+						$prevLink->date_end = $date_start - 1; // 23:59:59 of day before new date_start
+						$prevLink->update($user);
+					}
+				}
+			}
+		}
 
 		$this->getLinkedVehicules($date_start, $date_end);
 		if (!empty($this->linkedVehicules)) {
