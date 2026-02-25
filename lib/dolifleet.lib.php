@@ -327,14 +327,15 @@ function printLinkedVehicules($object, $fromcard = false)
 	$sql .= " WHERE v.status = 1";
 	$DOLIFLEET_MOTRICE_TYPES = unserialize(getDolGlobalString("DOLIFLEET_MOTRICE_TYPES"));
 	if (!empty($DOLIFLEET_MOTRICE_TYPES)) {
-		if (in_array($object->fk_vehicule_type, $DOLIFLEET_MOTRICE_TYPES))
-			$sql .= " AND v.fk_vehicule_type NOT IN (" . implode(', ', $DOLIFLEET_MOTRICE_TYPES) . ")";
-		else $sql .= " AND v.fk_vehicule_type IN (" . implode(', ', $DOLIFLEET_MOTRICE_TYPES) . ")";
+		$sanitizedTypes = array_map('intval', $DOLIFLEET_MOTRICE_TYPES);
+		if (in_array($object->fk_vehicule_type, $sanitizedTypes))
+			$sql .= " AND v.fk_vehicule_type NOT IN (" . implode(', ', $sanitizedTypes) . ")";
+		else $sql .= " AND v.fk_vehicule_type IN (" . implode(', ', $sanitizedTypes) . ")";
 	} else {
 		// a minima on ne peut lier 2 véhicules de même nature
-		$sql .= " AND v.fk_vehicule_type <> " . $object->fk_vehicule_type;
+		$sql .= " AND v.fk_vehicule_type <> " . ((int) $object->fk_vehicule_type);
 	}
-	$sql .= " AND v.fk_soc = " . $object->fk_soc;
+	$sql .= " AND v.fk_soc = " . ((int) $object->fk_soc);
 	$resql = $db->query($sql);
 	$Tab = array();
 	if ($resql) {

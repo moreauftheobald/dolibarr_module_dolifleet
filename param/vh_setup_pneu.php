@@ -107,19 +107,20 @@ if (empty($reshook)) {
 			if (empty($error)) {
 				if ($action == 'confirmnew') {
 					$sql = "INSERT INTO " . $db->prefix() . "c_dolifleet_vehicule_dimpneu (entity,code, label, active, date_creation) VALUES (";
-					$sql .= "'" . $conf->entity . "',";
-					$sql .= "'" . $code . "',";
-					$sql .= "'" . $label . "',";
-					$sql .= "'" . $active . "',";
+					$sql .= ((int) $conf->entity) . ",";
+					$sql .= "'" . $db->escape($code) . "',";
+					$sql .= "'" . $db->escape($label) . "',";
+					$sql .= ((int) $active) . ",";
+
 					$sql .= "'" . $db->idate(dol_now()) . "')";
 				} elseif ($action == 'confirmedit') {
 					$sql = "UPDATE " . $db->prefix() . "c_dolifleet_vehicule_dimpneu SET ";
-					$sql .= "code = '" . $code . "', ";
-					$sql .= "label = '" . $label . "', ";
-					$sql .= "active = '" . $active . "' ";
-					$sql .= "WHERE rowid = " . $rowid;
+					$sql .= "code = '" . $db->escape($code) . "', ";
+					$sql .= "label = '" . $db->escape($label) . "', ";
+					$sql .= "active = " . ((int) $active) . " ";
+					$sql .= "WHERE rowid = " . ((int) $rowid);
 				} elseif ($action == 'confirmdelete') {
-					$sql = "DELETE FROM " . $db->prefix() . "c_dolifleet_vehicule_dimpneu WHERE rowid = " . $rowid;
+					$sql = "DELETE FROM " . $db->prefix() . "c_dolifleet_vehicule_dimpneu WHERE rowid = " . ((int) $rowid);
 				}
 				$res = $db->query($sql);
 				if (!$res) {

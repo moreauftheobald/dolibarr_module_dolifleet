@@ -223,10 +223,10 @@ if (empty($reshook)) {
 
 			$ret = $object->addActivity($type, $date_start, $date_end);
 			if ($ret < 0) {
-				setEventMessage($langs->trans($object->error), 'errors');
+				setEventMessages($langs->trans($object->error), null, 'errors');
 				break;
 			} else {
-				setEventMessage($langs->trans('ActivityAdded'));
+				setEventMessages($langs->trans('ActivityAdded'), null);
 				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
 				exit;
 			}
@@ -236,7 +236,7 @@ if (empty($reshook)) {
 
 			$ret = $object->delActivity($user, $activityId);
 			if ($ret < 0) {
-				setEventMessage($object->error, "errors");
+				setEventMessages($object->error, null, 'errors');
 			}
 
 			header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
@@ -245,7 +245,7 @@ if (empty($reshook)) {
 		case 'addVehiculeLink':
 			$veh_id = GETPOST('linkVehicule_id');
 			if (empty($veh_id) || $veh_id == '-1') {
-				setEventMessage($langs->trans('ErrNoVehiculeToLink'), "errors");
+				setEventMessages($langs->trans('ErrNoVehiculeToLink'), null, 'errors');
 				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
 				exit;
 			}
@@ -270,10 +270,10 @@ if (empty($reshook)) {
 
 			$ret = $object->delLink($veh_id);
 			if ($ret < 0) {
-				setEventMessage($langs->trans('ErrVehiculeUnlink'), "errors");
+				setEventMessages($langs->trans('ErrVehiculeUnlink'), null, 'errors');
 				break;
 			} else {
-				setEventMessage($langs->trans('VehiculeUnlinked'));
+				setEventMessages($langs->trans('VehiculeUnlinked'), null);
 				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
 				exit;
 			}
@@ -305,7 +305,7 @@ if (empty($reshook)) {
 				setEventMessages('', $object->errors, "errors");
 				break;
 			} else {
-				setEventMessage($langs->trans('operationDeleted'));
+				setEventMessages($langs->trans('operationDeleted'), null);
 				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
 				exit;
 			}
@@ -372,7 +372,7 @@ if ($action == 'create') {
 	print load_fiche_titre($langs->trans('NewdoliFleet'), '', 'dolifleet@dolifleet');
 
 	print '<form method="POST" action="' . $_SERVER["PHP_SELF"] . '">';
-	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="token" value="' . newToken() . '">';
 	print '<input type="hidden" name="action" value="add">';
 	print '<input type="hidden" name="backtopage" value="' . $backtopage . '">';
 
@@ -404,7 +404,7 @@ if ($action == 'create') {
 	} else {
 		if (!empty($object->id) && $action === 'edit') {
 			print '<form method="POST" action="' . $_SERVER["PHP_SELF"] . '">';
-			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+			print '<input type="hidden" name="token" value="' . newToken() . '">';
 			print '<input type="hidden" name="action" value="update">';
 			print '<input type="hidden" name="backtopage" value="' . $backtopage . '">';
 			print '<input type="hidden" name="id" value="' . $object->id . '">';

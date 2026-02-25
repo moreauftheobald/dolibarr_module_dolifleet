@@ -188,7 +188,7 @@ class cron_dolifleet
 			if ($mailfile->error) {
 				$this->output .= '<p style="color:red;font-weight: bold"> Probléme d\'envoie du mail de compte rendue</p>';
 			} else {
-				$sql = 'SELECT rowid FROM ' . $this->db->prefix() . 'user WHERE email=\'' . getDolGlobalString("MAIN_MAIL_EMAIL_FROM")  . '\'';
+				$sql = 'SELECT rowid FROM ' . $this->db->prefix() . 'user WHERE email=\'' . $this->db->escape(getDolGlobalString("MAIN_MAIL_EMAIL_FROM"))  . '\'';
 				$resql = $db->query($sql);
 				if ($resql <= 0) {
 					$this->output .= '<p>' . $langs->trans('SQLERROR', $db->lastqueryerror()) . '</p>';
