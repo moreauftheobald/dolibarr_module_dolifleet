@@ -235,8 +235,6 @@ function printVehiculeActivities($object, $fromcard = false)
 		print '<tr id="newActivity">';
 		print '<td align="center">';
 
-		$dict = new dictionaryVehiculeActivityType($db);
-		$TTypeActivity = $dict->getAllActiveArray('label');
 		print $form->selectArray('activityTypes', $TTypeActivity, GETPOST('activityTypes'), 1);
 
 		print '</td>';
@@ -325,8 +323,9 @@ function printLinkedVehicules($object, $fromcard = false)
 	$sql = "SELECT v.rowid, v.immatriculation, vt.label FROM " . $db->prefix() . "dolifleet_vehicule as v";
 	$sql .= " LEFT JOIN " . $db->prefix() . "c_dolifleet_vehicule_type as vt ON vt.rowid = v.fk_vehicule_type";
 	$sql .= " WHERE v.status = 1";
-	$DOLIFLEET_MOTRICE_TYPES = unserialize(getDolGlobalString("DOLIFLEET_MOTRICE_TYPES"));
-	if (!empty($DOLIFLEET_MOTRICE_TYPES)) {
+	$tmpMotriceTypes = getDolGlobalString("DOLIFLEET_MOTRICE_TYPES");
+	$DOLIFLEET_MOTRICE_TYPES = !empty($tmpMotriceTypes) ? @unserialize($tmpMotriceTypes) : false;
+	if (is_array($DOLIFLEET_MOTRICE_TYPES) && !empty($DOLIFLEET_MOTRICE_TYPES)) {
 		$sanitizedTypes = array_map('intval', $DOLIFLEET_MOTRICE_TYPES);
 		if (in_array($object->fk_vehicule_type, $sanitizedTypes))
 			$sql .= " AND v.fk_vehicule_type NOT IN (" . implode(', ', $sanitizedTypes) . ")";

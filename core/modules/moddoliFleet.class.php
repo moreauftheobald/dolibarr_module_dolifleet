@@ -120,7 +120,9 @@ class moddoliFleet extends DolibarrModules
 		// Example: $this->const=array(0=>array('DOLIFLEET_MYNEWCONST1','chaine','myvalue','This is a constant to add',1),
 		//                             1=>array('DOLIFLEET_MYNEWCONST2','chaine','myvalue','This is another constant to add',0, 'current', 1)
 		// );
-		$this->const = array();
+		$this->const = array(
+			0 => array('DOLIFLEET_DELAY_SEARCH_OPERATIONS', 'chaine', '12', 'Delay in months for searching operations', 0, 'current', 0),
+		);
 
 		// Cronjobs (List of cron jobs entries to add when module is enabled)
 		// unit_frequency must be 60 for minute, 3600 for hour, 86400 for day, 604800 for week
