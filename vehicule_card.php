@@ -61,10 +61,10 @@ if (empty($user->hasRight("dolifleet", "read"))) accessforbidden();
 
 $langs->load('dolifleet@dolifleet');
 
-$action = GETPOST('action');
+$action = GETPOST('action', 'aZ09');
 $id = GETPOST('id', 'int');
-$ref = GETPOST('ref');
-$vin = GETPOST('vin');
+$ref = GETPOST('ref', 'alpha');
+$vin = GETPOST('vin', 'alpha');
 
 $cancel    =  GETPOST('cancel', 'alpha');
 $confirm   =  GETPOST('confirm', 'alpha');

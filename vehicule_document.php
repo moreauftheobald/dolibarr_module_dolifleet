@@ -72,7 +72,7 @@ $langs->loadLangs(array("dolifleet@dolifleet", "companies", "other", "mails"));
 
 
 $action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
+$confirm = GETPOST('confirm', 'alpha');
 $id = (GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
 $ref = GETPOST('ref', 'alpha');
 

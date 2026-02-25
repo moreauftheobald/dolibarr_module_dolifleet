@@ -180,7 +180,7 @@ class moddoliFleet extends DolibarrModules
 		$this->tabs = array();
 
 		// Dictionaries
-		if (empty(isModEnabled("dolifleet"))) {
+		if (!isModEnabled("dolifleet")) {
 			$conf->dolifleet = new stdClass();
 			$conf->dolifleet->enabled = 0;
 		}

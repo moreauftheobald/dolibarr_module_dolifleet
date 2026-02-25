@@ -84,7 +84,7 @@ if ($action == 'save_multicompany_shared_conf') {
 
 
 $extrajs = $extracss = array();
-if (!empty(isModEnabled("multicompany")) && !empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED"))) {
+if (isModEnabled("multicompany") && !empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED"))) {
 	$extrajs = array(
 		'/multicompany/inc/multiselect/js/ui.multiselect.js',
 	);
@@ -106,10 +106,10 @@ print dol_get_fiche_head($head, 'multicompanySharing', $langs->trans("Module1040
 
 
 
-if (!empty(isModEnabled("multicompany")) && !empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED"))) {
+if (isModEnabled("multicompany") && !empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED"))) {
 	print '<br><br>';
 
-	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+	print '<form method="POST" action="'.dol_escape_htmltag($_SERVER['PHP_SELF']).'">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="save_multicompany_shared_conf">';
 

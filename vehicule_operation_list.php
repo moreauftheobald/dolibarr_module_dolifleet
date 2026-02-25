@@ -413,7 +413,7 @@ $param .= $hookmanager->resPrint;
 $arrayofmassactions = array();
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
 
-print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">'."\n";
+print '<form method="POST" id="searchFormList" action="'.dol_escape_htmltag($_SERVER["PHP_SELF"]).'">'."\n";
 if ($optioncss != '') {
 	print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
 }
@@ -431,7 +431,7 @@ $htmlofselectarray = $form->multiSelectArrayWithCheckbox('selectedfields', $arra
 $selectedfields = $htmlofselectarray;
 $selectedfields .= (count($arrayofmassactions) ? $form->showCheckAddButtons('checkforselect', 1) : '');
 
-print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'object_generic', 0, '', '', $limit, 0, 0, 1);
+print_barre_liste($title, $page, dol_escape_htmltag($_SERVER["PHP_SELF"]), $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'object_generic', 0, '', '', $limit, 0, 0, 1);
 
 // Hook for moreforfilter
 $moreforfilter = '';
@@ -543,7 +543,7 @@ $totalarray['nbfield'] = 0;
 // --------------------------------------------------------------------
 print '<tr class="liste_titre">';
 if ($conf->main_checkbox_left_column) {
-	print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+	print getTitleFieldOfList($selectedfields, 0, dol_escape_htmltag($_SERVER["PHP_SELF"]), '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
 	$totalarray['nbfield']++;
 }
 foreach ($arrayfields as $key => $val) {
@@ -556,7 +556,7 @@ foreach ($arrayfields as $key => $val) {
 	} elseif (in_array($key, array('t.km', 'o.km', 'o.km_done', 'o.km_next', 'o.delai_from_last_op'))) {
 		$cssforfield .= 'right';
 	}
-	print getTitleFieldOfList($langs->trans($val['label']), 0, $_SERVER['PHP_SELF'], $key, '', $param, ($cssforfield ? 'class="'.$cssforfield.'"' : ''), $sortfield, $sortorder, ($cssforfield ? $cssforfield.' ' : ''))."\n";
+	print getTitleFieldOfList($langs->trans($val['label']), 0, dol_escape_htmltag($_SERVER['PHP_SELF']), $key, '', $param, ($cssforfield ? 'class="'.$cssforfield.'"' : ''), $sortfield, $sortorder, ($cssforfield ? $cssforfield.' ' : ''))."\n";
 	$totalarray['nbfield']++;
 }
 // Hook fields
@@ -565,7 +565,7 @@ $reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters, $objec
 print $hookmanager->resPrint;
 // Action column
 if (!$conf->main_checkbox_left_column) {
-	print getTitleFieldOfList($selectedfields, 0, $_SERVER["PHP_SELF"], '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
+	print getTitleFieldOfList($selectedfields, 0, dol_escape_htmltag($_SERVER["PHP_SELF"]), '', '', '', '', $sortfield, $sortorder, 'center maxwidthsearch ')."\n";
 	$totalarray['nbfield']++;
 }
 print '</tr>'."\n";

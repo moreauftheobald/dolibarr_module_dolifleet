@@ -110,7 +110,7 @@ require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_view.tpl.php';
 // Buttons
 if ($action != 'create' && $action != 'edit') {
 	print '<div class="tabsAction">';
-	print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=create">'.$langs->trans("NewAttribute").'</a>';
+	print '<a class="butAction" href="'.dol_escape_htmltag($_SERVER["PHP_SELF"]).'?action=create">'.$langs->trans("NewAttribute").'</a>';
 	print '</div>';
 }
 

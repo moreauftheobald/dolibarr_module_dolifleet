@@ -76,7 +76,7 @@ if (!$user->hasRight('dolifleet', 'write')) {
 	accessforbidden();
 }
 
-if (empty(isModEnabled("dolifleet"))) accessforbidden();
+if (!isModEnabled("dolifleet")) accessforbidden();
 
 $hookmanager->initHooks(array('dolifleetparam', 'globalcard')); // Note that conf->hooks_modules contains array
 
@@ -228,19 +228,19 @@ print dol_get_fiche_head($head, 'pneu', $langs->trans("DolifleetSetupPneu"), -1,
 $formconfirm = '';
 if ($action=='delete' && !empty($rowid)) {
 	$formquestion[] = array('type'=>'hidden','name'=>'rowid','value'=>$rowid);
-	$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans('DeletePneu'), $langs->trans('DeletePneuQuestion'), 'confirmdelete', $formquestion, 'yes', 1);
+	$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER["PHP_SELF"]), $langs->trans('DeletePneu'), $langs->trans('DeletePneuQuestion'), 'confirmdelete', $formquestion, 'yes', 1);
 } elseif ($action =='new') {
 	$formquestion[] = array('type'=>'text','label'=>$langs->trans('code'), 'name'=>'code','value'=> $code);
 	$formquestion[] = array('type'=>'text','label'=>$langs->trans('pneulabel'), 'name'=>'label','value'=>$label);
 	$formquestion[] = array('type'=>'select','label'=>$langs->trans('active'), 'name'=>'active','values'=>array('0'=>'Non', '1'=>'Oui'), 'default'=>empty($active)?'1':$active);
-	$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans('NewPneu'), '', 'confirmnew', $formquestion, 'yes', 1, 0, 700);
+	$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER["PHP_SELF"]), $langs->trans('NewPneu'), '', 'confirmnew', $formquestion, 'yes', 1, 0, 700);
 } elseif ($action =='edit' && !empty($rowid)) {
 	$dataedit = $pneuarray[$rowid];
 	$formquestion[] = array('type'=>'hidden','name'=>'rowid','value'=>$rowid);
 	$formquestion[] = array('type'=>'text','label'=>$langs->trans('code'), 'name'=>'code','value'=> $dataedit->code);
 	$formquestion[] = array('type'=>'text','label'=>$langs->trans('pneulabel'), 'name'=>'label','value'=>$dataedit->label);
 	$formquestion[] = array('type'=>'select','label'=>$langs->trans('active'), 'name'=>'active','values'=>array('0'=>'Non', '1'=>'Oui'), 'default'=>$dataedit->active);
-	$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans('EditPneu'), '', 'confirmedit', $formquestion, 'yes', 1, 0, 700);
+	$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER["PHP_SELF"]), $langs->trans('EditPneu'), '', 'confirmedit', $formquestion, 'yes', 1, 0, 700);
 }
 
 // Call Hook formConfirm
@@ -256,7 +256,7 @@ if (empty($reshook)) {
 print $formconfirm;
 $actionpathnew = dol_buildpath('/dolifleet/param/vh_setup_pneu.php', 2). '?action=new';
 $newcardbutton = dolGetButtonTitle($langs->trans('New'), '', 'fa fa-plus-circle', $actionpathnew, '', $user->hasRight('dolifleet', 'write'));
-print_barre_liste($title, $page, $_SERVER["PHP_SELF"], '', '', '', '', $num, $nbtotalofrecords, 'service', 0, $newcardbutton, '', $limit, 0, 0, 1);
+print_barre_liste($title, $page, dol_escape_htmltag($_SERVER["PHP_SELF"]), '', '', '', '', $num, $nbtotalofrecords, 'service', 0, $newcardbutton, '', $limit, 0, 0, 1);
 
 print '<div class="fichecenter">';
 

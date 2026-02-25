@@ -44,7 +44,7 @@ function dolifleetAdminPrepareHead()
 	$head[$h][2] = 'extrafields';
 	$h++;
 
-	if (!empty(isModEnabled("multicompany"))) {
+	if (isModEnabled("multicompany")) {
 		$head[$h][0] = dol_buildpath("/dolifleet/admin/multicompany_sharing.php", 1);
 		$head[$h][1] = $langs->trans("multicompanySharing");
 		$head[$h][2] = 'multicompanySharing';
@@ -135,25 +135,25 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 
 	if ($action === 'valid' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmActivatedoliFleetVehiculeBody', $object->immatriculation);
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmActivatedoliFleetVehiculeTitle'), $body, 'confirm_validate', '', 0, 1);
+		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id, $langs->trans('ConfirmActivatedoliFleetVehiculeTitle'), $body, 'confirm_validate', '', 0, 1);
 	} elseif ($action === 'modif' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmReopendoliFleetVehiculeBody', $object->immatriculation);
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmReopendoliFleetVehiculeTitle'), $body, 'confirm_modif', '', 0, 1);
+		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id, $langs->trans('ConfirmReopendoliFleetVehiculeTitle'), $body, 'confirm_modif', '', 0, 1);
 	} elseif ($action === 'delete' && !empty($user->hasRight("dolifleet", "delete"))) {
 		$body = $langs->trans('ConfirmDeletedoliFleetVehiculeBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
+		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id, $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delete', '', 0, 1);
 	} elseif ($action === 'clone' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmClonedoliFleetVehiculeBody', $object->immatriculation);
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConfirmClonedoliFleetVehiculeTitle'), $body, 'confirm_clone', '', 0, 1);
+		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id, $langs->trans('ConfirmClonedoliFleetVehiculeTitle'), $body, 'confirm_clone', '', 0, 1);
 	} elseif ($action === 'delActivity' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmDelActivitydoliFleetVehiculeBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&act_id=' . GETPOST('act_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delActivity', '', 0, 1);
+		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&act_id=' . GETPOST('act_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delActivity', '', 0, 1);
 	} elseif ($action === 'unlinkVehicule' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmUnlinkVehiculedoliFleetVehiculeBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&linkVehicule_id=' . GETPOST('linkVehicule_id'), $langs->trans('ConfirmUnlinkVehiculedoliFleetVehiculeTitle'), $body, 'confirm_unlinkVehicule', '', 0, 1);
+		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&linkVehicule_id=' . GETPOST('linkVehicule_id'), $langs->trans('ConfirmUnlinkVehiculedoliFleetVehiculeTitle'), $body, 'confirm_unlinkVehicule', '', 0, 1);
 	} elseif ($action === 'delOperation' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
-		$formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
+		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
 	}
 
 	return $formconfirm;
@@ -177,7 +177,7 @@ function printVehiculeActivities($object, $fromcard = false)
 		$actionForm='addActivity';
 	}
 
-	print '<form id="activityForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<form id="activityForm" method="POST" action="' . dol_escape_htmltag($_SERVER["PHP_SELF"]) . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . newToken() . '">';
 	print '<input type="hidden" name="action" value="'.$actionForm.'">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
@@ -222,8 +222,8 @@ function printVehiculeActivities($object, $fromcard = false)
 				print '<td align="center">' . (!empty($activity->date_end) ? dol_print_date($activity->date_end, "%d/%m/%Y") : '') . '</td>';
 				print '<td align="center">' . $activity->showOutputField($activity->fields['fk_soc'], 'fk_soc', $activity->fk_soc) . '</td>';
 				print '<td align="center">';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_edit() . '</a>';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_delete() . '</a>';
+				print '<a href="' . dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&action=editActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_edit() . '</a>';
+				print '<a href="' . dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&action=delActivity&act_id=' . $activity->id . '&token='. newToken() . '">' . img_delete() . '</a>';
 				print '</td>';
 				print '</tr>';
 			}
@@ -281,7 +281,7 @@ function printLinkedVehicules($object, $fromcard = false)
 
 	print load_fiche_titre($langs->trans('LinkedVehicules'), '', '');
 
-	print '<form id="vehiculeLinkedForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<form id="vehiculeLinkedForm" method="POST" action="' . dol_escape_htmltag($_SERVER["PHP_SELF"]) . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . newToken() . '">';
 	print '<input type="hidden" name="action" value="addVehiculeLink">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
@@ -315,7 +315,7 @@ function printLinkedVehicules($object, $fromcard = false)
 			print '</td>';
 			print '<td align="center">' . dol_print_date($vehiculelink->date_start, "%d/%m/%Y") . '</td>';
 			print '<td align="center">' . (!empty($vehiculelink->date_end) ? dol_print_date($vehiculelink->date_end, "%d/%m/%Y") : '') . '</td>';
-			print '<td align="center"><a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=unlinkVehicule&linkVehicule_id=' . $vehiculelink->id . '&token='. newToken() . '"><span class="fas fa-unlink"></span></a> </td>';
+			print '<td align="center"><a href="' . dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&action=unlinkVehicule&linkVehicule_id=' . $vehiculelink->id . '&token='. newToken() . '"><span class="fas fa-unlink"></span></a> </td>';
 			print '</tr>';
 		}
 	}
@@ -381,7 +381,7 @@ function printVehiculeOperations($object)
 		$actionForm='addVehiculeOperation';
 	}
 
-	print '<form id="vehiculeOperationsForm" method="POST" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '">';
+	print '<form id="vehiculeOperationsForm" method="POST" action="' . dol_escape_htmltag($_SERVER["PHP_SELF"]) . '?id=' . $object->id . '">';
 	print '<input type="hidden" name="token" value="' . newToken() . '">';
 	print '<input type="hidden" name="action" value="'.$actionForm.'">';
 	print '<input type="hidden" name="id" value="' . $object->id . '">';
@@ -472,8 +472,8 @@ function printVehiculeOperations($object)
 				}
 				print '</td>';
 				print '<td align="center">';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=editOperation&ope_id=' . $operation->id . '&token='. newToken() . '">' . img_edit() . '</a>';
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delOperation&ope_id=' . $operation->id . '&token='. newToken() . '">' . img_delete() . '</a>';
+				print '<a href="' . dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&action=editOperation&ope_id=' . $operation->id . '&token='. newToken() . '">' . img_edit() . '</a>';
+				print '<a href="' . dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&action=delOperation&ope_id=' . $operation->id . '&token='. newToken() . '">' . img_delete() . '</a>';
 				print '</td>';
 			}
 			print '</tr>';

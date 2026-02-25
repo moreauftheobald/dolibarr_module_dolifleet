@@ -140,7 +140,7 @@ print '</tr>';
 print '<tr class="oddeven">';
 print '<td>'.$langs->trans('DOLIFLEET_MOTRICE_TYPES').'</td>';
 print '<td></td>';
-print '<td><form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+print '<td><form action="'.dol_escape_htmltag($_SERVER['PHP_SELF']).'" method="POST">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
 print '<input type="hidden" name="action" value="set_DOLIFLEET_MOTRICE_TYPES">';
 dol_include_once('/dolifleet/class/dictionaryVehiculeType.class.php');
@@ -158,7 +158,7 @@ if (empty(getDolGlobalString("DOLIFLEET_DELAY_SEARCH_OPERATIONS"))) {
 print '<tr class="oddeven">';
 print '<td>'.$langs->trans('DOLIFLEET_DELAY_SEARCH_OPERATIONS').'</td>';
 print '<td></td>';
-print '<td><form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+print '<td><form action="'.dol_escape_htmltag($_SERVER['PHP_SELF']).'" method="POST">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
 print '<input type="hidden" name="action" value="set_DOLIFLEET_DELAY_SEARCH_OPERATIONS">';
 print '<input type="text" name="DOLIFLEET_DELAY_SEARCH_OPERATIONS" value="'.getDolGlobalString("DOLIFLEET_DELAY_SEARCH_OPERATIONS").'" size="5">';

@@ -131,7 +131,7 @@ class ActionsdoliFleet
 		if (!empty(getDolGlobalString("MULTICOMPANY_SHARINGS_ENABLED"))
 			&& !empty(getDolGlobalString("MULTICOMPANY_DOLIFLEET_SHARING_ENABLED"))
 			&& $object->element == 'dolifleet_vehicule'
-			&& !empty(isModEnabled("dolifleet"))
+			&& isModEnabled("dolifleet")
 			&& !empty($mc->sharings['dolifleet_vehicule'])
 			&& $object->entity != $conf->entity) {
 			dol_include_once('/multicompany/class/actions_multicompany.class.php');
