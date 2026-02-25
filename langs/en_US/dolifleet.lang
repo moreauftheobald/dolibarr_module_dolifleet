@@ -5,3 +5,11 @@ ATMAbout = This module has been developed by <a href="http://www.atm-consulting.
 
 doliFleetSetup = doliFleet module setup
 doliFleetAbout = About doliFleet
+
+CloneOperationsFromVehicle=Clone operations from another vehicle
+CloneOperationsFromVehicleTitle=Clone operations
+CloneOperationsFromVehicleBody=Planned operations from the selected vehicle will be copied. Last operation mileage will be set to 1 and last operation date to the exploitation start date.
+CloneOperationsSourceVehicle=Source vehicle
+CloneOperationsSuccess=%s operation(s) cloned successfully
+ErrNoVehiculeToCloneFrom=No source vehicle selected
+ErrNoOperationsToClone=Source vehicle has no operations to clone

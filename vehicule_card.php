@@ -330,6 +330,53 @@ if (empty($reshook)) {
 				exit;
 			}
 
+		case 'confirm_cloneOperations':
+			$sourceVehiculeId = GETPOSTINT('source_vehicule_id');
+			if (empty($sourceVehiculeId) || $sourceVehiculeId < 1) {
+				setEventMessages($langs->trans('ErrNoVehiculeToCloneFrom'), null, 'errors');
+				break;
+			}
+
+			dol_include_once('/dolifleet/class/vehiculeOperation.class.php');
+
+			$sourceVehicule = new Vehicule($db);
+			$sourceVehicule->fetch($sourceVehiculeId);
+			$sourceVehicule->getOperations();
+
+			if (empty($sourceVehicule->operations)) {
+				setEventMessages($langs->trans('ErrNoOperationsToClone'), null, 'warnings');
+				break;
+			}
+
+			$error = 0;
+			$nbCloned = 0;
+			$dateDoneDefault = !empty($object->date_customer_exploit) ? $object->date_customer_exploit : dol_now();
+
+			foreach ($sourceVehicule->operations as $srcOpe) {
+				$ret = $object->addOperation(
+					$srcOpe->fk_product,
+					$srcOpe->km,
+					$srcOpe->delai_from_last_op,
+					$dateDoneDefault,
+					1
+				);
+				if ($ret < 0) {
+					$error++;
+					setEventMessages('', $object->errors, 'errors');
+				} else {
+					$nbCloned++;
+				}
+			}
+
+			if ($nbCloned > 0) {
+				setEventMessages($langs->trans('CloneOperationsSuccess', $nbCloned), null);
+			}
+			if ($error == 0) {
+				header('Location: ' . dol_buildpath('/dolifleet/vehicule_card.php', 1) . '?id=' . $object->id);
+				exit;
+			}
+			break;
+
 		case 'updateActivity':
 
 			$act_id = GETPOST('act_id', 'int');

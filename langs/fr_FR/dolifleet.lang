@@ -209,4 +209,12 @@ EditPneu=Editer un type de pneu
 pneulabel=Nom du type de pneu
 
 
+CloneOperationsFromVehicle=Cloner les opérations d'un autre véhicule
+CloneOperationsFromVehicleTitle=Cloner les opérations
+CloneOperationsFromVehicleBody=Les opérations planifiées du véhicule sélectionné seront copiées. Le kilométrage de dernière opération sera initialisé à 1 et la date de dernière opération à la date de mise en exploitation.
+CloneOperationsSourceVehicle=Véhicule source
+CloneOperationsSuccess=%s opération(s) clonée(s) avec succès
+ErrNoVehiculeToCloneFrom=Aucun véhicule source sélectionné
+ErrNoOperationsToClone=Le véhicule source n'a aucune opération à cloner
+
 ORListVSR=VSR

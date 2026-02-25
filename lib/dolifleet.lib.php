@@ -138,6 +138,34 @@ function getFormConfirmdoliFleetVehicule($form, $object, $action)
 	} elseif ($action === 'delOperation' && !empty($user->hasRight("dolifleet", "write"))) {
 		$body = $langs->trans('ConfirmDelOperationdoliFleetVehiculeBody');
 		$formconfirm = $form->formconfirm(dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&ope_id=' . GETPOST('ope_id'), $langs->trans('ConfirmDeletedoliFleetVehiculeTitle'), $body, 'confirm_delOperation', '', 0, 1);
+	} elseif ($action === 'cloneOperations' && !empty($user->hasRight("dolifleet", "write"))) {
+		global $db;
+		// Build vehicle list of same type (VIN - Immat - Marque)
+		$sql = "SELECT v.rowid, v.vin, v.immatriculation, vm.label as marque";
+		$sql .= " FROM " . $db->prefix() . "dolifleet_vehicule as v";
+		$sql .= " LEFT JOIN " . $db->prefix() . "c_dolifleet_vehicule_mark as vm ON vm.rowid = v.fk_vehicule_mark";
+		$sql .= " WHERE v.status = 1";
+		$sql .= " AND v.fk_vehicule_type = " . ((int) $object->fk_vehicule_type);
+		$sql .= " AND v.rowid <> " . ((int) $object->id);
+		$sql .= " ORDER BY v.immatriculation ASC";
+		$resql = $db->query($sql);
+		$TVehicles = array();
+		if ($resql) {
+			while ($obj = $db->fetch_object($resql)) {
+				$TVehicles[$obj->rowid] = $obj->vin . ' - ' . $obj->immatriculation . ' - ' . $obj->marque;
+			}
+		}
+		$formquestion = array(
+			array('type' => 'select', 'name' => 'source_vehicule_id', 'label' => $langs->trans('CloneOperationsSourceVehicle'), 'values' => $TVehicles, 'default' => '')
+		);
+		$formconfirm = $form->formconfirm(
+			dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id,
+			$langs->trans('CloneOperationsFromVehicleTitle'),
+			$langs->trans('CloneOperationsFromVehicleBody'),
+			'confirm_cloneOperations',
+			$formquestion,
+			'yes', 1, 0, 700
+		);
 	}
 
 	return $formconfirm;
@@ -353,7 +381,7 @@ function printLinkedVehicules($object, $fromcard = false)
  */
 function printVehiculeOperations($object)
 {
-	global $langs, $form;
+	global $langs, $form, $user;
 	dol_include_once('operationorder/class/operationorder.class.php');
 
 	print load_fiche_titre($langs->trans('VehiculeOperations'), '', '');
@@ -498,6 +526,14 @@ function printVehiculeOperations($object)
 	print '</table>';
 
 	print '</form>';
+
+	// Clone operations button
+	if ($user->hasRight('dolifleet', 'write')) {
+		print '<div class="tabsAction">';
+		print '<a class="butAction" href="' . dol_escape_htmltag($_SERVER['PHP_SELF']) . '?id=' . $object->id . '&action=cloneOperations&token=' . newToken() . '">' . $langs->trans("CloneOperationsFromVehicle") . '</a>';
+		print '</div>';
+	}
+
 	?>
 	<script>
 		$("#search_productid").removeClass("minwidth100");
