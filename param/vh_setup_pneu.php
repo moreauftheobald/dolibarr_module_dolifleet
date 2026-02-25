@@ -279,12 +279,12 @@ foreach ($pneuarray as $key=>$data) {
 	print '<td><span>' . img_picto($langs->trans('off'), $out) . '</span></td>';
 
 	$actionpath = dol_buildpath('/dolifleet/param/vh_setup_pneu.php', 2) . '?rowid=' . $data->id . '&action=';
-	$action  = '<a href="' . $actionpath . 'edit"><span class="fas fa-pen" title="' . $langs->trans('Edit') . '"></span></a>';
+	$actionHtml  = '<a href="' . $actionpath . 'edit"><span class="fas fa-pen" title="' . $langs->trans('Edit') . '"></span></a>';
 	if ($user->admin) {
-		$action .= '&nbsp &nbsp';
-		$action .= '<a href="' . $actionpath . 'delete&token='.newToken().'"><span class="fas fa-trash-alt" title="' . $langs->trans('Delete') . '"></span></a>';
+		$actionHtml .= '&nbsp &nbsp';
+		$actionHtml .= '<a href="' . $actionpath . 'delete&token='.newToken().'"><span class="fas fa-trash-alt" title="' . $langs->trans('Delete') . '"></span></a>';
 	}
-	print '<td>' . $action . '</td>';
+	print '<td>' . $actionHtml . '</td>';
 	print '</tr>';
 }
 

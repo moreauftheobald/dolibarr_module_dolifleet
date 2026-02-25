@@ -29,7 +29,7 @@ class cron_dolifleet
 		$operation = new dolifleetVehiculeOperation($this->db);
 
 		$this->langs = new Translate('', $conf);
-		$this->langs->setDefaultLang('fr_FR');
+		$this->langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT ?? 'en_US');
 		$this->langs->loadLangs(array('main', 'admin', 'cron', 'dict'));
 		$this->langs->load('clitheobald@clitheobald');
 
